@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Reduse — Second Hand Mode Schweiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --pine:        #1b3a2d;
+  --pine-deep:   #0f2418;
+  --pine-mid:    #264d3b;
+  --pine-light:  #2f6349;
+  --pine-hover:  #1f4535;
+  --silver:      #d4ddd8;
+  --silver-dim:  #8fa89e;
+  --silver-faint:#b0c4bb;
+  --silver-pale: #e8efec;
+  --accent:      #a8c4b8;
+  --border-c:    rgba(212,221,216,.1);
+  --border-m:    rgba(212,221,216,.2);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Jost', sans-serif;
+  background: var(--pine);
+  color: var(--silver);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: .45;
+}
+
+/* ── NAV ── */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--pine-deep);
+  border-bottom: 1px solid var(--border-c);
+  height: 68px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2.5rem;
+}
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.85rem; font-weight: 600; letter-spacing: .06em;
+  color: var(--silver); display: flex; align-items: baseline; gap: .1em; flex-shrink: 0;
+}
+.nav-logo .dot { color: var(--accent); font-size: 2rem; line-height: 1; }
+.nav-center { display: flex; gap: 2rem; }
+.nav-link {
+  font-size: .78rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--silver-dim); cursor: pointer; border: none; background: none;
+  font-family: 'Jost', sans-serif; font-weight: 400; transition: color .2s; padding: 0;
+}
+.nav-link:hover { color: var(--silver); }
+.nav-actions { display: flex; align-items: center; gap: .75rem; }
+
+/* Language switcher */
+.lang-switcher {
+  display: flex; align-items: center;
+  border: 1px solid var(--border-c); border-radius: 2px; overflow: hidden;
+}
+.lang-btn {
+  background: transparent; border: none; padding: .32rem .65rem;
+  font-family: 'Jost', sans-serif; font-size: .7rem; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--silver-dim); cursor: pointer; transition: all .18s;
+  border-right: 1px solid var(--border-c);
+}
+.lang-btn:last-child { border-right: none; }
+.lang-btn:hover { color: var(--silver); background: rgba(212,221,216,.07); }
+.lang-btn.active { background: var(--accent); color: var(--pine-deep); font-weight: 600; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .5rem 1.3rem; border-radius: 2px;
+  font-family: 'Jost', sans-serif; font-size: .78rem;
+  letter-spacing: .1em; text-transform: uppercase; font-weight: 500;
+  cursor: pointer; border: none; transition: all .2s;
+}
+.btn-ghost { background: transparent; border: 1px solid var(--border-m); color: var(--silver-dim); }
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+.btn-silver { background: var(--silver); color: var(--pine-deep); }
+.btn-silver:hover { background: var(--silver-pale); }
+
+.cart-btn {
+  position: relative; width: 38px; height: 38px; border-radius: 2px;
+  background: transparent; border: 1px solid var(--border-m);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: border-color .2s; font-size: 1rem; color: var(--silver-dim);
+}
+.cart-btn:hover { border-color: var(--accent); color: var(--accent); }
+.cart-badge {
+  position: absolute; top: -6px; right: -6px;
+  background: var(--accent); color: var(--pine-deep);
+  width: 17px; height: 17px; border-radius: 50%;
+  font-size: .6rem; font-weight: 700;
+  display: none; align-items: center; justify-content: center;
+  font-family: 'Jost', sans-serif;
+}
+
+/* ── HERO ── */
+.hero {
+  background: var(--pine-deep); padding: 6rem 2.5rem 5rem;
+  text-align: center; position: relative; overflow: hidden;
+  border-bottom: 1px solid var(--border-c);
+}
+.hero::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 80% 50% at 50% 110%, rgba(168,196,184,.08) 0%, transparent 65%);
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: .6rem;
+  font-size: .72rem; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 2rem;
+}
+.hero-eyebrow::before, .hero-eyebrow::after {
+  content: ''; display: block; width: 28px; height: 1px; background: var(--accent); opacity: .5;
+}
+.hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3.2rem, 8vw, 6.5rem); font-weight: 300; color: var(--silver);
+  line-height: 1.05; letter-spacing: -.01em; position: relative; z-index: 1;
+}
+.hero h1 em { font-style: italic; color: var(--accent); }
+.hero-sub {
+  margin: 1.8rem auto 0; max-width: 480px;
+  font-size: .9rem; line-height: 1.75; color: var(--silver-dim);
+  letter-spacing: .02em; font-weight: 300; position: relative; z-index: 1;
+}
+.ch-badge {
+  display: inline-flex; align-items: center; gap: .4rem; margin-top: 1.8rem;
+  font-size: .72rem; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--silver-dim); border: 1px solid var(--border-m); padding: .4rem 1rem; border-radius: 2px;
+}
+.search-wrap {
+  margin: 2.8rem auto 0; max-width: 540px; display: flex;
+  border: 1px solid var(--border-m); background: rgba(255,255,255,.03);
+  border-radius: 2px; overflow: hidden; transition: border-color .2s; position: relative; z-index: 1;
+}
+.search-wrap:focus-within { border-color: var(--accent); }
+.search-wrap input {
+  flex: 1; padding: .85rem 1.4rem; background: transparent; border: none; outline: none;
+  font-family: 'Jost', sans-serif; font-size: .88rem; color: var(--silver); letter-spacing: .03em;
+}
+.search-wrap input::placeholder { color: var(--silver-dim); opacity: .6; }
+.search-wrap button {
+  background: var(--accent); color: var(--pine-deep); border: none; padding: .85rem 1.6rem;
+  font-family: 'Jost', sans-serif; font-size: .72rem; letter-spacing: .14em;
+  text-transform: uppercase; font-weight: 500; cursor: pointer; transition: background .2s;
+}
+.search-wrap button:hover { background: var(--silver-faint); }
+.hero-stats {
+  display: flex; justify-content: center; gap: 4rem;
+  margin-top: 4rem; position: relative; z-index: 1;
+}
+.hero-stat .num {
+  font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 600;
+  color: var(--silver); line-height: 1;
+}
+.hero-stat .lbl { font-size: .7rem; letter-spacing: .15em; text-transform: uppercase; color: var(--silver-dim); margin-top: .3rem; }
+
+/* ── MAIN ── */
+.main { max-width: 1280px; margin: 0 auto; padding: 3rem 2.5rem; }
+.sec-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 1.8rem; }
+.sec-title { font-family: 'Cormorant Garamond', serif; font-size: 1.9rem; font-weight: 600; color: var(--silver); letter-spacing: .01em; }
+.cats { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
+.cat-pill {
+  padding: .4rem 1.1rem; border-radius: 2px; border: 1px solid var(--border-c);
+  font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+  cursor: pointer; transition: all .2s; color: var(--silver-dim);
+  font-family: 'Jost', sans-serif; background: transparent;
+}
+.cat-pill:hover { border-color: var(--silver-dim); color: var(--silver); }
+.cat-pill.active { background: var(--accent); border-color: var(--accent); color: var(--pine-deep); }
+#resultCount { font-size: .75rem; color: var(--silver-dim); letter-spacing: .05em; }
+
+/* Grid */
+.listings-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 1px; background: var(--border-c); border: 1px solid var(--border-c);
+}
+.listing-card { background: var(--pine); cursor: pointer; position: relative; transition: background .2s; }
+.listing-card:hover { background: var(--pine-hover); }
+.listing-img {
+  width: 100%; aspect-ratio: 3/4; display: flex; align-items: center; justify-content: center;
+  font-size: 4.5rem; position: relative; overflow: hidden;
+}
+.listing-img::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(15,36,24,.7) 0%, transparent 45%);
+}
+.listing-badge {
+  position: absolute; top: .8rem; left: .8rem; z-index: 2;
+  background: var(--accent); color: var(--pine-deep);
+  font-size: .6rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 500; padding: .2rem .65rem;
+}
+.fav-btn {
+  position: absolute; top: .7rem; right: .7rem; z-index: 2;
+  background: rgba(15,36,24,.55); border: 1px solid var(--border-m);
+  width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+  font-size: .85rem; cursor: pointer; backdrop-filter: blur(4px); transition: background .2s; color: var(--silver-dim);
+}
+.fav-btn:hover { background: rgba(15,36,24,.9); color: var(--accent); }
+.listing-body { padding: .9rem 1rem 1.1rem; }
+.listing-title {
+  font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 600; color: var(--silver);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: .15rem; letter-spacing: .01em;
+}
+.listing-brand { font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--silver-dim); margin-bottom: .5rem; }
+.listing-meta { display: flex; align-items: center; justify-content: space-between; }
+.listing-price { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600; color: var(--accent); }
+.listing-location { font-size: .68rem; color: rgba(212,221,216,.35); letter-spacing: .06em; }
+
+/* ── MODAL ── */
+.overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(15,36,24,.8); backdrop-filter: blur(6px);
+  display: none; align-items: center; justify-content: center; padding: 1rem;
+}
+.overlay.open { display: flex; }
+.modal {
+  background: var(--pine-deep); border: 1px solid var(--border-m);
+  max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto;
+  padding: 0; position: relative; animation: fadeUp .3s ease;
+}
+@keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+.modal-img {
+  width: 100%; aspect-ratio: 16/9; display: flex; align-items: center;
+  justify-content: center; font-size: 7rem; position: relative;
+}
+.modal-img::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to top, var(--pine-deep) 0%, transparent 50%);
+}
+.modal-close {
+  position: absolute; top: 1rem; right: 1rem; z-index: 10;
+  background: rgba(15,36,24,.7); border: 1px solid var(--border-m);
+  width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+  font-size: .85rem; cursor: pointer; color: var(--silver-dim);
+}
+.modal-close:hover { color: var(--silver); }
+.modal-body { padding: 1.5rem 2rem 2rem; }
+.modal-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: 1rem; }
+.modal-tag { font-size: .65rem; letter-spacing: .12em; text-transform: uppercase; border: 1px solid var(--border-c); color: var(--silver-dim); padding: .2rem .7rem; }
+.modal h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 600; color: var(--silver); margin-bottom: .2rem; line-height: 1.2; }
+.modal-brand { font-size: .72rem; letter-spacing: .15em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+.modal-price { font-family: 'Cormorant Garamond', serif; font-size: 2.4rem; font-weight: 600; color: var(--accent); margin-bottom: 1.2rem; }
+.modal-desc { font-size: .86rem; line-height: 1.8; color: var(--silver-dim); margin-bottom: 1.5rem; font-weight: 300; }
+.modal-divider { height: 1px; background: var(--border-c); margin: 1.2rem 0; }
+.seller-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+.seller-avatar {
+  width: 42px; height: 42px; background: var(--pine-mid); border: 1px solid var(--border-m);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 600; color: var(--silver); flex-shrink: 0;
+}
+.seller-name { font-size: .88rem; font-weight: 500; color: var(--silver); }
+.seller-rating { font-size: .72rem; color: var(--silver-dim); letter-spacing: .04em; margin-top: .15rem; }
+.modal-actions { display: flex; gap: .8rem; }
+.modal-actions .btn { flex: 1; justify-content: center; padding: .75rem; font-size: .72rem; }
+
+/* Sell modal */
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-group { margin-bottom: 1rem; }
+.form-group label { display: block; font-size: .65rem; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: .5rem; font-weight: 400; }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; padding: .7rem 1rem; background: rgba(255,255,255,.04);
+  border: 1px solid var(--border-c); border-radius: 2px;
+  font-family: 'Jost', sans-serif; font-size: .88rem; color: var(--silver); outline: none; transition: border-color .2s;
+}
+.form-group select option { background: var(--pine-deep); }
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent); }
+.form-group input::placeholder, .form-group textarea::placeholder { color: rgba(212,221,216,.25); }
+.form-group textarea { resize: vertical; min-height: 80px; }
+.emoji-picker { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .5rem; }
+.emoji-opt {
+  width: 44px; height: 44px; background: rgba(255,255,255,.04); border: 1px solid var(--border-c);
+  font-size: 1.4rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s;
+}
+.emoji-opt.selected { border-color: var(--accent); background: rgba(168,196,184,.12); }
+.sell-title-bar { padding: 1.5rem 2rem 0; font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 600; color: var(--silver); margin-bottom: 1.5rem; }
+.sell-body { padding: 0 2rem 2rem; }
+
+/* Cart */
+.cart-overlay { position: fixed; inset: 0; z-index: 300; background: rgba(15,36,24,.65); backdrop-filter: blur(3px); display: none; }
+.cart-overlay.open { display: block; }
+.cart-panel {
+  position: fixed; top: 0; right: -420px; bottom: 0;
+  width: 380px; max-width: 100vw; background: var(--pine-deep); border-left: 1px solid var(--border-m);
+  z-index: 301; padding: 2rem 1.5rem; transition: right .32s cubic-bezier(.4,0,.2,1); overflow-y: auto; display: flex; flex-direction: column;
+}
+.cart-panel.open { right: 0; }
+.cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+.cart-title { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 600; color: var(--silver); }
+.cart-close { background: none; border: 1px solid var(--border-c); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: .85rem; cursor: pointer; color: var(--silver-dim); }
+.cart-close:hover { color: var(--silver); }
+.cart-items { flex: 1; }
+.cart-item { display: flex; gap: .9rem; align-items: center; padding: .9rem 0; border-bottom: 1px solid var(--border-c); }
+.cart-item-img { width: 52px; height: 68px; background: var(--pine-mid); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; flex-shrink: 0; }
+.cart-item-info { flex: 1; min-width: 0; }
+.cart-item-name { font-family: 'Cormorant Garamond', serif; font-size: .95rem; color: var(--silver); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cart-item-price { font-size: .8rem; color: var(--accent); margin-top: .2rem; }
+.cart-remove { background: none; border: none; color: var(--silver-dim); cursor: pointer; font-size: .9rem; }
+.cart-remove:hover { color: var(--accent); }
+.cart-footer { padding-top: 1.2rem; margin-top: 1rem; border-top: 1px solid var(--border-m); }
+.cart-total { display: flex; justify-content: space-between; align-items: center; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600; color: var(--silver); margin-bottom: 1rem; }
+.cart-empty { text-align: center; padding: 3rem 0; font-size: .82rem; color: var(--silver-dim); letter-spacing: .08em; text-transform: uppercase; }
+
+/* How it works */
+.how { background: var(--pine-deep); border-top: 1px solid var(--border-c); border-bottom: 1px solid var(--border-c); padding: 5rem 2.5rem; text-align: center; }
+.how-inner { max-width: 960px; margin: 0 auto; }
+.how-label { font-size: .7rem; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+.how h2 { font-family: 'Cormorant Garamond', serif; font-size: 2.6rem; font-weight: 300; color: var(--silver); margin-bottom: 3.5rem; font-style: italic; }
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 2.5rem; }
+.step-num { font-family: 'Cormorant Garamond', serif; font-size: 3rem; font-weight: 300; color: rgba(168,196,184,.18); line-height: 1; margin-bottom: .7rem; }
+.step h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; color: var(--silver); margin-bottom: .4rem; }
+.step p { font-size: .8rem; line-height: 1.65; color: var(--silver-dim); font-weight: 300; }
+
+footer { background: var(--pine-deep); border-top: 1px solid var(--border-c); padding: 2.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+.footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600; color: var(--silver); }
+.footer-copy { font-size: .72rem; color: var(--silver-dim); letter-spacing: .08em; }
+.footer-ch { font-size: .72rem; color: var(--accent); letter-spacing: .1em; text-transform: uppercase; }
+
+.toast { position: fixed; bottom: 2.5rem; left: 50%; transform: translateX(-50%); background: var(--pine-deep); border: 1px solid var(--border-m); color: var(--silver); padding: .7rem 1.8rem; font-size: .78rem; letter-spacing: .08em; z-index: 500; opacity: 0; transition: opacity .25s; pointer-events: none; white-space: nowrap; }
+.toast.show { opacity: 1; }
+
+@media (max-width: 680px) {
+  .nav-center { display: none; }
+  .form-row { grid-template-columns: 1fr; }
+  .hero-stats { gap: 2rem; }
+  footer { flex-direction: column; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Reduse<span class="dot">·</span></div>
+  <div class="nav-center">
+    <button class="nav-link" id="navAll"         onclick="setCat(T('all'))"></button>
+    <button class="nav-link" id="navKleider"     onclick="setCat('Kleider')"></button>
+    <button class="nav-link" id="navSchuhe"      onclick="setCat('Schuhe')"></button>
+    <button class="nav-link" id="navAccessoires" onclick="setCat('Accessoires')"></button>
+  </div>
+  <div class="nav-actions">
+    <div class="lang-switcher">
+      <button class="lang-btn" onclick="setLang('it')">IT</button>
+      <button class="lang-btn" onclick="setLang('de')">DE</button>
+      <button class="lang-btn" onclick="setLang('fr')">FR</button>
+    </div>
+    <button class="btn btn-ghost" id="btnSell" onclick="openSell()"></button>
+    <button class="cart-btn" onclick="openCart()">🛍<span class="cart-badge" id="cartBadge">0</span></button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow" id="heroEyebrow"></div>
+  <h1 id="heroTitle"></h1>
+  <p class="hero-sub" id="heroSub"></p>
+  <div class="ch-badge" id="chBadge"></div>
+  <div class="search-wrap">
+    <input type="text" id="searchInput" oninput="filterListings()"/>
+    <button onclick="filterListings()" id="searchBtn"></button>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="num" id="statItems">14</div><div class="lbl" id="statLblItems"></div></div>
+    <div class="hero-stat"><div class="num">CHF 0</div><div class="lbl" id="statLblFree"></div></div>
+    <div class="hero-stat"><div class="num">4</div><div class="lbl" id="statLblCantoni"></div></div>
+  </div>
+</section>
+
+<!-- LISTINGS -->
+<div class="main">
+  <div class="sec-head">
+    <h2 class="sec-title" id="secTitle"></h2>
+    <span id="resultCount"></span>
+  </div>
+  <div class="cats" id="catPills"></div>
+  <div class="listings-grid" id="listingsGrid"></div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="how">
+  <div class="how-inner">
+    <div class="how-label" id="howLabel"></div>
+    <h2 id="howTitle"></h2>
+    <div class="steps" id="stepsContainer"></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Reduse·</div>
+  <div class="footer-copy" id="footerCopy"></div>
+  <div class="footer-ch">🇨🇭 Made in Switzerland</div>
+</footer>
+
+<!-- ITEM MODAL -->
+<div class="overlay" id="itemOverlay" onclick="closeItem(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeItemModal()">✕</button>
+    <div class="modal-img" id="modalImg"></div>
+    <div class="modal-body">
+      <div class="modal-tags" id="modalTags"></div>
+      <div class="modal-brand" id="modalBrand"></div>
+      <h2 id="modalTitle"></h2>
+      <div class="modal-price" id="modalPrice"></div>
+      <p class="modal-desc" id="modalDesc"></p>
+      <div class="modal-divider"></div>
+      <div class="seller-row">
+        <div class="seller-avatar" id="sellerAvatar"></div>
+        <div><div class="seller-name" id="sellerName"></div><div class="seller-rating" id="sellerRating"></div></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost"  id="modalContactBtn"></button>
+        <button class="btn btn-silver" id="modalBuyBtn"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SELL MODAL -->
+<div class="overlay" id="sellOverlay" onclick="closeSell(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeSellModal()">✕</button>
+    <div class="sell-title-bar" id="sellModalTitle"></div>
+    <div class="sell-body">
+      <div class="form-group"><label id="lblEmoji"></label><div class="emoji-picker" id="emojiPicker"></div></div>
+      <div class="form-row">
+        <div class="form-group"><label id="lblTitle"></label><input type="text" id="sellTitle"/></div>
+        <div class="form-group"><label id="lblBrand"></label><input type="text" id="sellBrand"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label id="lblPrice"></label><input type="number" id="sellPrice" placeholder="0"/></div>
+        <div class="form-group"><label id="lblSize"></label><input type="text" id="sellSize"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label id="lblCat"></label><select id="sellCat"></select></div>
+        <div class="form-group"><label id="lblCond"></label><select id="sellCond"></select></div>
+      </div>
+      <div class="form-group"><label id="lblDesc"></label><textarea id="sellDesc"></textarea></div>
+      <div class="form-group">
+        <label id="lblCity"></label>
+        <select id="sellCity">
+          <option>Zürich</option><option>Genève</option><option>Basel</option><option>Bern</option>
+          <option>Lausanne</option><option>Luzern</option><option>St. Gallen</option>
+          <option>Lugano</option><option>Winterthur</option><option>Zug</option>
+        </select>
+      </div>
+      <button class="btn btn-silver" id="btnPublish" style="width:100%;justify-content:center;padding:.85rem;font-size:.78rem;letter-spacing:.14em;" onclick="publishItem()"></button>
+    </div>
+  </div>
+</div>
+
+<!-- CART PANEL -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-panel" id="cartPanel">
+  <div class="cart-header">
+    <div class="cart-title" id="cartTitle"></div>
+    <button class="cart-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-footer" id="cartFooter" style="display:none;">
+    <div class="cart-total"><span id="cartTotalLabel"></span><span id="cartTotal">CHF 0</span></div>
+    <button class="btn btn-silver" id="btnCheckout" style="width:100%;justify-content:center;padding:.85rem;font-size:.75rem;letter-spacing:.14em;" onclick="checkout()"></button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══════════════════════════════
+   TRANSLATIONS
+══════════════════════════════ */
+const TR = {
+  it: {
+    all:'Tutti', catKleider:'Abbigliamento', catSchuhe:'Scarpe', catAccessoires:'Accessori',
+    btnSell:'+ Vendi',
+    heroEyebrow:'Second Hand · Svizzera',
+    heroTitle:'Dai nuova <em>vita</em><br>alla moda che ami',
+    heroSub:'Il marketplace svizzero per comprare e vendere moda di seconda mano. Stile senza sprechi.',
+    chBadge:'🇨🇭 100% Svizzera · CHF · Inserzioni gratis',
+    searchPlaceholder:'Cerca Gucci, trench coat, Zara taglia S…', searchBtn:'Cerca',
+    statItems:'Annunci', statFree:'Iscrizione', statCantoni:'Cantoni',
+    secTitle:'Ultimi annunci', noResults:'Nessun risultato trovato', resultSuffix:'annunci',
+    modalContact:'💬 Contatta', modalBuy:'🛒 Aggiungi al carrello',
+    toastContact:'💬 Messaggio inviato a ', toastCart:'✓ Aggiunto al carrello',
+    cartTitle:'Il tuo carrello', cartEmpty:'Il carrello è vuoto',
+    cartTotalLabel:'Totale', btnCheckout:'Procedi al pagamento →',
+    toastCheckout:'🎉 Ordine confermato! Grazie.',
+    sellModalTitle:'Pubblica un annuncio',
+    lblEmoji:"Scegli un'icona", lblTitle:'Titolo', lblBrand:'Brand / Marchio',
+    lblPrice:'Prezzo CHF', lblSize:'Taglia', lblCat:'Categoria',
+    lblCond:'Condizioni', lblDesc:'Descrizione', lblCity:'Città (CH)',
+    sellTitlePh:'es. Trench Burberry M', sellBrandPh:'es. Zara, H&M, Gucci…',
+    sellSizePh:'es. M, 42, 38', sellDescPh:'Descrivi il capo, materiale, eventuali difetti…',
+    btnPublish:'Pubblica ora →', toastPublish:'✓ Annuncio pubblicato!',
+    toastRequired:'⚠️ Titolo e prezzo obbligatori', defaultDesc:'Nessuna descrizione.',
+    cond:['Come nuovo','Ottimo','Buono','Discreto'],
+    /* v = chiave interna fissa, l = etichetta tradotta */
+    cats:[
+      {v:'Kleider',     l:'Abbigliamento'},
+      {v:'Schuhe',      l:'Scarpe'},
+      {v:'Accessoires', l:'Accessori'},
+      {v:'Occhiali',    l:'Occhiali'},
+      {v:'Gioielli',    l:'Gioielli'},
+      {v:'Cravatte',    l:'Cravatte'},
+    ],
+    /* emoji per il form */
+    catsForm:[
+      {v:'Kleider',     l:'👗 Abbigliamento'},
+      {v:'Schuhe',      l:'👟 Scarpe'},
+      {v:'Accessoires', l:'👜 Accessori'},
+      {v:'Occhiali',    l:'🕶️ Occhiali'},
+      {v:'Gioielli',    l:'💍 Gioielli'},
+      {v:'Cravatte',    l:'🎗️ Cravatte'},
+    ],
+    howLabel:'Come funziona', howTitle:'Semplice come indossarlo',
+    steps:[
+      {n:'01',t:'Fotografa',  d:'Scatta una foto al tuo capo e descrivilo brevemente. Bastano 2 minuti.'},
+      {n:'02',t:'Pubblica',   d:'Inserisci il prezzo in CHF e pubblica gratis. Nessun costo di iscrizione.'},
+      {n:'03',t:'Tratta',     d:'Ricevi offerte, rispondi agli interessati e accordati sul prezzo.'},
+      {n:'04',t:'Spedisci',   d:'Consegna con Swiss Post o ritiro diretto. Pagamento sicuro.'},
+    ],
+    footerCopy:'© 2025 Reduse · Second Hand Mode Svizzera',
+  },
+
+  de: {
+    all:'Alle', catKleider:'Kleider', catSchuhe:'Schuhe', catAccessoires:'Accessoires',
+    btnSell:'+ Inserieren',
+    heroEyebrow:'Second Hand · Schweiz',
+    heroTitle:'Mode <em>wiederentdecken</em><br>neu zu schätzen wissen',
+    heroSub:'Der Schweizer Marktplatz für den Kauf und Verkauf von Second-Hand-Mode. Stil ohne Verschwendung.',
+    chBadge:'🇨🇭 100% Schweiz · CHF · Gratis inserieren',
+    searchPlaceholder:'Suche Gucci, Trenchcoat, Zara Grösse S…', searchBtn:'Suchen',
+    statItems:'Inserate', statFree:'Registrierung', statCantoni:'Kantone',
+    secTitle:'Neue Inserate', noResults:'Keine Ergebnisse gefunden', resultSuffix:'Inserate',
+    modalContact:'💬 Kontakt', modalBuy:'🛒 In den Warenkorb',
+    toastContact:'💬 Nachricht an ', toastCart:'✓ In den Warenkorb gelegt',
+    cartTitle:'Warenkorb', cartEmpty:'Warenkorb ist leer',
+    cartTotalLabel:'Total', btnCheckout:'Zur Kasse →',
+    toastCheckout:'🎉 Bestellung bestätigt! Vielen Dank.',
+    sellModalTitle:'Inserat aufgeben',
+    lblEmoji:'Symbol wählen', lblTitle:'Titel', lblBrand:'Marke',
+    lblPrice:'Preis CHF', lblSize:'Grösse', lblCat:'Kategorie',
+    lblCond:'Zustand', lblDesc:'Beschreibung', lblCity:'Ort (CH)',
+    sellTitlePh:'z.B. Trenchcoat Burberry M', sellBrandPh:'z.B. Zara, H&M, Gucci…',
+    sellSizePh:'z.B. M, 42, 38', sellDescPh:'Beschreibe das Kleidungsstück, Material, eventuelle Mängel…',
+    btnPublish:'Inserat veröffentlichen →', toastPublish:'✓ Inserat veröffentlicht!',
+    toastRequired:'⚠️ Titel und Preis erforderlich', defaultDesc:'Keine Beschreibung.',
+    cond:['Wie neu','Sehr gut','Gut','Akzeptabel'],
+    cats:[
+      {v:'Kleider',     l:'Kleider'},
+      {v:'Schuhe',      l:'Schuhe'},
+      {v:'Accessoires', l:'Accessoires'},
+      {v:'Occhiali',    l:'Brillen'},
+      {v:'Gioielli',    l:'Schmuck'},
+      {v:'Cravatte',    l:'Krawatten'},
+    ],
+    catsForm:[
+      {v:'Kleider',     l:'👗 Kleider'},
+      {v:'Schuhe',      l:'👟 Schuhe'},
+      {v:'Accessoires', l:'👜 Accessoires'},
+      {v:'Occhiali',    l:'🕶️ Brillen'},
+      {v:'Gioielli',    l:'💍 Schmuck'},
+      {v:'Cravatte',    l:'🎗️ Krawatten'},
+    ],
+    howLabel:'Wie es funktioniert', howTitle:'Einfach wie das Anziehen',
+    steps:[
+      {n:'01',t:'Fotografieren',d:'Mache ein Foto und beschreibe deinen Artikel kurz. Dauert nur 2 Minuten.'},
+      {n:'02',t:'Publizieren',  d:'Preis in CHF eingeben und kostenlos inserieren. Keine Registrierungsgebühr.'},
+      {n:'03',t:'Verhandeln',   d:'Erhalte Angebote, antworte Interessenten und einige dich auf den Preis.'},
+      {n:'04',t:'Versenden',    d:'Lieferung mit Swiss Post oder persönliche Übergabe. Sichere Zahlung.'},
+    ],
+    footerCopy:'© 2025 Reduse · Second Hand Mode Schweiz',
+  },
+
+  fr: {
+    all:'Tout', catKleider:'Vêtements', catSchuhe:'Chaussures', catAccessoires:'Accessoires',
+    btnSell:'+ Vendre',
+    heroEyebrow:'Seconde Main · Suisse',
+    heroTitle:"Redonnez vie à la mode<br>que vous <em>aimez</em>",
+    heroSub:'La marketplace suisse pour acheter et vendre de la mode de seconde main. Du style sans gaspillage.',
+    chBadge:'🇨🇭 100% Suisse · CHF · Annonces gratuites',
+    searchPlaceholder:'Chercher Gucci, trench coat, Zara taille S…', searchBtn:'Chercher',
+    statItems:'Annonces', statFree:'Inscription', statCantoni:'Cantons',
+    secTitle:'Dernières annonces', noResults:'Aucun résultat trouvé', resultSuffix:'annonces',
+    modalContact:'💬 Contacter', modalBuy:'🛒 Ajouter au panier',
+    toastContact:'💬 Message envoyé à ', toastCart:'✓ Ajouté au panier',
+    cartTitle:'Votre panier', cartEmpty:'Votre panier est vide',
+    cartTotalLabel:'Total', btnCheckout:'Passer à la caisse →',
+    toastCheckout:'🎉 Commande confirmée ! Merci.',
+    sellModalTitle:'Publier une annonce',
+    lblEmoji:'Choisir une icône', lblTitle:'Titre', lblBrand:'Marque',
+    lblPrice:'Prix CHF', lblSize:'Taille', lblCat:'Catégorie',
+    lblCond:'État', lblDesc:'Description', lblCity:'Ville (CH)',
+    sellTitlePh:'ex. Trench Burberry M', sellBrandPh:'ex. Zara, H&M, Gucci…',
+    sellSizePh:'ex. M, 42, 38', sellDescPh:'Décrivez le vêtement, la matière, les éventuels défauts…',
+    btnPublish:"Publier l'annonce →", toastPublish:'✓ Annonce publiée !',
+    toastRequired:'⚠️ Titre et prix obligatoires', defaultDesc:'Aucune description.',
+    cond:['Comme neuf','Très bon','Bon','Acceptable'],
+    cats:[
+      {v:'Kleider',     l:'Vêtements'},
+      {v:'Schuhe',      l:'Chaussures'},
+      {v:'Accessoires', l:'Accessoires'},
+      {v:'Occhiali',    l:'Lunettes'},
+      {v:'Gioielli',    l:'Bijoux'},
+      {v:'Cravatte',    l:'Cravates'},
+    ],
+    catsForm:[
+      {v:'Kleider',     l:'👗 Vêtements'},
+      {v:'Schuhe',      l:'👟 Chaussures'},
+      {v:'Accessoires', l:'👜 Accessoires'},
+      {v:'Occhiali',    l:'🕶️ Lunettes'},
+      {v:'Gioielli',    l:'💍 Bijoux'},
+      {v:'Cravatte',    l:'🎗️ Cravates'},
+    ],
+    howLabel:'Comment ça marche', howTitle:"Simple comme s'habiller",
+    steps:[
+      {n:'01',t:'Photographier',d:'Prenez une photo de votre article et décrivez-le brièvement. Cela prend 2 minutes.'},
+      {n:'02',t:'Publier',      d:"Indiquez le prix en CHF et publiez gratuitement. Aucun frais d'inscription."},
+      {n:'03',t:'Négocier',     d:"Recevez des offres, répondez aux acheteurs et convenez d'un prix."},
+      {n:'04',t:'Envoyer',      d:'Livraison via Swiss Post ou remise en main propre. Paiement sécurisé.'},
+    ],
+    footerCopy:'© 2025 Reduse · Mode Seconde Main Suisse',
+  }
+};
+
+/* ══════════════════════════════
+   DATA
+══════════════════════════════ */
+const EMOJIS = ['👗','👟','👜','🕶️','💍','🎗️','🧥','👒','👠','🧣','🧤','💼','👔','👕','🩱','👘','🥿','🎩'];
+const BG = ['#264d3b','#1f4535','#2a5a42','#1b4030','#2f6349'];
+const SELLERS = [
+  {name:'Lea M.',    rating:'⭐ 5.0 · 41 · Zürich',    init:'LM'},
+  {name:'Sophie B.', rating:'⭐ 4.8 · 22 · Genève',    init:'SB'},
+  {name:'Nadia R.',  rating:'⭐ 4.9 · 17 · Basel',     init:'NR'},
+  {name:'Anna K.',   rating:'⭐ 4.7 · 9  · Bern',      init:'AK'},
+  {name:'Chiara F.', rating:'⭐ 5.0 · 34 · Lugano',    init:'CF'},
+];
+
+/* cat internamente sempre in chiave fissa (es. 'Kleider') */
+let listings = [
+  {id:1, emoji:'🧥',title:'Trench Burberry Classic',   brand:'Burberry',      price:320,cat:'Kleider',    cond:0,size:'M',   city:'Zürich',    desc:"Trench originale Burberry taglia M, colore camel. Usato una stagione, perfette condizioni. Con etichetta originale.",seller:0},
+  {id:2, emoji:'👟',title:'Nike Air Max 90 bianche',   brand:'Nike',          price:65, cat:'Schuhe',     cond:2,size:'40',  city:'Genève',    desc:"Air Max 90 taglia 40. Qualche segno d'uso nella suola, tomaia ancora ottima.",seller:1},
+  {id:3, emoji:'👜',title:'Borsa Longchamp Le Pliage', brand:'Longchamp',     price:89, cat:'Accessoires',cond:1,size:'M',   city:'Lausanne',  desc:'Le Pliage taglia M color navy. Pochissimi graffi sulle maniglie.',seller:2},
+  {id:4, emoji:'🕶️',title:'Ray-Ban Wayfarer neri',    brand:'Ray-Ban',       price:75, cat:'Occhiali',   cond:1,size:'uni', city:'Basel',     desc:'Classici Wayfarer neri con astuccio originale. Lenti perfette.',seller:3},
+  {id:5, emoji:'👗',title:'Abito Massimo Dutti S',     brand:'Massimo Dutti', price:48, cat:'Kleider',    cond:0,size:'S',   city:'Bern',      desc:'Abito midi color crema con cintura, taglia S. Indossato una volta per cerimonia.',seller:4},
+  {id:6, emoji:'👠',title:'Décolleté Zara beige 38',   brand:'Zara',          price:35, cat:'Schuhe',     cond:2,size:'38',  city:'Zürich',    desc:"Décolleté in ecopelle beige taglia 38. Tacco 7cm. Qualche graffietto sulla punta.",seller:0},
+  {id:7, emoji:'💍',title:'Orecchini Agatha dorati',   brand:'Agatha Paris',  price:28, cat:'Gioielli',   cond:0,size:'uni', city:'Genève',    desc:'Orecchini pendenti dorati con perla sintetica. Mai indossati, con scatola originale.',seller:1},
+  {id:8, emoji:'🎗️',title:'Cravatta Hermès seta blu', brand:'Hermès',        price:95, cat:'Cravatte',   cond:1,size:'uni', city:'Zürich',    desc:'Cravatta Hermès 100% seta, fantasia geometrica blu e oro.',seller:2},
+  {id:9, emoji:'🧣',title:'Sciarpa Acne Studios lana', brand:'Acne Studios',  price:110,cat:'Accessoires',cond:0,size:'uni', city:'Luzern',    desc:'Iconica sciarpa frangiata Acne Studios in lana. Colore verde pino. Perfette condizioni.',seller:3},
+  {id:10,emoji:'👔',title:'Camicia Ralph Lauren L',    brand:'Ralph Lauren',  price:42, cat:'Kleider',    cond:2,size:'L',   city:'Winterthur',desc:"Camicia Oxford button-down taglia L. Lavata e stirata, pronta all'uso.",seller:4},
+  {id:11,emoji:'👒',title:'Cappello paglia Mango',     brand:'Mango',         price:18, cat:'Accessoires',cond:1,size:'uni', city:'Lugano',    desc:"Cappello di paglia estivo naturale. Usato poche volte. Perfetto per l'estate.",seller:0},
+  {id:12,emoji:'🥿',title:'Mocassini Gucci loafer 39', brand:'Gucci',         price:280,cat:'Schuhe',     cond:1,size:'39',  city:'Zürich',    desc:'Loafer Gucci classici taglia 39. Pelle nera con morsetto dorato.',seller:1},
+  {id:13,emoji:'👘',title:'Kimono floreale vintage',   brand:'Vintage',       price:55, cat:'Kleider',    cond:2,size:'M/L', city:'Basel',     desc:"Kimono in seta stampata anni '90. Fantasia floreale rosa su fondo bianco.",seller:2},
+  {id:14,emoji:'💼',title:'Rimowa Essential 55cm',     brand:'Rimowa',        price:195,cat:'Accessoires',cond:2,size:'55cm',city:'Genève',    desc:'Rimowa Essential cabin 55cm colore silver. Qualche graffio sulla scocca.',seller:3},
+];
+
+/* ══════════════════════════════
+   STATE
+══════════════════════════════ */
+let cart = [], lang = 'it', activeCat = 'Tutti', selectedEmoji = '👗';
+
+/* ══════════════════════════════
+   HELPERS
+══════════════════════════════ */
+function T(k) { return TR[lang][k] ?? k; }
+
+/* Traduce la chiave interna di categoria nella lingua corrente */
+function catLabel(val) {
+  const found = T('cats').find(c => c.v === val);
+  return found ? found.l : val;
+}
+
+/* Etichetta condizione */
+function condLabel(idx) { return T('cond')[idx] ?? T('cond')[0]; }
+
+/* ══════════════════════════════
+   LANGUAGE
+══════════════════════════════ */
+function setLang(l) {
+  lang = l;
+  document.documentElement.lang = {it:'it', de:'de-CH', fr:'fr-CH'}[l];
+  document.querySelectorAll('.lang-btn').forEach(b =>
+    b.classList.toggle('active', b.textContent.toLowerCase() === l)
+  );
+  activeCat = T('all');
+  applyTranslations();
+  renderCats();
+  renderListings();
+  updateCartUI();
+}
+
+function applyTranslations() {
+  const s = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
+  const h = (id, v) => { const e = document.getElementById(id); if (e) e.innerHTML   = v; };
+
+  s('navAll', T('all')); s('navKleider', T('catKleider'));
+  s('navSchuhe', T('catSchuhe')); s('navAccessoires', T('catAccessoires'));
+  s('btnSell', T('btnSell'));
+
+  s('heroEyebrow', T('heroEyebrow')); h('heroTitle', T('heroTitle'));
+  s('heroSub', T('heroSub')); s('chBadge', T('chBadge'));
+  document.getElementById('searchInput').placeholder = T('searchPlaceholder');
+  s('searchBtn', T('searchBtn'));
+  s('statLblItems', T('statItems')); s('statLblFree', T('statFree')); s('statLblCantoni', T('statCantoni'));
+
+  s('secTitle', T('secTitle'));
+
+  s('cartTitle', T('cartTitle')); s('cartTotalLabel', T('cartTotalLabel')); s('btnCheckout', T('btnCheckout'));
+
+  s('sellModalTitle', T('sellModalTitle'));
+  s('lblEmoji', T('lblEmoji')); s('lblTitle', T('lblTitle')); s('lblBrand', T('lblBrand'));
+  s('lblPrice', T('lblPrice')); s('lblSize', T('lblSize'));   s('lblCat', T('lblCat'));
+  s('lblCond',  T('lblCond'));  s('lblDesc', T('lblDesc'));   s('lblCity', T('lblCity'));
+  document.getElementById('sellTitle').placeholder = T('sellTitlePh');
+  document.getElementById('sellBrand').placeholder = T('sellBrandPh');
+  document.getElementById('sellSize').placeholder  = T('sellSizePh');
+  document.getElementById('sellDesc').placeholder  = T('sellDescPh');
+  s('btnPublish', T('btnPublish'));
+
+  document.getElementById('sellCat').innerHTML  = T('catsForm').map(c => `<option value="${c.v}">${c.l}</option>`).join('');
+  document.getElementById('sellCond').innerHTML = T('cond').map(c => `<option>${c}</option>`).join('');
+
+  s('howLabel', T('howLabel')); s('howTitle', T('howTitle'));
+  document.getElementById('stepsContainer').innerHTML = T('steps').map(st =>
+    `<div class="step"><div class="step-num">${st.n}</div><h3>${st.t}</h3><p>${st.d}</p></div>`
+  ).join('');
+
+  s('footerCopy', T('footerCopy'));
+}
+
+/* ══════════════════════════════
+   CATEGORIES
+══════════════════════════════ */
+function getAllCats() {
+  /* ritorna la chiave 'all' tradotta + le etichette tradotte delle categorie presenti */
+  const presentKeys = [...new Set(listings.map(l => l.cat))];
+  return [T('all'), ...presentKeys.map(k => catLabel(k))];
+}
+
+/* catValueFromLabel: dato il label tradotto, recupera la chiave interna */
+function catKeyFromLabel(lbl) {
+  const found = T('cats').find(c => c.l === lbl);
+  return found ? found.v : lbl;
+}
+
+function renderCats() {
+  document.getElementById('catPills').innerHTML = getAllCats().map(c =>
+    `<button class="cat-pill${activeCat===c?' active':''}" onclick="setCat('${c}')">${c}</button>`
+  ).join('');
+}
+
+function setCat(c) { activeCat = c; renderCats(); renderListings(); }
+
+/* ══════════════════════════════
+   LISTINGS
+══════════════════════════════ */
+function getFiltered() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const isAll = activeCat === T('all');
+  /* se la categoria attiva è tradotta, troviamo la chiave interna corrispondente */
+  const activeKey = isAll ? null : catKeyFromLabel(activeCat);
+  return listings.filter(l =>
+    (isAll || l.cat === activeKey) &&
+    (l.title.toLowerCase().includes(q) || l.brand.toLowerCase().includes(q) || catLabel(l.cat).toLowerCase().includes(q))
+  );
+}
+
+function filterListings() { renderListings(); }
+
+function renderListings() {
+  const f = getFiltered();
+  document.getElementById('resultCount').textContent = f.length + ' ' + T('resultSuffix');
+  document.getElementById('statItems').textContent = listings.length;
+  const el = document.getElementById('listingsGrid');
+  if (!f.length) {
+    el.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--silver-dim);font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;">${T('noResults')}</div>`;
+    return;
+  }
+  el.innerHTML = f.map((l, i) => `
+    <div class="listing-card" onclick="openItem(${l.id})">
+      <div class="listing-img" style="background:${BG[i % BG.length]}">
+        <span style="position:relative;z-index:1">${l.emoji}</span>
+        <span class="listing-badge">${condLabel(l.cond)}</span>
+        <button class="fav-btn" onclick="event.stopPropagation();toggleFav(this)">♡</button>
+      </div>
+      <div class="listing-body">
+        <div class="listing-brand">${l.brand} · ${catLabel(l.cat)}</div>
+        <div class="listing-title">${l.title}</div>
+        <div class="listing-meta">
+          <div class="listing-price">CHF ${l.price}</div>
+          <div class="listing-location">📍 ${l.city}</div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleFav(btn) {
+  btn.textContent = btn.textContent === '♡' ? '♥' : '♡';
+  btn.style.color = btn.textContent === '♥' ? 'var(--accent)' : '';
+}
+
+/* ══════════════════════════════
+   ITEM MODAL
+══════════════════════════════ */
+function openItem(id) {
+  const l = listings.find(x => x.id === id); if (!l) return;
+  const s = SELLERS[l.seller], idx = listings.indexOf(l);
+  document.getElementById('modalImg').style.background = BG[idx % BG.length];
+  document.getElementById('modalImg').innerHTML = `<span style="position:relative;z-index:1;font-size:6rem">${l.emoji}</span>`;
+  document.getElementById('modalBrand').textContent = l.brand;
+  document.getElementById('modalTitle').textContent = l.title;
+  document.getElementById('modalPrice').textContent = 'CHF ' + l.price;
+  document.getElementById('modalDesc').textContent  = l.desc;
+  document.getElementById('modalTags').innerHTML =
+    `<span class="modal-tag">${catLabel(l.cat)}</span>
+     <span class="modal-tag">${condLabel(l.cond)}</span>
+     <span class="modal-tag">${T('lblSize')}: ${l.size}</span>
+     <span class="modal-tag">📍 ${l.city}</span>`;
+  document.getElementById('sellerAvatar').textContent = s.init;
+  document.getElementById('sellerName').textContent   = s.name;
+  document.getElementById('sellerRating').textContent = s.rating;
+  document.getElementById('modalContactBtn').textContent = T('modalContact');
+  document.getElementById('modalBuyBtn').textContent     = T('modalBuy');
+  document.getElementById('modalBuyBtn').onclick     = () => addToCart(l);
+  document.getElementById('modalContactBtn').onclick = () => showToast(T('toastContact') + s.name + '!');
+  document.getElementById('itemOverlay').classList.add('open');
+}
+function closeItem(e) { if (e.target.id === 'itemOverlay') closeItemModal(); }
+function closeItemModal() { document.getElementById('itemOverlay').classList.remove('open'); }
+
+/* ══════════════════════════════
+   CART
+══════════════════════════════ */
+function addToCart(item) { cart.push(item); updateCartUI(); showToast(T('toastCart')); closeItemModal(); }
+function removeCart(i)   { cart.splice(i, 1); updateCartUI(); }
+
+function updateCartUI() {
+  const badge = document.getElementById('cartBadge');
+  badge.style.display = cart.length ? 'flex' : 'none';
+  badge.textContent = cart.length;
+  const el = document.getElementById('cartItems'), footer = document.getElementById('cartFooter');
+  if (!cart.length) { el.innerHTML = `<div class="cart-empty">${T('cartEmpty')}</div>`; footer.style.display = 'none'; return; }
+  footer.style.display = 'block';
+  el.innerHTML = cart.map((item, i) => `
+    <div class="cart-item">
+      <div class="cart-item-img">${item.emoji}</div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.title}</div>
+        <div class="cart-item-price">CHF ${item.price} · ${item.brand}</div>
+      </div>
+      <button class="cart-remove" onclick="removeCart(${i})">✕</button>
+    </div>`).join('');
+  document.getElementById('cartTotalLabel').textContent = T('cartTotalLabel');
+  document.getElementById('btnCheckout').textContent    = T('btnCheckout');
+  document.getElementById('cartTotal').textContent      = 'CHF ' + cart.reduce((s, i) => s + i.price, 0);
+}
+function openCart()  { document.getElementById('cartPanel').classList.add('open');    document.getElementById('cartOverlay').classList.add('open'); }
+function closeCart() { document.getElementById('cartPanel').classList.remove('open'); document.getElementById('cartOverlay').classList.remove('open'); }
+function checkout()  { showToast(T('toastCheckout')); cart = []; updateCartUI(); closeCart(); }
+
+/* ══════════════════════════════
+   SELL
+══════════════════════════════ */
+function openSell() {
+  document.getElementById('emojiPicker').innerHTML = EMOJIS.map(e =>
+    `<div class="emoji-opt${e === selectedEmoji ? ' selected' : ''}" onclick="selectEmoji('${e}',this)">${e}</div>`
+  ).join('');
+  document.getElementById('sellOverlay').classList.add('open');
+}
+function selectEmoji(e, el) {
+  selectedEmoji = e;
+  document.querySelectorAll('.emoji-opt').forEach(x => x.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function closeSell(e)  { if (e.target.id === 'sellOverlay') closeSellModal(); }
+function closeSellModal() { document.getElementById('sellOverlay').classList.remove('open'); }
+
+function publishItem() {
+  const title = document.getElementById('sellTitle').value.trim();
+  const brand = document.getElementById('sellBrand').value.trim() || 'No brand';
+  const price = parseFloat(document.getElementById('sellPrice').value);
+  const size  = document.getElementById('sellSize').value.trim() || 'uni';
+  const cat   = document.getElementById('sellCat').value;   /* chiave interna (es. 'Kleider') */
+  const cond  = document.getElementById('sellCond').selectedIndex;
+  const desc  = document.getElementById('sellDesc').value.trim() || T('defaultDesc');
+  const city  = document.getElementById('sellCity').value;
+  if (!title || isNaN(price) || price < 0) { showToast(T('toastRequired')); return; }
+  listings.unshift({ id: Date.now(), emoji: selectedEmoji, title, brand, price, cat, cond, size, city, desc, seller: Math.floor(Math.random() * SELLERS.length) });
+  closeSellModal();
+  activeCat = T('all'); renderCats(); renderListings();
+  showToast(T('toastPublish'));
+  ['sellTitle','sellBrand','sellPrice','sellSize','sellDesc'].forEach(id => document.getElementById(id).value = '');
+}
+
+/* ══════════════════════════════
+   TOAST
+══════════════════════════════ */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+/* ══════════════════════════════
+   INIT
+══════════════════════════════ */
+setLang('it');
+</script>
+</body>
+</html>
