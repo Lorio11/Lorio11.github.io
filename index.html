@@ -8,16 +8,16 @@
 <script src="https://js.stripe.com/v3/"></script>
 <style>
 :root{
-  --pine:      #1b3a2d;
-  --pine-deep: #0f2418;
-  --pine-mid:  #264d3b;
-  --pine-hover:#1f4535;
-  --silver:    #d4ddd8;
-  --silver-dim:#8fa89e;
+  --pine:       #1b3a2d;
+  --pine-deep:  #0f2418;
+  --pine-mid:   #264d3b;
+  --pine-hover: #1f4535;
+  --silver:     #d4ddd8;
+  --silver-dim: #8fa89e;
   --silver-pale:#e8efec;
-  --accent:    #a8c4b8;
-  --border-c:  rgba(212,221,216,.1);
-  --border-m:  rgba(212,221,216,.2);
+  --accent:     #a8c4b8;
+  --border-c:   rgba(212,221,216,.1);
+  --border-m:   rgba(212,221,216,.2);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -33,22 +33,19 @@ nav{position:sticky;top:0;z-index:100;background:var(--pine-deep);border-bottom:
 .nav-link{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--silver-dim);cursor:pointer;border:none;background:none;font-family:'Jost',sans-serif;font-weight:400;transition:color .2s;padding:0}
 .nav-link:hover{color:var(--silver)}
 .nav-actions{display:flex;align-items:center;gap:.6rem}
-
-/* Lang switcher */
 .lang-switcher{display:flex;align-items:center;border:1px solid var(--border-c);border-radius:2px;overflow:hidden}
 .lang-btn{background:transparent;border:none;padding:.32rem .65rem;font-family:'Jost',sans-serif;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--silver-dim);cursor:pointer;transition:all .18s;border-right:1px solid var(--border-c)}
 .lang-btn:last-child{border-right:none}
 .lang-btn:hover{color:var(--silver);background:rgba(212,221,216,.07)}
 .lang-btn.active{background:var(--accent);color:var(--pine-deep);font-weight:600}
-
-/* Icon buttons (cart, fav, profile) */
 .icon-btn{position:relative;width:38px;height:38px;border-radius:2px;background:transparent;border:1px solid var(--border-m);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .2s;font-size:1rem;color:var(--silver-dim)}
 .icon-btn:hover{border-color:var(--accent);color:var(--accent)}
 .icon-badge{position:absolute;top:-6px;right:-6px;background:var(--accent);color:var(--pine-deep);width:17px;height:17px;border-radius:50%;font-size:.6rem;font-weight:700;display:none;align-items:center;justify-content:center;font-family:'Jost',sans-serif}
-
-/* Profile avatar button */
-.profile-btn{width:38px;height:38px;border-radius:50%;background:var(--pine-mid);border:1.5px solid var(--border-m);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .2s;font-family:'Cormorant Garamond',serif;font-size:.95rem;font-weight:600;color:var(--silver);letter-spacing:.02em}
-.profile-btn:hover{border-color:var(--accent)}
+/* Profile nav button — può mostrare foto o iniziali */
+.profile-nav-btn{width:38px;height:38px;border-radius:50%;background:var(--pine-mid);border:1.5px solid var(--border-m);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .2s;overflow:hidden;flex-shrink:0}
+.profile-nav-btn:hover{border-color:var(--accent)}
+.profile-nav-btn img{width:100%;height:100%;object-fit:cover}
+.profile-nav-btn span{font-family:'Cormorant Garamond',serif;font-size:.9rem;font-weight:600;color:var(--silver)}
 
 .btn{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1.3rem;border-radius:2px;font-family:'Jost',sans-serif;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;cursor:pointer;border:none;transition:all .2s}
 .btn-ghost{background:transparent;border:1px solid var(--border-m);color:var(--silver-dim)}
@@ -56,7 +53,7 @@ nav{position:sticky;top:0;z-index:100;background:var(--pine-deep);border-bottom:
 .btn-silver{background:var(--silver);color:var(--pine-deep)}
 .btn-silver:hover{background:var(--silver-pale)}
 .btn-accent{background:var(--accent);color:var(--pine-deep)}
-.btn-accent:hover{opacity:.9}
+.btn-accent:hover{opacity:.85}
 .btn-stripe{background:#635bff;color:#fff}
 .btn-stripe:hover{background:#7a73ff}
 .btn-stripe:disabled{background:#3a3660;color:rgba(255,255,255,.4);cursor:not-allowed}
@@ -89,8 +86,6 @@ nav{position:sticky;top:0;z-index:100;background:var(--pine-deep);border-bottom:
 .cat-pill:hover{border-color:var(--silver-dim);color:var(--silver)}
 .cat-pill.active{background:var(--accent);border-color:var(--accent);color:var(--pine-deep)}
 #resultCount{font-size:.75rem;color:var(--silver-dim);letter-spacing:.05em}
-
-/* Grid */
 .listings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:1px;background:var(--border-c);border:1px solid var(--border-c)}
 .listing-card{background:var(--pine);cursor:pointer;position:relative;transition:background .2s}
 .listing-card:hover{background:var(--pine-hover)}
@@ -107,7 +102,7 @@ nav{position:sticky;top:0;z-index:100;background:var(--pine-deep);border-bottom:
 .listing-price{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;color:var(--accent)}
 .listing-location{font-size:.68rem;color:rgba(212,221,216,.35);letter-spacing:.06em}
 
-/* ── OVERLAY & MODAL BASE ── */
+/* ── OVERLAYS & MODALS ── */
 .overlay{position:fixed;inset:0;z-index:200;background:rgba(15,36,24,.82);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:1rem}
 .overlay.open{display:flex}
 .modal{background:var(--pine-deep);border:1px solid var(--border-m);max-width:620px;width:100%;max-height:92vh;overflow-y:auto;padding:0;position:relative;animation:fadeUp .3s ease}
@@ -132,11 +127,10 @@ nav{position:sticky;top:0;z-index:100;background:var(--pine-deep);border-bottom:
 .modal-price{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:600;color:var(--accent);margin-bottom:1.2rem}
 .modal-desc{font-size:.86rem;line-height:1.8;color:var(--silver-dim);margin-bottom:1.5rem;font-weight:300}
 .modal-divider{height:1px;background:var(--border-c);margin:1.2rem 0}
-
-/* Seller row — clickable */
 .seller-row{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;cursor:pointer;padding:.6rem;border:1px solid transparent;border-radius:2px;transition:border-color .2s,background .2s}
 .seller-row:hover{border-color:var(--border-m);background:rgba(168,196,184,.05)}
-.seller-avatar{width:42px;height:42px;background:var(--pine-mid);border:1px solid var(--border-m);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:600;color:var(--silver);flex-shrink:0;border-radius:50%}
+.seller-avatar{width:42px;height:42px;border-radius:50%;background:var(--pine-mid);border:1px solid var(--border-m);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:600;color:var(--silver);flex-shrink:0;overflow:hidden}
+.seller-avatar img{width:100%;height:100%;object-fit:cover}
 .seller-name{font-size:.88rem;font-weight:500;color:var(--silver)}
 .seller-rating{font-size:.72rem;color:var(--silver-dim);letter-spacing:.04em;margin-top:.15rem}
 .seller-view-hint{font-size:.65rem;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;margin-top:.2rem}
@@ -154,8 +148,6 @@ nav{position:sticky;top:0;z-index:100;background:var(--pine-deep);border-bottom:
 .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent)}
 .form-group input::placeholder,.form-group textarea::placeholder{color:rgba(212,221,216,.25)}
 .form-group textarea{resize:vertical;min-height:80px}
-
-/* Photo upload */
 .photo-upload-area{border:1.5px dashed var(--border-m);border-radius:2px;padding:1.5rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;position:relative}
 .photo-upload-area:hover,.photo-upload-area.drag-over{border-color:var(--accent);background:rgba(168,196,184,.05)}
 .photo-upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
@@ -166,9 +158,6 @@ nav{position:sticky;top:0;z-index:100;background:var(--pine-deep);border-bottom:
 .photo-thumb{position:relative;width:72px;height:72px;border-radius:2px;overflow:hidden;border:1px solid var(--border-m)}
 .photo-thumb img{width:100%;height:100%;object-fit:cover}
 .photo-thumb-remove{position:absolute;top:2px;right:2px;background:rgba(15,36,24,.85);border:none;width:18px;height:18px;border-radius:50%;font-size:.6rem;cursor:pointer;color:var(--silver);display:flex;align-items:center;justify-content:center}
-.photo-thumb-remove:hover{background:var(--pine-deep)}
-
-/* City autocomplete */
 .city-autocomplete{position:relative}
 .city-dropdown{position:absolute;top:100%;left:0;right:0;z-index:50;background:var(--pine-deep);border:1px solid var(--border-m);border-top:none;max-height:180px;overflow-y:auto;display:none}
 .city-dropdown.open{display:block}
@@ -189,9 +178,11 @@ nav{position:sticky;top:0;z-index:100;background:var(--pine-deep);border-bottom:
 /* ── SELLER PROFILE MODAL ── */
 .seller-profile-modal{max-width:560px}
 .seller-profile-hero{background:var(--pine-mid);padding:2.5rem 2rem 1.8rem;display:flex;align-items:center;gap:1.5rem;border-bottom:1px solid var(--border-c)}
-.seller-profile-avatar{width:70px;height:70px;border-radius:50%;background:var(--pine-deep);border:2px solid var(--border-m);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;color:var(--silver);flex-shrink:0}
+.seller-profile-avatar{width:70px;height:70px;border-radius:50%;background:var(--pine-deep);border:2px solid var(--border-m);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;color:var(--silver);flex-shrink:0;overflow:hidden}
+.seller-profile-avatar img{width:100%;height:100%;object-fit:cover}
 .seller-profile-name{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;color:var(--silver);margin-bottom:.2rem}
 .seller-profile-meta{font-size:.75rem;color:var(--silver-dim);line-height:1.7}
+.seller-profile-bio{font-size:.82rem;color:var(--silver-dim);font-style:italic;margin-top:.4rem;line-height:1.5}
 .seller-profile-stats{display:flex;gap:1.5rem;margin-top:.8rem}
 .seller-profile-stat .sv{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:var(--accent)}
 .seller-profile-stat .sl{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--silver-dim)}
@@ -200,12 +191,32 @@ nav{position:sticky;top:0;z-index:100;background:var(--pine-deep);border-bottom:
 .seller-listings-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem}
 .seller-listing-thumb{aspect-ratio:3/4;border-radius:2px;overflow:hidden;background:var(--pine-mid);cursor:pointer;position:relative;transition:opacity .2s}
 .seller-listing-thumb:hover{opacity:.8}
-.seller-listing-thumb img{width:100%;height:100%;object-fit:cover}
+.seller-listing-thumb img,.seller-listing-thumb .thumb-emoji{width:100%;height:100%;object-fit:cover}
+.seller-listing-thumb .thumb-emoji{display:flex;align-items:center;justify-content:center;font-size:2.5rem}
 .seller-listing-thumb .slabel{position:absolute;bottom:0;left:0;right:0;padding:.4rem .5rem;background:linear-gradient(to top,rgba(15,36,24,.85),transparent);font-size:.62rem;color:var(--silver-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .seller-listing-thumb .sprice{color:var(--accent);font-weight:500}
 .seller-msg-btn{width:100%;justify-content:center;padding:.75rem;margin-top:1.2rem;font-size:.75rem}
 
-/* ── USER PROFILE PANEL ── */
+/* ── EDIT PROFILE MODAL ── */
+.edit-profile-modal{max-width:520px}
+.edit-profile-header{padding:1.8rem 2rem 1rem;border-bottom:1px solid var(--border-c)}
+.edit-profile-header h3{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:var(--silver)}
+.edit-profile-body{padding:1.5rem 2rem 2rem}
+
+/* Avatar upload in edit profile */
+.avatar-upload-row{display:flex;align-items:center;gap:1.5rem;margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border-c)}
+.avatar-preview-wrap{position:relative;width:72px;height:72px;flex-shrink:0}
+.avatar-preview{width:72px;height:72px;border-radius:50%;background:var(--pine-mid);border:2px solid var(--border-m);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:var(--silver);overflow:hidden;cursor:pointer;transition:border-color .2s}
+.avatar-preview:hover{border-color:var(--accent)}
+.avatar-preview img{width:100%;height:100%;object-fit:cover}
+.avatar-change-hint{font-size:.72rem;color:var(--silver-dim);line-height:1.6}
+.avatar-change-hint span{color:var(--accent);cursor:pointer}
+.avatar-change-hint span:hover{text-decoration:underline}
+#avatarFileInput{display:none}
+
+/* ── PANEL OVERLAY + SIDE PANELS ── */
+.panel-overlay{position:fixed;inset:0;z-index:300;background:rgba(15,36,24,.65);backdrop-filter:blur(3px);display:none}
+.panel-overlay.open{display:block}
 .side-panel{position:fixed;top:0;right:-440px;bottom:0;width:400px;max-width:100vw;background:var(--pine-deep);border-left:1px solid var(--border-m);z-index:301;transition:right .32s cubic-bezier(.4,0,.2,1);overflow-y:auto;display:flex;flex-direction:column}
 .side-panel.open{right:0}
 .side-panel-header{display:flex;justify-content:space-between;align-items:center;padding:1.8rem 1.5rem 1.2rem;border-bottom:1px solid var(--border-c)}
@@ -213,11 +224,15 @@ nav{position:sticky;top:0;z-index:100;background:var(--pine-deep);border-bottom:
 .side-panel-close{background:none;border:1px solid var(--border-c);width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:.85rem;cursor:pointer;color:var(--silver-dim)}
 .side-panel-close:hover{color:var(--silver)}
 
+/* User profile panel */
 .profile-panel-hero{padding:1.5rem;border-bottom:1px solid var(--border-c);display:flex;align-items:center;gap:1.2rem}
-.profile-panel-avatar{width:58px;height:58px;border-radius:50%;background:var(--pine-mid);border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;color:var(--silver);flex-shrink:0}
+.profile-panel-avatar{width:58px;height:58px;border-radius:50%;background:var(--pine-mid);border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;color:var(--silver);flex-shrink:0;overflow:hidden}
+.profile-panel-avatar img{width:100%;height:100%;object-fit:cover}
 .profile-panel-name{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;color:var(--silver)}
 .profile-panel-sub{font-size:.72rem;color:var(--silver-dim);margin-top:.2rem;letter-spacing:.04em}
-.profile-stats-row{display:flex;gap:0;border-bottom:1px solid var(--border-c)}
+.profile-panel-bio{font-size:.8rem;color:var(--silver-dim);font-style:italic;margin-top:.35rem;line-height:1.5}
+.profile-edit-btn{margin-top:.7rem;font-size:.68rem;padding:.3rem .85rem}
+.profile-stats-row{display:flex;border-bottom:1px solid var(--border-c)}
 .profile-stat-box{flex:1;padding:1rem;text-align:center;border-right:1px solid var(--border-c)}
 .profile-stat-box:last-child{border-right:none}
 .profile-stat-box .pv{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:var(--silver)}
@@ -228,11 +243,12 @@ nav{position:sticky;top:0;z-index:100;background:var(--pine-deep);border-bottom:
 .profile-listing-row:hover .profile-listing-title{color:var(--accent)}
 .profile-listing-img{width:44px;height:56px;background:var(--pine-mid);border-radius:2px;overflow:hidden;flex-shrink:0}
 .profile-listing-img img{width:100%;height:100%;object-fit:cover}
+.profile-listing-emoji{width:44px;height:56px;background:var(--pine-mid);border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0}
 .profile-listing-info{flex:1;min-width:0}
 .profile-listing-title{font-family:'Cormorant Garamond',serif;font-size:.92rem;font-weight:600;color:var(--silver);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .2s}
 .profile-listing-price{font-size:.78rem;color:var(--accent);margin-top:.15rem}
 
-/* ── FAVOURITES PANEL ── */
+/* Favourites panel */
 .fav-item{display:flex;gap:.9rem;align-items:center;padding:.9rem 0;border-bottom:1px solid var(--border-c);cursor:pointer}
 .fav-item:hover .fav-item-name{color:var(--accent)}
 .fav-item-img{width:52px;height:68px;background:var(--pine-mid);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;overflow:hidden;border-radius:2px}
@@ -240,20 +256,16 @@ nav{position:sticky;top:0;z-index:100;background:var(--pine-deep);border-bottom:
 .fav-item-info{flex:1;min-width:0}
 .fav-item-name{font-family:'Cormorant Garamond',serif;font-size:.95rem;color:var(--silver);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .2s}
 .fav-item-price{font-size:.8rem;color:var(--accent);margin-top:.2rem}
-.fav-remove{background:none;border:none;color:var(--silver-dim);cursor:pointer;font-size:.9rem;flex-shrink:0}
-.fav-remove:hover{color:#e07070}
+.fav-remove{background:none;border:none;color:#e07070;cursor:pointer;font-size:.9rem;flex-shrink:0}
 .fav-empty{text-align:center;padding:3rem 0;font-size:.82rem;color:var(--silver-dim);letter-spacing:.08em;text-transform:uppercase}
 
-/* ── CART ── */
-.panel-overlay{position:fixed;inset:0;z-index:300;background:rgba(15,36,24,.65);backdrop-filter:blur(3px);display:none}
-.panel-overlay.open{display:block}
-.cart-panel{position:fixed;top:0;right:-420px;bottom:0;width:380px;max-width:100vw;background:var(--pine-deep);border-left:1px solid var(--border-m);z-index:301;padding:2rem 1.5rem;transition:right .32s cubic-bezier(.4,0,.2,1);overflow-y:auto;display:flex;flex-direction:column}
-.cart-panel.open{right:0}
-.cart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem}
+/* Cart panel */
+.cart-panel{width:380px;max-width:100vw}
+.cart-header{display:flex;justify-content:space-between;align-items:center;padding:1.8rem 1.5rem 1.2rem;border-bottom:1px solid var(--border-c)}
 .cart-title{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:var(--silver)}
 .cart-close{background:none;border:1px solid var(--border-c);width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:.85rem;cursor:pointer;color:var(--silver-dim)}
 .cart-close:hover{color:var(--silver)}
-.cart-items{flex:1}
+.cart-inner{flex:1;padding:0 1.5rem;overflow-y:auto}
 .cart-item{display:flex;gap:.9rem;align-items:center;padding:.9rem 0;border-bottom:1px solid var(--border-c)}
 .cart-item-img{width:52px;height:68px;background:var(--pine-mid);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;overflow:hidden}
 .cart-item-img img{width:100%;height:100%;object-fit:cover}
@@ -262,11 +274,11 @@ nav{position:sticky;top:0;z-index:100;background:var(--pine-deep);border-bottom:
 .cart-item-price{font-size:.8rem;color:var(--accent);margin-top:.2rem}
 .cart-remove{background:none;border:none;color:var(--silver-dim);cursor:pointer;font-size:.9rem}
 .cart-remove:hover{color:var(--accent)}
-.cart-footer{padding-top:1.2rem;margin-top:1rem;border-top:1px solid var(--border-m)}
+.cart-footer{padding:1.2rem 1.5rem;border-top:1px solid var(--border-m)}
 .cart-total-row{display:flex;justify-content:space-between;align-items:center;font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;color:var(--silver);margin-bottom:1rem}
 .cart-empty{text-align:center;padding:3rem 0;font-size:.82rem;color:var(--silver-dim);letter-spacing:.08em;text-transform:uppercase}
 
-/* ── STRIPE CHECKOUT ── */
+/* ── STRIPE ── */
 .stripe-modal{max-width:480px}
 .stripe-header{padding:2rem 2rem 1.2rem;border-bottom:1px solid var(--border-c)}
 .stripe-header h3{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:var(--silver);margin-bottom:.3rem}
@@ -282,18 +294,16 @@ nav{position:sticky;top:0;z-index:100;background:var(--pine-deep);border-bottom:
 #stripe-card-element{padding:.75rem 1rem;background:rgba(255,255,255,.04);border:1px solid var(--border-c);border-radius:2px;transition:border-color .2s;min-height:42px}
 #stripe-card-element.StripeElement--focus{border-color:var(--accent)}
 #stripe-card-element.StripeElement--invalid{border-color:#e53e3e}
-#stripe-card-error{color:#e07070;font-size:.78rem;margin-top:.4rem;min-height:1.1em;letter-spacing:.02em}
-.stripe-secure{display:flex;align-items:center;gap:.5rem;font-size:.72rem;color:var(--silver-dim);letter-spacing:.06em;margin-bottom:1.2rem;opacity:.7}
-.stripe-test-note{background:rgba(99,91,255,.1);border:1px solid rgba(99,91,255,.25);border-radius:2px;padding:.65rem 1rem;font-size:.72rem;color:rgba(212,221,216,.7);letter-spacing:.04em;margin-bottom:1.2rem;line-height:1.5}
-.stripe-test-note code{color:#a5a0ff;font-size:.75rem}
-.stripe-submit{width:100%;justify-content:center;padding:.85rem;font-size:.78rem;letter-spacing:.14em;position:relative;overflow:hidden}
+#stripe-card-error{color:#e07070;font-size:.78rem;margin-top:.4rem;min-height:1.1em}
+.stripe-secure{display:flex;align-items:center;gap:.5rem;font-size:.72rem;color:var(--silver-dim);margin-bottom:1.2rem;opacity:.7}
+.stripe-test-note{background:rgba(99,91,255,.1);border:1px solid rgba(99,91,255,.25);border-radius:2px;padding:.65rem 1rem;font-size:.72rem;color:rgba(212,221,216,.7);margin-bottom:1.2rem;line-height:1.5}
+.stripe-test-note code{color:#a5a0ff}
+.stripe-submit{width:100%;justify-content:center;padding:.85rem;font-size:.78rem;letter-spacing:.14em}
 .stripe-submit .spinner{display:none;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;margin-right:.5rem}
 .stripe-submit.loading .spinner{display:block}
 .stripe-submit.loading .btn-label{opacity:.6}
 @keyframes spin{to{transform:rotate(360deg)}}
-.stripe-logo{display:flex;align-items:center;justify-content:center;gap:.4rem;margin-top:1rem;font-size:.68rem;color:var(--silver-dim);opacity:.5;letter-spacing:.06em}
-
-/* Success */
+.stripe-logo{display:flex;align-items:center;justify-content:center;gap:.4rem;margin-top:1rem;font-size:.68rem;color:var(--silver-dim);opacity:.5}
 .success-modal{max-width:420px;text-align:center}
 .success-body{padding:3rem 2rem}
 .success-icon{font-size:3.5rem;margin-bottom:1.2rem}
@@ -310,15 +320,12 @@ nav{position:sticky;top:0;z-index:100;background:var(--pine-deep);border-bottom:
 .step-num{font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:300;color:rgba(168,196,184,.18);line-height:1;margin-bottom:.7rem}
 .step h3{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;color:var(--silver);margin-bottom:.4rem}
 .step p{font-size:.8rem;line-height:1.65;color:var(--silver-dim);font-weight:300}
-
 footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:2.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
 .footer-logo{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;color:var(--silver)}
 .footer-copy{font-size:.72rem;color:var(--silver-dim);letter-spacing:.08em}
 .footer-ch{font-size:.72rem;color:var(--accent);letter-spacing:.1em;text-transform:uppercase}
-
 .toast{position:fixed;bottom:2.5rem;left:50%;transform:translateX(-50%);background:var(--pine-deep);border:1px solid var(--border-m);color:var(--silver);padding:.7rem 1.8rem;font-size:.78rem;letter-spacing:.08em;z-index:600;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1}
-
 @media(max-width:680px){
   .nav-center{display:none}
   .form-row{grid-template-columns:1fr}
@@ -346,18 +353,9 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
       <button class="lang-btn" onclick="setLang('fr')">FR</button>
     </div>
     <button class="btn btn-ghost" id="btnSell" onclick="openSell()"></button>
-    <!-- Preferiti -->
-    <button class="icon-btn" id="favNavBtn" onclick="openFavPanel()" title="Preferiti">
-      ♥
-      <span class="icon-badge" id="favBadge">0</span>
-    </button>
-    <!-- Carrello -->
-    <button class="icon-btn" onclick="openCart()">
-      🛍
-      <span class="icon-badge" id="cartBadge">0</span>
-    </button>
-    <!-- Profilo utente -->
-    <button class="profile-btn" id="profileNavBtn" onclick="openProfilePanel()">MR</button>
+    <button class="icon-btn" onclick="openFavPanel()">♥<span class="icon-badge" id="favBadge"></span></button>
+    <button class="icon-btn" onclick="openCart()">🛍<span class="icon-badge" id="cartBadge"></span></button>
+    <button class="profile-nav-btn" id="profileNavBtn" onclick="openProfilePanel()"></button>
   </div>
 </nav>
 
@@ -379,22 +377,17 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
 
 <!-- LISTINGS -->
 <div class="main">
-  <div class="sec-head">
-    <h2 class="sec-title" id="secTitle"></h2>
-    <span id="resultCount"></span>
-  </div>
+  <div class="sec-head"><h2 class="sec-title" id="secTitle"></h2><span id="resultCount"></span></div>
   <div class="cats" id="catPills"></div>
   <div class="listings-grid" id="listingsGrid"></div>
 </div>
 
 <!-- HOW IT WORKS -->
-<div class="how">
-  <div class="how-inner">
-    <div class="how-label" id="howLabel"></div>
-    <h2 id="howTitle"></h2>
-    <div class="steps" id="stepsContainer"></div>
-  </div>
-</div>
+<div class="how"><div class="how-inner">
+  <div class="how-label" id="howLabel"></div>
+  <h2 id="howTitle"></h2>
+  <div class="steps" id="stepsContainer"></div>
+</div></div>
 
 <footer>
   <div class="footer-logo">Reduse·</div>
@@ -415,7 +408,6 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
       <div class="modal-price" id="modalPrice"></div>
       <p class="modal-desc" id="modalDesc"></p>
       <div class="modal-divider"></div>
-      <!-- Seller row — cliccabile per aprire profilo venditore -->
       <div class="seller-row" id="sellerRow" onclick="openSellerProfile()">
         <div class="seller-avatar" id="sellerAvatar"></div>
         <div>
@@ -441,7 +433,7 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
       <div class="msg-to" id="msgTo"></div>
     </div>
     <div class="msg-body">
-      <textarea class="msg-textarea" id="msgText" rows="5"></textarea>
+      <textarea class="msg-textarea" id="msgText"></textarea>
       <div style="display:flex;gap:.8rem;margin-top:1rem">
         <button class="btn btn-ghost" style="flex:1;justify-content:center" onclick="closeMsgModal()" id="msgCancelBtn"></button>
         <button class="btn btn-silver" style="flex:1;justify-content:center" onclick="sendMsg()" id="msgSendBtn"></button>
@@ -459,6 +451,7 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
       <div>
         <div class="seller-profile-name" id="spName"></div>
         <div class="seller-profile-meta" id="spMeta"></div>
+        <div class="seller-profile-bio" id="spBio"></div>
         <div class="seller-profile-stats">
           <div class="seller-profile-stat"><div class="sv" id="spSales"></div><div class="sl" id="spSalesLbl"></div></div>
           <div class="seller-profile-stat"><div class="sv" id="spRating"></div><div class="sl" id="spRatingLbl"></div></div>
@@ -470,6 +463,41 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
       <div class="seller-listings-title" id="spListingsTitle"></div>
       <div class="seller-listings-grid" id="spListingsGrid"></div>
       <button class="btn btn-silver seller-msg-btn" id="spMsgBtn" onclick="openMsgFromSeller()"></button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ EDIT PROFILE MODAL ══ -->
+<div class="overlay" id="editProfileOverlay" onclick="closeEditProfile(event)">
+  <div class="modal edit-profile-modal">
+    <button class="modal-close" onclick="closeEditProfileDirect()">✕</button>
+    <div class="edit-profile-header"><h3 id="editProfileTitle"></h3></div>
+    <div class="edit-profile-body">
+      <!-- Avatar -->
+      <div class="avatar-upload-row">
+        <div class="avatar-preview-wrap">
+          <div class="avatar-preview" id="editAvatarPreview" onclick="document.getElementById('avatarFileInput').click()"></div>
+          <input type="file" id="avatarFileInput" accept="image/*" onchange="handleAvatarUpload(event)"/>
+        </div>
+        <div class="avatar-change-hint" id="editAvatarHint"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label id="editLblName"></label><input type="text" id="editName"/></div>
+        <div class="form-group"><label id="editLblEmail"></label><input type="email" id="editEmail"/></div>
+      </div>
+      <div class="form-group city-autocomplete">
+        <label id="editLblCity"></label>
+        <input type="text" id="editCity" autocomplete="off" oninput="editCityInput()" onkeydown="editCityKeyDown(event)" onblur="editCityBlur()"/>
+        <div class="city-dropdown" id="editCityDropdown"></div>
+      </div>
+      <div class="form-group">
+        <label id="editLblBio"></label>
+        <textarea id="editBio" rows="3"></textarea>
+      </div>
+      <div style="display:flex;gap:.8rem;margin-top:.5rem">
+        <button class="btn btn-ghost" style="flex:1;justify-content:center" onclick="closeEditProfileDirect()" id="editCancelBtn"></button>
+        <button class="btn btn-silver" style="flex:1;justify-content:center" onclick="saveProfile()" id="editSaveBtn"></button>
+      </div>
     </div>
   </div>
 </div>
@@ -535,10 +563,9 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
         <span id="stripeSecureLabel"></span>
       </div>
       <button class="btn btn-stripe stripe-submit" id="stripeSubmitBtn" onclick="submitPayment()">
-        <span class="spinner"></span>
-        <span class="btn-label" id="stripeSubmitLabel"></span>
+        <span class="spinner"></span><span class="btn-label" id="stripeSubmitLabel"></span>
       </button>
-      <div class="stripe-logo"><span id="stripePoweredBy"></span><svg width="40" height="16" viewBox="0 0 40 16" fill="none"><text x="0" y="13" font-family="sans-serif" font-size="11" fill="#635bff" font-weight="700">stripe</text></svg></div>
+      <div class="stripe-logo"><span id="stripePoweredBy"></span><svg width="40" height="16"><text x="0" y="13" font-family="sans-serif" font-size="11" fill="#635bff" font-weight="700">stripe</text></svg></div>
     </div>
   </div>
 </div>
@@ -556,7 +583,7 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
   </div>
 </div>
 
-<!-- ══ PANEL OVERLAY (shared) ══ -->
+<!-- ══ PANEL OVERLAY ══ -->
 <div class="panel-overlay" id="panelOverlay" onclick="closeAllPanels()"></div>
 
 <!-- ══ FAVOURITES PANEL ══ -->
@@ -565,9 +592,7 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
     <div class="side-panel-title" id="favPanelTitle"></div>
     <button class="side-panel-close" onclick="closeFavPanel()">✕</button>
   </div>
-  <div style="padding:1rem 1.5rem;flex:1">
-    <div id="favItems"></div>
-  </div>
+  <div style="padding:1rem 1.5rem;flex:1"><div id="favItems"></div></div>
 </div>
 
 <!-- ══ USER PROFILE PANEL ══ -->
@@ -576,31 +601,25 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
     <div class="side-panel-title" id="profilePanelTitle"></div>
     <button class="side-panel-close" onclick="closeProfilePanel()">✕</button>
   </div>
-  <div class="profile-panel-hero">
-    <div class="profile-panel-avatar">MR</div>
-    <div>
-      <div class="profile-panel-name">Marco Rossi</div>
-      <div class="profile-panel-sub">marco.rossi@example.ch · Zürich</div>
-    </div>
-  </div>
+  <div class="profile-panel-hero" id="profilePanelHero"></div>
   <div class="profile-stats-row">
-    <div class="profile-stat-box"><div class="pv">8</div><div class="pl" id="profileStatSales"></div></div>
-    <div class="profile-stat-box"><div class="pv">4.9</div><div class="pl" id="profileStatRating"></div></div>
-    <div class="profile-stat-box"><div class="pv" id="profileStatItemsVal">0</div><div class="pl" id="profileStatItems"></div></div>
+    <div class="profile-stat-box"><div class="pv" id="ppStatSalesVal">8</div><div class="pl" id="ppStatSalesLbl"></div></div>
+    <div class="profile-stat-box"><div class="pv">4.9</div><div class="pl" id="ppStatRatingLbl"></div></div>
+    <div class="profile-stat-box"><div class="pv" id="ppStatItemsVal">0</div><div class="pl" id="ppStatItemsLbl"></div></div>
   </div>
   <div class="profile-section">
-    <div class="profile-section-label" id="profileSectionLabel"></div>
+    <div class="profile-section-label" id="ppSectionLabel"></div>
     <div id="profileListings"></div>
   </div>
 </div>
 
 <!-- ══ CART PANEL ══ -->
-<div class="cart-panel" id="cartPanel">
+<div class="side-panel cart-panel" id="cartPanel">
   <div class="cart-header">
     <div class="cart-title" id="cartTitle"></div>
     <button class="cart-close" onclick="closeCart()">✕</button>
   </div>
-  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-inner"><div id="cartItems"></div></div>
   <div class="cart-footer" id="cartFooter" style="display:none">
     <div class="cart-total-row"><span id="cartTotalLabel"></span><span id="cartTotal">CHF 0</span></div>
     <button class="btn btn-stripe" id="btnCheckout" style="width:100%;justify-content:center;padding:.85rem;font-size:.75rem;letter-spacing:.14em;" onclick="openStripeCheckout()"></button>
@@ -634,7 +653,7 @@ const TR={
     cartTotalLabel:'Totale',btnCheckout:'💳 Paga con Stripe',
     sellModalTitle:'Pubblica un annuncio',
     lblPhotos:'Foto (fino a 5)',photoHint:'Trascina le foto qui o <span>clicca per sceglierle</span>',
-    lblTitle:'Titolo',lblBrand:'Brand / Marchio',lblPrice:'Prezzo CHF',lblSize:'Taglia',
+    lblTitle:'Titolo',lblBrand:'Brand',lblPrice:'Prezzo CHF',lblSize:'Taglia',
     lblCat:'Categoria',lblCond:'Condizioni',lblDesc:'Descrizione',lblCity:'Città (CH)',
     cityPlaceholder:'Digita la città…',
     sellTitlePh:'es. Trench Burberry M',sellBrandPh:'es. Zara, H&M, Gucci…',
@@ -649,31 +668,29 @@ const TR={
     steps:[
       {n:'01',t:'Fotografa',d:'Scatta belle foto al tuo capo e caricale direttamente.'},
       {n:'02',t:'Pubblica',d:'Inserisci il prezzo in CHF e pubblica gratis.'},
-      {n:'03',t:'Tratta',d:'Ricevi offerte e accordati sul prezzo con l\'acquirente.'},
-      {n:'04',t:'Spedisci',d:'Consegna con Swiss Post o ritiro diretto. Pagamento sicuro via Stripe.'},
+      {n:'03',t:'Tratta',d:'Ricevi offerte e accordati sul prezzo.'},
+      {n:'04',t:'Spedisci',d:'Consegna con Swiss Post. Pagamento via Stripe.'},
     ],
     footerCopy:'© 2025 Reduse · Second Hand Mode Svizzera',
-    stripeTitle:'Completa l\'acquisto',stripeEmailLabel:'Email di conferma',stripeCardLabel:'Dati carta',
-    stripeSecureLabel:'Pagamento sicuro con crittografia SSL · Stripe',
+    stripeTitle:"Completa l'acquisto",stripeEmailLabel:'Email di conferma',stripeCardLabel:'Dati carta',
+    stripeSecureLabel:'Pagamento sicuro SSL · Stripe',
     stripeTestNote:'🧪 Demo — carta di test: <code>4242 4242 4242 4242</code>, data futura, CVC qualsiasi.',
-    stripeSubmitLabel:(a)=>`Paga CHF ${a}`,stripePoweredBy:'Powered by',
+    stripeSubmitLabel:a=>`Paga CHF ${a}`,stripePoweredBy:'Powered by',
     successTitle:'Pagamento confermato!',successSub:'Grazie per il tuo acquisto su Reduse.',
-    successRef:(r)=>`Riferimento ordine: ${r}`,
-    toastEmailRequired:'⚠️ Inserisci un\'email valida',
-    // msg
+    successRef:r=>`Riferimento ordine: ${r}`,toastEmailRequired:"⚠️ Inserisci un'email valida",
     msgTitle:'Scrivi un messaggio',msgTo:'A: ',msgPlaceholder:'Scrivi qui il tuo messaggio…',
     msgSend:'Invia',msgCancel:'Annulla',toastMsgSent:'✓ Messaggio inviato!',
     toastMsgEmpty:'⚠️ Scrivi un messaggio prima di inviare',
-    // seller profile
     spSalesLbl:'Vendite',spRatingLbl:'Valutazione',spItemsLbl:'Annunci',
     spListingsTitle:'Annunci del venditore',spMsgBtn:'💬 Scrivi un messaggio',
-    // fav
     favTitle:'I miei preferiti',favEmpty:'Nessun articolo nei preferiti',
     toastFavAdd:'♥ Aggiunto ai preferiti',toastFavRemove:'♡ Rimosso dai preferiti',
-    // profile panel
-    profileTitle:'Il mio profilo',profileStatSales:'Vendite',profileStatRating:'Valutazione',
-    profileStatItems:'Annunci attivi',profileSectionLabel:'I miei annunci',
-    profileNoListings:'Nessun annuncio pubblicato',
+    profileTitle:'Il mio profilo',ppStatSales:'Vendite',ppStatRating:'Valutazione',
+    ppStatItems:'Annunci attivi',ppSectionLabel:'I miei annunci',profileNoListings:'Nessun annuncio pubblicato',
+    editProfileTitle:'Modifica profilo',editLblName:'Nome completo',editLblEmail:'Email',
+    editLblCity:'Città',editLblBio:'Descrizione (bio)',editBioPlaceholder:'Racconta qualcosa di te…',
+    editAvatarHint:'Clicca sulla foto per cambiarla.<br><span>Carica una nuova immagine</span> (JPG, PNG, max 5 MB)',
+    editCancel:'Annulla',editSave:'Salva modifiche',toastProfileSaved:'✓ Profilo aggiornato!',
   },
   de:{
     all:'Alle',catKleider:'Kleider',catSchuhe:'Schuhe',catAccessoires:'Accessoires',
@@ -691,7 +708,7 @@ const TR={
     cartTitle:'Warenkorb',cartEmpty:'Warenkorb ist leer',
     cartTotalLabel:'Total',btnCheckout:'💳 Mit Stripe bezahlen',
     sellModalTitle:'Inserat aufgeben',
-    lblPhotos:'Fotos (bis zu 5)',photoHint:'Fotos hierher ziehen oder <span>klicken zum Auswählen</span>',
+    lblPhotos:'Fotos (bis zu 5)',photoHint:'Fotos hierher ziehen oder <span>klicken</span>',
     lblTitle:'Titel',lblBrand:'Marke',lblPrice:'Preis CHF',lblSize:'Grösse',
     lblCat:'Kategorie',lblCond:'Zustand',lblDesc:'Beschreibung',lblCity:'Ort (CH)',
     cityPlaceholder:'Stadt eingeben…',
@@ -704,29 +721,27 @@ const TR={
     cats:[{v:'Kleider',l:'Kleider'},{v:'Schuhe',l:'Schuhe'},{v:'Accessoires',l:'Accessoires'},{v:'Occhiali',l:'Brillen'},{v:'Gioielli',l:'Schmuck'},{v:'Cravatte',l:'Krawatten'}],
     catsForm:[{v:'Kleider',l:'👗 Kleider'},{v:'Schuhe',l:'👟 Schuhe'},{v:'Accessoires',l:'👜 Accessoires'},{v:'Occhiali',l:'🕶️ Brillen'},{v:'Gioielli',l:'💍 Schmuck'},{v:'Cravatte',l:'🎗️ Krawatten'}],
     howLabel:'Wie es funktioniert',howTitle:'Einfach wie das Anziehen',
-    steps:[
-      {n:'01',t:'Fotografieren',d:'Mache schöne Fotos und lade sie direkt hoch.'},
-      {n:'02',t:'Publizieren',d:'Preis in CHF eingeben und kostenlos inserieren.'},
-      {n:'03',t:'Verhandeln',d:'Erhalte Angebote und einige dich auf den Preis.'},
-      {n:'04',t:'Versenden',d:'Lieferung mit Swiss Post oder persönliche Übergabe. Stripe.'},
-    ],
+    steps:[{n:'01',t:'Fotografieren',d:'Mache Fotos und lade sie hoch.'},{n:'02',t:'Publizieren',d:'Preis eingeben und kostenlos inserieren.'},{n:'03',t:'Verhandeln',d:'Angebote erhalten und Preis vereinbaren.'},{n:'04',t:'Versenden',d:'Swiss Post oder persönliche Übergabe. Stripe.'}],
     footerCopy:'© 2025 Reduse · Second Hand Mode Schweiz',
     stripeTitle:'Kauf abschliessen',stripeEmailLabel:'Bestätigungs-E-Mail',stripeCardLabel:'Kartendaten',
     stripeSecureLabel:'Sichere Zahlung SSL · Stripe',
-    stripeTestNote:'🧪 Demo — Testkarte: <code>4242 4242 4242 4242</code>, beliebiges Datum und CVC.',
-    stripeSubmitLabel:(a)=>`CHF ${a} bezahlen`,stripePoweredBy:'Powered by',
-    successTitle:'Zahlung bestätigt!',successSub:'Danke für deinen Kauf bei Reduse.',
-    successRef:(r)=>`Bestellreferenz: ${r}`,toastEmailRequired:'⚠️ Bitte gültige E-Mail eingeben',
-    msgTitle:'Nachricht schreiben',msgTo:'An: ',msgPlaceholder:'Schreib deine Nachricht hier…',
+    stripeTestNote:'🧪 Demo — Testkarte: <code>4242 4242 4242 4242</code>.',
+    stripeSubmitLabel:a=>`CHF ${a} bezahlen`,stripePoweredBy:'Powered by',
+    successTitle:'Zahlung bestätigt!',successSub:'Danke für deinen Kauf.',
+    successRef:r=>`Bestellreferenz: ${r}`,toastEmailRequired:'⚠️ Bitte gültige E-Mail eingeben',
+    msgTitle:'Nachricht schreiben',msgTo:'An: ',msgPlaceholder:'Schreib deine Nachricht…',
     msgSend:'Senden',msgCancel:'Abbrechen',toastMsgSent:'✓ Nachricht gesendet!',
     toastMsgEmpty:'⚠️ Bitte eine Nachricht schreiben',
     spSalesLbl:'Verkäufe',spRatingLbl:'Bewertung',spItemsLbl:'Inserate',
     spListingsTitle:'Inserate des Verkäufers',spMsgBtn:'💬 Nachricht schreiben',
     favTitle:'Meine Favoriten',favEmpty:'Keine Artikel in den Favoriten',
     toastFavAdd:'♥ Zu Favoriten hinzugefügt',toastFavRemove:'♡ Aus Favoriten entfernt',
-    profileTitle:'Mein Profil',profileStatSales:'Verkäufe',profileStatRating:'Bewertung',
-    profileStatItems:'Aktive Inserate',profileSectionLabel:'Meine Inserate',
-    profileNoListings:'Noch keine Inserate',sellerViewHint:'Profil ansehen →',
+    profileTitle:'Mein Profil',ppStatSales:'Verkäufe',ppStatRating:'Bewertung',
+    ppStatItems:'Aktive Inserate',ppSectionLabel:'Meine Inserate',profileNoListings:'Noch keine Inserate',
+    editProfileTitle:'Profil bearbeiten',editLblName:'Vollständiger Name',editLblEmail:'E-Mail',
+    editLblCity:'Ort',editLblBio:'Beschreibung',editBioPlaceholder:'Erzähl etwas über dich…',
+    editAvatarHint:'Klicke auf das Foto zum Ändern.<br><span>Neues Bild hochladen</span> (JPG, PNG)',
+    editCancel:'Abbrechen',editSave:'Änderungen speichern',toastProfileSaved:'✓ Profil aktualisiert!',
   },
   fr:{
     all:'Tout',catKleider:'Vêtements',catSchuhe:'Chaussures',catAccessoires:'Accessoires',
@@ -744,7 +759,7 @@ const TR={
     cartTitle:'Votre panier',cartEmpty:'Votre panier est vide',
     cartTotalLabel:'Total',btnCheckout:'💳 Payer avec Stripe',
     sellModalTitle:'Publier une annonce',
-    lblPhotos:"Photos (jusqu'à 5)",photoHint:'Glissez des photos ici ou <span>cliquez pour choisir</span>',
+    lblPhotos:"Photos (jusqu'à 5)",photoHint:'Glissez des photos ou <span>cliquez</span>',
     lblTitle:'Titre',lblBrand:'Marque',lblPrice:'Prix CHF',lblSize:'Taille',
     lblCat:'Catégorie',lblCond:'État',lblDesc:'Description',lblCity:'Ville (CH)',
     cityPlaceholder:'Tapez la ville…',
@@ -757,65 +772,97 @@ const TR={
     cats:[{v:'Kleider',l:'Vêtements'},{v:'Schuhe',l:'Chaussures'},{v:'Accessoires',l:'Accessoires'},{v:'Occhiali',l:'Lunettes'},{v:'Gioielli',l:'Bijoux'},{v:'Cravatte',l:'Cravates'}],
     catsForm:[{v:'Kleider',l:'👗 Vêtements'},{v:'Schuhe',l:'👟 Chaussures'},{v:'Accessoires',l:'👜 Accessoires'},{v:'Occhiali',l:'🕶️ Lunettes'},{v:'Gioielli',l:'💍 Bijoux'},{v:'Cravatte',l:'🎗️ Cravates'}],
     howLabel:'Comment ça marche',howTitle:"Simple comme s'habiller",
-    steps:[
-      {n:'01',t:'Photographier',d:'Prenez de belles photos et téléchargez-les directement.'},
-      {n:'02',t:'Publier',d:"Indiquez le prix en CHF et publiez gratuitement."},
-      {n:'03',t:'Négocier',d:"Recevez des offres et convenez d'un prix."},
-      {n:'04',t:'Envoyer',d:'Livraison via Swiss Post. Paiement sécurisé via Stripe.'},
-    ],
+    steps:[{n:'01',t:'Photographier',d:'Prenez des photos et téléchargez-les.'},{n:'02',t:'Publier',d:'Prix en CHF et publication gratuite.'},{n:'03',t:'Négocier',d:"Recevez des offres et convenez d'un prix."},{n:'04',t:'Envoyer',d:'Swiss Post. Paiement sécurisé via Stripe.'}],
     footerCopy:'© 2025 Reduse · Mode Seconde Main Suisse',
     stripeTitle:"Finaliser l'achat",stripeEmailLabel:'Email de confirmation',stripeCardLabel:'Données de la carte',
     stripeSecureLabel:'Paiement sécurisé SSL · Stripe',
-    stripeTestNote:'🧪 Démo — carte de test : <code>4242 4242 4242 4242</code>, date future, CVC.',
-    stripeSubmitLabel:(a)=>`Payer CHF ${a}`,stripePoweredBy:'Propulsé par',
+    stripeTestNote:'🧪 Démo — carte de test : <code>4242 4242 4242 4242</code>.',
+    stripeSubmitLabel:a=>`Payer CHF ${a}`,stripePoweredBy:'Propulsé par',
     successTitle:'Paiement confirmé !',successSub:'Merci pour votre achat sur Reduse.',
-    successRef:(r)=>`Référence commande : ${r}`,toastEmailRequired:'⚠️ Veuillez entrer un email valide',
-    msgTitle:'Écrire un message',msgTo:'À : ',msgPlaceholder:'Écrivez votre message ici…',
+    successRef:r=>`Référence commande : ${r}`,toastEmailRequired:'⚠️ Email invalide',
+    msgTitle:'Écrire un message',msgTo:'À : ',msgPlaceholder:'Écrivez votre message…',
     msgSend:'Envoyer',msgCancel:'Annuler',toastMsgSent:'✓ Message envoyé !',
     toastMsgEmpty:'⚠️ Veuillez écrire un message',
     spSalesLbl:'Ventes',spRatingLbl:'Évaluation',spItemsLbl:'Annonces',
     spListingsTitle:'Annonces du vendeur',spMsgBtn:'💬 Écrire un message',
     favTitle:'Mes favoris',favEmpty:'Aucun article dans les favoris',
     toastFavAdd:'♥ Ajouté aux favoris',toastFavRemove:'♡ Retiré des favoris',
-    profileTitle:'Mon profil',profileStatSales:'Ventes',profileStatRating:'Évaluation',
-    profileStatItems:'Annonces actives',profileSectionLabel:'Mes annonces',
-    profileNoListings:'Aucune annonce publiée',sellerViewHint:'Voir le profil →',
+    profileTitle:'Mon profil',ppStatSales:'Ventes',ppStatRating:'Évaluation',
+    ppStatItems:'Annonces actives',ppSectionLabel:'Mes annonces',profileNoListings:'Aucune annonce publiée',
+    editProfileTitle:'Modifier le profil',editLblName:'Nom complet',editLblEmail:'Email',
+    editLblCity:'Ville',editLblBio:'Description (bio)',editBioPlaceholder:'Parlez de vous…',
+    editAvatarHint:"Cliquez sur la photo pour la changer.<br><span>Télécharger une image</span> (JPG, PNG)",
+    editCancel:'Annuler',editSave:'Enregistrer',toastProfileSaved:'✓ Profil mis à jour !',
   }
 };
 
 /* ══ SWISS CITIES ══ */
 const SWISS_CITIES=['Aarau','Adliswil','Allschwil','Arbon','Arlesheim','Arosa','Ascona','Baar','Baden','Basel','Bassersdorf','Bellinzona','Bern','Bettlach','Biel/Bienne','Binningen','Birsfelden','Brig','Brugg','Buchs','Bulle','Burgdorf','Carouge','Chiasso','Chur','Crans-Montana','Davos','Dietikon','Dübendorf','Emmen','Flawil','Frauenfeld','Fribourg','Genève','Grenchen','Grindelwald','Herisau','Horgen','Horw','Kloten','Kreuzlingen','Kriens','Küsnacht ZH','Küssnacht am Rigi','Langenthal','Lancy','Lausanne','Lengnau','Liestal','Locarno','Luzern','Männedorf','Martigny','Meyrin','Monthey','Morges','Muttenz','Nyon','Oberwil','Olten','Onex','Opfikon','Ostermundigen','Pfäffikon','Pontresina','Pratteln','Rapperswil-Jona','Regensdorf','Reinach','Renens','Rheinfelden','Riehen','Romanshorn','Rorschach','Rüti','Sarnen','Schaffhausen','Schlieren','Sierre','Sion','Solothurn','Spiez','Spreitenbach','Steffisburg','St. Gallen','St. Moritz','Thalwil','Thun','Thônex','Urdorf','Uster','Vernier','Visp','Wädenswil','Wettingen','Wil','Winterthur','Wohlen','Wollerau','Worb','Yverdon-les-Bains','Zollikon','Zug','Zürich'].sort();
 
+/* ══ CURRENT USER ══ */
+/* MR_IDX = 5 — l'utente loggato ha il proprio indice in SELLERS */
+const MR_IDX = 5;
+
+let currentUser = {
+  name:   'Marco Rossi',
+  email:  'marco.rossi@example.ch',
+  city:   'Zürich',
+  bio:    'Appassionato di moda sostenibile. Vendo capi di qualità.',
+  photo:  null,   // data URL quando carica una foto
+};
+
+function userInitials(){
+  return currentUser.name.split(' ').map(p=>p[0].toUpperCase()).join('').slice(0,2);
+}
+
+/* ══ SELLERS (indici 0-4 = altri, 5 = MR) ══ */
+const SELLERS=[
+  {name:'Lea M.',    rating:'⭐ 5.0',sales:41,city:'Zürich', init:'LM',joined:'2022',bio:''},
+  {name:'Sophie B.', rating:'⭐ 4.8',sales:22,city:'Genève', init:'SB',joined:'2023',bio:''},
+  {name:'Nadia R.',  rating:'⭐ 4.9',sales:17,city:'Basel',  init:'NR',joined:'2023',bio:''},
+  {name:'Anna K.',   rating:'⭐ 4.7',sales:9, city:'Bern',   init:'AK',joined:'2024',bio:''},
+  {name:'Chiara F.', rating:'⭐ 5.0',sales:34,city:'Lugano', init:'CF',joined:'2022',bio:''},
+  /* index 5 = utente loggato, dati presi da currentUser */
+  null,
+];
+/* Ritorna l'oggetto seller, gestendo l'indice 5 (= currentUser) */
+function getSeller(idx){
+  if(idx===MR_IDX) return {
+    name:   currentUser.name,
+    rating: '⭐ 4.9',
+    sales:  8,
+    city:   currentUser.city,
+    init:   userInitials(),
+    joined: '2024',
+    bio:    currentUser.bio,
+    photo:  currentUser.photo,
+  };
+  return SELLERS[idx];
+}
+
 /* ══ DATA ══ */
 const BG=['#264d3b','#1f4535','#2a5a42','#1b4030','#2f6349'];
-const SELLERS=[
-  {name:'Lea M.',    rating:'⭐ 5.0',sales:41,city:'Zürich', init:'LM',joined:'2022'},
-  {name:'Sophie B.', rating:'⭐ 4.8',sales:22,city:'Genève', init:'SB',joined:'2023'},
-  {name:'Nadia R.',  rating:'⭐ 4.9',sales:17,city:'Basel',  init:'NR',joined:'2023'},
-  {name:'Anna K.',   rating:'⭐ 4.7',sales:9, city:'Bern',   init:'AK',joined:'2024'},
-  {name:'Chiara F.', rating:'⭐ 5.0',sales:34,city:'Lugano', init:'CF',joined:'2022'},
-];
 let listings=[
-  {id:1, photos:[],emoji:'🧥',title:'Trench Burberry Classic',   brand:'Burberry',      price:320,cat:'Kleider',    cond:0,size:'M',   city:'Zürich',   desc:"Trench originale Burberry M, colore camel. Una stagione, perfette condizioni.",seller:0},
-  {id:2, photos:[],emoji:'👟',title:'Nike Air Max 90 bianche',   brand:'Nike',          price:65, cat:'Schuhe',     cond:2,size:'40',  city:'Genève',   desc:"Air Max 90 taglia 40. Qualche segno d'uso nella suola.",seller:1},
-  {id:3, photos:[],emoji:'👜',title:'Longchamp Le Pliage',       brand:'Longchamp',     price:89, cat:'Accessoires',cond:1,size:'M',   city:'Lausanne', desc:'Le Pliage color navy. Pochissimi graffi sulle maniglie.',seller:2},
-  {id:4, photos:[],emoji:'🕶️',title:'Ray-Ban Wayfarer neri',    brand:'Ray-Ban',       price:75, cat:'Occhiali',   cond:1,size:'uni', city:'Basel',    desc:'Wayfarer neri con astuccio originale. Lenti perfette.',seller:3},
-  {id:5, photos:[],emoji:'👗',title:'Abito Massimo Dutti S',     brand:'Massimo Dutti', price:48, cat:'Kleider',    cond:0,size:'S',   city:'Bern',     desc:'Abito midi crema con cintura. Indossato una volta.',seller:4},
-  {id:6, photos:[],emoji:'👠',title:'Décolleté Zara beige 38',   brand:'Zara',          price:35, cat:'Schuhe',     cond:2,size:'38',  city:'Zürich',   desc:"Ecopelle beige taglia 38. Tacco 7cm.",seller:0},
-  {id:7, photos:[],emoji:'💍',title:'Orecchini Agatha dorati',   brand:'Agatha Paris',  price:28, cat:'Gioielli',   cond:0,size:'uni', city:'Genève',   desc:'Orecchini pendenti dorati. Mai indossati, con scatola.',seller:1},
-  {id:8, photos:[],emoji:'🎗️',title:'Cravatta Hermès seta blu', brand:'Hermès',        price:95, cat:'Cravatte',   cond:1,size:'uni', city:'Zürich',   desc:'100% seta, fantasia geometrica blu e oro.',seller:2},
-  {id:9, photos:[],emoji:'🧣',title:'Sciarpa Acne Studios lana', brand:'Acne Studios',  price:110,cat:'Accessoires',cond:0,size:'uni', city:'Luzern',   desc:'Iconica sciarpa frangiata in lana. Perfette condizioni.',seller:3},
-  {id:10,photos:[],emoji:'👔',title:'Camicia Ralph Lauren L',    brand:'Ralph Lauren',  price:42, cat:'Kleider',    cond:2,size:'L',   city:'Winterthur',desc:"Oxford button-down taglia L. Lavata e stirata.",seller:4},
-  {id:11,photos:[],emoji:'👒',title:'Cappello paglia Mango',     brand:'Mango',         price:18, cat:'Accessoires',cond:1,size:'uni', city:'Lugano',   desc:"Cappello di paglia estivo. Usato poche volte.",seller:0},
-  {id:12,photos:[],emoji:'🥿',title:'Mocassini Gucci loafer 39', brand:'Gucci',         price:280,cat:'Schuhe',     cond:1,size:'39',  city:'Zürich',   desc:'Loafer classici taglia 39. Pelle nera con morsetto dorato.',seller:1},
-  {id:13,photos:[],emoji:'👘',title:'Kimono floreale vintage',   brand:'Vintage',       price:55, cat:'Kleider',    cond:2,size:'M/L', city:'Basel',    desc:"Seta stampata anni '90. Fantasia floreale rosa.",seller:2},
-  {id:14,photos:[],emoji:'💼',title:'Rimowa Essential 55cm',     brand:'Rimowa',        price:195,cat:'Accessoires',cond:2,size:'55cm',city:'Genève',   desc:'Cabin 55cm colore silver. Qualche graffio sulla scocca.',seller:3},
+  {id:1,photos:[],emoji:'🧥',title:'Trench Burberry Classic',  brand:'Burberry',     price:320,cat:'Kleider',   cond:0,size:'M',  city:'Zürich',   desc:"Trench originale M, colore camel. Una stagione, perfette condizioni.",seller:0},
+  {id:2,photos:[],emoji:'👟',title:'Nike Air Max 90 bianche',  brand:'Nike',         price:65, cat:'Schuhe',    cond:2,size:'40', city:'Genève',   desc:"Air Max 90 taglia 40. Qualche segno d'uso.",seller:1},
+  {id:3,photos:[],emoji:'👜',title:'Longchamp Le Pliage',      brand:'Longchamp',    price:89, cat:'Accessoires',cond:1,size:'M', city:'Lausanne', desc:'Le Pliage color navy. Pochissimi graffi.',seller:2},
+  {id:4,photos:[],emoji:'🕶️',title:'Ray-Ban Wayfarer neri',   brand:'Ray-Ban',      price:75, cat:'Occhiali',  cond:1,size:'uni',city:'Basel',    desc:'Wayfarer neri con astuccio. Lenti perfette.',seller:3},
+  {id:5,photos:[],emoji:'👗',title:'Abito Massimo Dutti S',    brand:'Massimo Dutti',price:48, cat:'Kleider',   cond:0,size:'S', city:'Bern',     desc:'Abito midi crema. Indossato una volta.',seller:4},
+  {id:6,photos:[],emoji:'👠',title:'Décolleté Zara beige 38',  brand:'Zara',         price:35, cat:'Schuhe',    cond:2,size:'38', city:'Zürich',   desc:"Ecopelle beige taglia 38. Tacco 7cm.",seller:0},
+  {id:7,photos:[],emoji:'💍',title:'Orecchini Agatha dorati',  brand:'Agatha Paris', price:28, cat:'Gioielli',  cond:0,size:'uni',city:'Genève',   desc:'Orecchini pendenti dorati. Mai indossati.',seller:1},
+  {id:8,photos:[],emoji:'🎗️',title:'Cravatta Hermès seta blu',brand:'Hermès',       price:95, cat:'Cravatte',  cond:1,size:'uni',city:'Zürich',   desc:'100% seta, fantasia geometrica blu e oro.',seller:2},
+  {id:9,photos:[],emoji:'🧣',title:'Sciarpa Acne Studios',     brand:'Acne Studios', price:110,cat:'Accessoires',cond:0,size:'uni',city:'Luzern',  desc:'Sciarpa frangiata in lana. Perfette condizioni.',seller:3},
+  {id:10,photos:[],emoji:'👔',title:'Camicia Ralph Lauren L',  brand:'Ralph Lauren', price:42, cat:'Kleider',   cond:2,size:'L', city:'Winterthur',desc:"Oxford button-down L. Lavata e stirata.",seller:4},
+  {id:11,photos:[],emoji:'👒',title:'Cappello paglia Mango',   brand:'Mango',        price:18, cat:'Accessoires',cond:1,size:'uni',city:'Lugano',  desc:"Cappello estivo. Usato poche volte.",seller:0},
+  {id:12,photos:[],emoji:'🥿',title:'Mocassini Gucci 39',      brand:'Gucci',        price:280,cat:'Schuhe',    cond:1,size:'39', city:'Zürich',   desc:'Loafer classici taglia 39. Pelle nera.',seller:1},
+  {id:13,photos:[],emoji:'👘',title:'Kimono floreale vintage', brand:'Vintage',      price:55, cat:'Kleider',   cond:2,size:'M/L',city:'Basel',    desc:"Seta stampata anni '90. Fantasia floreale.",seller:2},
+  {id:14,photos:[],emoji:'💼',title:'Rimowa Essential 55cm',   brand:'Rimowa',       price:195,cat:'Accessoires',cond:2,size:'55cm',city:'Genève', desc:'Cabin 55cm silver. Qualche graffio.',seller:3},
 ];
 
 /* ══ STATE ══ */
 let cart=[],favorites=new Set(),lang='it',activeCat='Tutti',currentPhotos=[],cityFocusIdx=-1,cityOptions=[];
-let modalPhotoIdx=0,currentItemId=null,currentSellerIdx=null;
-let msgTargetName='';
+let editCityFocusIdx=-1,editCityOptions=[];
+let modalPhotoIdx=0,currentItemId=null,currentSellerIdx=null,msgTargetName='';
 
 /* ══ HELPERS ══ */
 function T(k){return TR[lang][k]??k;}
@@ -823,6 +870,19 @@ function catLabel(v){const f=T('cats').find(c=>c.v===v);return f?f.l:v;}
 function condLabel(i){return T('cond')[i]??T('cond')[0];}
 function catKeyFromLabel(lbl){const f=T('cats').find(c=>c.l===lbl);return f?f.v:lbl;}
 function cartTotal(){return cart.reduce((s,i)=>s+i.price,0);}
+function myListings(){return listings.filter(l=>l.seller===MR_IDX);}
+
+/* ══ NAV AVATAR SYNC ══ */
+function syncNavAvatar(){
+  const btn=document.getElementById('profileNavBtn');
+  if(currentUser.photo){
+    btn.innerHTML=`<img src="${currentUser.photo}" alt=""/>`;
+  } else {
+    btn.innerHTML=`<span>${userInitials()}</span>`;
+    btn.style.fontFamily="'Cormorant Garamond',serif";
+    btn.style.fontSize='.9rem';btn.style.fontWeight='600';btn.style.color='var(--silver)';
+  }
+}
 
 /* ══ LANGUAGE ══ */
 function setLang(l){
@@ -861,8 +921,8 @@ function applyTranslations(){
   s('footerCopy',T('footerCopy'));
   s('favPanelTitle',T('favTitle'));
   s('profilePanelTitle',T('profileTitle'));
-  s('profileStatSales',T('profileStatSales'));s('profileStatRating',T('profileStatRating'));
-  s('profileStatItems',T('profileStatItems'));s('profileSectionLabel',T('profileSectionLabel'));
+  s('ppStatSalesLbl',T('ppStatSales'));s('ppStatRatingLbl',T('ppStatRating'));
+  s('ppStatItemsLbl',T('ppStatItems'));s('ppSectionLabel',T('ppSectionLabel'));
 }
 
 /* ══ CATEGORIES ══ */
@@ -886,7 +946,7 @@ function renderListings(){
   const f=getFiltered();
   document.getElementById('resultCount').textContent=f.length+' '+T('resultSuffix');
   document.getElementById('statItems').textContent=listings.length;
-  document.getElementById('profileStatItemsVal').textContent=myListings().length;
+  document.getElementById('ppStatItemsVal').textContent=myListings().length;
   const el=document.getElementById('listingsGrid');
   if(!f.length){el.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--silver-dim);font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;">${T('noResults')}</div>`;return;}
   el.innerHTML=f.map((l,i)=>{
@@ -911,22 +971,13 @@ function renderListings(){
 
 /* ══ FAVOURITES ══ */
 function toggleFav(id,btn){
-  if(favorites.has(id)){
-    favorites.delete(id);
-    btn.textContent='♡';btn.classList.remove('active');
-    showToast(T('toastFavRemove'));
-  } else {
-    favorites.add(id);
-    btn.textContent='♥';btn.classList.add('active');
-    showToast(T('toastFavAdd'));
-  }
-  updateFavBadge();
-  renderFavPanel();
+  if(favorites.has(id)){favorites.delete(id);btn.textContent='♡';btn.classList.remove('active');showToast(T('toastFavRemove'));}
+  else{favorites.add(id);btn.textContent='♥';btn.classList.add('active');showToast(T('toastFavAdd'));}
+  updateFavBadge();renderFavPanel();
 }
 function updateFavBadge(){
-  const badge=document.getElementById('favBadge');
-  badge.style.display=favorites.size?'flex':'none';
-  badge.textContent=favorites.size;
+  const b=document.getElementById('favBadge');
+  b.style.display=favorites.size?'flex':'none';b.textContent=favorites.size;
 }
 function renderFavPanel(){
   const el=document.getElementById('favItems');
@@ -940,13 +991,12 @@ function renderFavPanel(){
         <div class="fav-item-name">${l.title}</div>
         <div class="fav-item-price">CHF ${l.price} · ${l.brand}</div>
       </div>
-      <button class="fav-remove" onclick="event.stopPropagation();removeFav(${l.id})">♥</button>
+      <button class="fav-remove" onclick="event.stopPropagation();removeFav(${l.id})" title="Rimuovi">♥</button>
     </div>`;
   }).join('');
 }
 function removeFav(id){
-  favorites.delete(id);
-  updateFavBadge();renderFavPanel();
+  favorites.delete(id);updateFavBadge();renderFavPanel();
   const btn=document.getElementById('favBtn_'+id);
   if(btn){btn.textContent='♡';btn.classList.remove('active');}
 }
@@ -954,27 +1004,28 @@ function openFavPanel(){openPanel('favPanel');}
 function closeFavPanel(){closePanel('favPanel');}
 
 /* ══ ITEM MODAL ══ */
+function buildSellerAvatar(s,el){
+  if(s.photo){el.innerHTML=`<img src="${s.photo}" alt=""/>`;}
+  else{el.textContent=s.init;}
+}
 function openItem(id){
   const l=listings.find(x=>x.id===id);if(!l)return;
   currentItemId=id;currentSellerIdx=l.seller;
-  const s=SELLERS[l.seller],idx=listings.indexOf(l);
+  const s=getSeller(l.seller),idx=listings.indexOf(l);
   modalPhotoIdx=0;
   const mp=document.getElementById('modalPhotos'),pn=document.getElementById('photoNav');
   if(l.photos.length){
     mp.innerHTML=l.photos.map((p,i)=>`<img src="${p}" class="${i===0?'active':''}" onclick="nextPhoto(${l.id})"/>`).join('');
     pn.innerHTML=l.photos.length>1?l.photos.map((_,i)=>`<button class="photo-dot${i===0?' active':''}" onclick="event.stopPropagation();goPhoto(${i},${l.id})"></button>`).join(''):'';
     pn.style.display=l.photos.length>1?'flex':'none';
-  } else {
-    mp.innerHTML=`<div class="no-photo" style="background:${BG[idx%BG.length]}">${l.emoji}</div>`;
-    pn.style.display='none';
-  }
+  }else{mp.innerHTML=`<div class="no-photo" style="background:${BG[idx%BG.length]}">${l.emoji}</div>`;pn.style.display='none';}
   document.getElementById('modalBrand').textContent=l.brand;
   document.getElementById('modalTitle').textContent=l.title;
   document.getElementById('modalPrice').textContent='CHF '+l.price;
   document.getElementById('modalDesc').textContent=l.desc;
   document.getElementById('modalTags').innerHTML=
     `<span class="modal-tag">${catLabel(l.cat)}</span><span class="modal-tag">${condLabel(l.cond)}</span><span class="modal-tag">${T('lblSize')}: ${l.size}</span><span class="modal-tag">📍 ${l.city}</span>`;
-  document.getElementById('sellerAvatar').textContent=s.init;
+  buildSellerAvatar(s,document.getElementById('sellerAvatar'));
   document.getElementById('sellerName').textContent=s.name;
   document.getElementById('sellerRating').textContent=`${s.rating} · ${s.city}`;
   document.getElementById('sellerViewHint').textContent=T('sellerViewHint');
@@ -983,62 +1034,41 @@ function openItem(id){
   document.getElementById('modalBuyBtn').onclick=()=>addToCart(l);
   document.getElementById('itemOverlay').classList.add('open');
 }
-function nextPhoto(id){
-  const l=listings.find(x=>x.id===id);if(!l||l.photos.length<2)return;
-  modalPhotoIdx=(modalPhotoIdx+1)%l.photos.length;goPhoto(modalPhotoIdx,id);
-}
-function goPhoto(i,id){
-  modalPhotoIdx=i;
-  document.querySelectorAll('#modalPhotos img').forEach((img,j)=>img.classList.toggle('active',j===i));
-  document.querySelectorAll('#photoNav .photo-dot').forEach((d,j)=>d.classList.toggle('active',j===i));
-}
+function nextPhoto(id){const l=listings.find(x=>x.id===id);if(!l||l.photos.length<2)return;modalPhotoIdx=(modalPhotoIdx+1)%l.photos.length;goPhoto(modalPhotoIdx,id);}
+function goPhoto(i,id){modalPhotoIdx=i;document.querySelectorAll('#modalPhotos img').forEach((img,j)=>img.classList.toggle('active',j===i));document.querySelectorAll('#photoNav .photo-dot').forEach((d,j)=>d.classList.toggle('active',j===i));}
 function closeItem(e){if(e.target.id==='itemOverlay')closeItemModal();}
 function closeItemModal(){document.getElementById('itemOverlay').classList.remove('open');}
 
 /* ══ SELLER PROFILE ══ */
 function openSellerProfile(){
   if(currentSellerIdx===null)return;
-  const s=SELLERS[currentSellerIdx];
+  const s=getSeller(currentSellerIdx);
   const sellerListings=listings.filter(l=>l.seller===currentSellerIdx);
-  document.getElementById('spAvatar').textContent=s.init;
+  // avatar
+  const spAv=document.getElementById('spAvatar');
+  if(s.photo){spAv.innerHTML=`<img src="${s.photo}" alt=""/>`;}else{spAv.textContent=s.init;}
   document.getElementById('spName').textContent=s.name;
   document.getElementById('spMeta').textContent=`📍 ${s.city} · Membro dal ${s.joined}`;
-  document.getElementById('spSales').textContent=s.sales;
-  document.getElementById('spSalesLbl').textContent=T('spSalesLbl');
-  document.getElementById('spRating').textContent=s.rating.replace('⭐ ','');
-  document.getElementById('spRatingLbl').textContent=T('spRatingLbl');
-  document.getElementById('spItems').textContent=sellerListings.length;
-  document.getElementById('spItemsLbl').textContent=T('spItemsLbl');
+  document.getElementById('spBio').textContent=s.bio||'';
+  document.getElementById('spSales').textContent=s.sales;document.getElementById('spSalesLbl').textContent=T('spSalesLbl');
+  document.getElementById('spRating').textContent=s.rating.replace('⭐ ','');document.getElementById('spRatingLbl').textContent=T('spRatingLbl');
+  document.getElementById('spItems').textContent=sellerListings.length;document.getElementById('spItemsLbl').textContent=T('spItemsLbl');
   document.getElementById('spListingsTitle').textContent=T('spListingsTitle');
   document.getElementById('spMsgBtn').textContent=T('spMsgBtn');
   document.getElementById('spListingsGrid').innerHTML=sellerListings.map(l=>{
-    const thumb=l.photos.length?`<img src="${l.photos[0]}" alt=""/>`:`<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:2.5rem">${l.emoji}</div>`;
-    return `<div class="seller-listing-thumb" onclick="openItemFromSeller(${l.id})">
-      ${thumb}
-      <div class="slabel">${l.title}<br><span class="sprice">CHF ${l.price}</span></div>
-    </div>`;
+    const thumb=l.photos.length?`<img src="${l.photos[0]}" alt=""/>` : `<div class="thumb-emoji">${l.emoji}</div>`;
+    return `<div class="seller-listing-thumb" onclick="openItemFromSeller(${l.id})">${thumb}<div class="slabel">${l.title}<br><span class="sprice">CHF ${l.price}</span></div></div>`;
   }).join('');
   msgTargetName=s.name;
   document.getElementById('sellerProfileOverlay').classList.add('open');
 }
-function openItemFromSeller(id){
-  closeSellerProfileDirect();
-  closeItemModal();
-  setTimeout(()=>openItem(id),200);
-}
+function openItemFromSeller(id){closeSellerProfileDirect();closeItemModal();setTimeout(()=>openItem(id),200);}
 function closeSellerProfileModal(e){if(e.target.id==='sellerProfileOverlay')closeSellerProfileDirect();}
 function closeSellerProfileDirect(){document.getElementById('sellerProfileOverlay').classList.remove('open');}
 
 /* ══ MESSAGING ══ */
-function openMsgFromItem(){
-  if(currentSellerIdx===null)return;
-  msgTargetName=SELLERS[currentSellerIdx].name;
-  openMsgModal();
-}
-function openMsgFromSeller(){
-  closeSellerProfileDirect();
-  openMsgModal();
-}
+function openMsgFromItem(){if(currentSellerIdx===null)return;msgTargetName=getSeller(currentSellerIdx).name;openMsgModal();}
+function openMsgFromSeller(){closeSellerProfileDirect();openMsgModal();}
 function openMsgModal(){
   document.getElementById('msgTitle').textContent=T('msgTitle');
   document.getElementById('msgTo').textContent=T('msgTo')+msgTargetName;
@@ -1048,14 +1078,127 @@ function openMsgModal(){
   document.getElementById('msgCancelBtn').textContent=T('msgCancel');
   document.getElementById('msgOverlay').classList.add('open');
 }
-function sendMsg(){
-  const txt=document.getElementById('msgText').value.trim();
-  if(!txt){showToast(T('toastMsgEmpty'));return;}
-  closeMsgModal();
-  showToast(T('toastMsgSent')+' → '+msgTargetName);
-}
+function sendMsg(){const txt=document.getElementById('msgText').value.trim();if(!txt){showToast(T('toastMsgEmpty'));return;}closeMsgModal();showToast(T('toastMsgSent'));}
 function closeMsg(e){if(e.target.id==='msgOverlay')closeMsgModal();}
 function closeMsgModal(){document.getElementById('msgOverlay').classList.remove('open');}
+
+/* ══ USER PROFILE PANEL ══ */
+function renderProfilePanel(){
+  const hero=document.getElementById('profilePanelHero');
+  const avatarHtml=currentUser.photo
+    ?`<div class="profile-panel-avatar"><img src="${currentUser.photo}" alt=""/></div>`
+    :`<div class="profile-panel-avatar"><span>${userInitials()}</span></div>`;
+  hero.innerHTML=`
+    ${avatarHtml}
+    <div>
+      <div class="profile-panel-name">${currentUser.name}</div>
+      <div class="profile-panel-sub">${currentUser.email} · ${currentUser.city}</div>
+      ${currentUser.bio?`<div class="profile-panel-bio">${currentUser.bio}</div>`:''}
+      <button class="btn btn-ghost profile-edit-btn" onclick="openEditProfile()">${T('editProfileTitle')} ✏️</button>
+    </div>`;
+  document.getElementById('ppStatItemsVal').textContent=myListings().length;
+  const el=document.getElementById('profileListings');
+  const my=myListings();
+  if(!my.length){el.innerHTML=`<div style="color:var(--silver-dim);font-size:.82rem;padding:1rem 0;letter-spacing:.06em">${T('profileNoListings')}</div>`;return;}
+  el.innerHTML=my.map(l=>{
+    const imgEl=l.photos.length
+      ?`<div class="profile-listing-img"><img src="${l.photos[0]}" alt=""/></div>`
+      :`<div class="profile-listing-emoji">${l.emoji}</div>`;
+    return `<div class="profile-listing-row" onclick="openItem(${l.id});closeProfilePanel()">
+      ${imgEl}
+      <div class="profile-listing-info">
+        <div class="profile-listing-title">${l.title}</div>
+        <div class="profile-listing-price">CHF ${l.price} · ${catLabel(l.cat)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function openProfilePanel(){renderProfilePanel();openPanel('profilePanel');}
+function closeProfilePanel(){closePanel('profilePanel');}
+
+/* ══ EDIT PROFILE MODAL ══ */
+function openEditProfile(){
+  // Traduzioni
+  document.getElementById('editProfileTitle').textContent=T('editProfileTitle');
+  document.getElementById('editLblName').textContent=T('editLblName');
+  document.getElementById('editLblEmail').textContent=T('editLblEmail');
+  document.getElementById('editLblCity').textContent=T('editLblCity');
+  document.getElementById('editLblBio').textContent=T('editLblBio');
+  document.getElementById('editBio').placeholder=T('editBioPlaceholder');
+  document.getElementById('editCancelBtn').textContent=T('editCancel');
+  document.getElementById('editSaveBtn').textContent=T('editSave');
+  document.getElementById('editAvatarHint').innerHTML=T('editAvatarHint');
+
+  // Valori correnti
+  document.getElementById('editName').value=currentUser.name;
+  document.getElementById('editEmail').value=currentUser.email;
+  document.getElementById('editCity').value=currentUser.city;
+  document.getElementById('editBio').value=currentUser.bio;
+
+  // Avatar preview
+  renderEditAvatarPreview();
+
+  document.getElementById('editProfileOverlay').classList.add('open');
+}
+function renderEditAvatarPreview(){
+  const el=document.getElementById('editAvatarPreview');
+  if(currentUser.photo){
+    el.innerHTML=`<img src="${currentUser.photo}" alt=""/>`;
+    el.style.background='transparent';
+  } else {
+    el.innerHTML=`<span style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:var(--silver)">${userInitials()}</span>`;
+    el.style.background='var(--pine-mid)';
+  }
+}
+function handleAvatarUpload(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{currentUser.photo=ev.target.result;renderEditAvatarPreview();};
+  r.readAsDataURL(f);
+  e.target.value='';
+}
+function saveProfile(){
+  const name=document.getElementById('editName').value.trim();
+  const email=document.getElementById('editEmail').value.trim();
+  const city=document.getElementById('editCity').value.trim();
+  const bio=document.getElementById('editBio').value.trim();
+  if(!name){showToast('⚠️ Nome obbligatorio');return;}
+  currentUser.name=name;
+  currentUser.email=email||currentUser.email;
+  currentUser.city=city||currentUser.city;
+  currentUser.bio=bio;
+  closeEditProfileDirect();
+  syncNavAvatar();
+  renderProfilePanel();
+  renderListings(); // aggiorna eventuali card con seller MR
+  showToast(T('toastProfileSaved'));
+}
+function closeEditProfile(e){if(e.target.id==='editProfileOverlay')closeEditProfileDirect();}
+function closeEditProfileDirect(){document.getElementById('editProfileOverlay').classList.remove('open');}
+
+/* City autocomplete edit profile */
+function editCityInput(){
+  const val=document.getElementById('editCity').value.trim();editCityFocusIdx=-1;
+  if(val.length<1){closeEditCityDD();return;}
+  editCityOptions=SWISS_CITIES.filter(c=>c.toLowerCase().startsWith(val.toLowerCase())).slice(0,8);
+  if(!editCityOptions.length){closeEditCityDD();return;}
+  const hl=v=>v.replace(new RegExp(`^(${escRe(val)})`,'i'),m=>`<span class="city-match">${m}</span>`);
+  const dd=document.getElementById('editCityDropdown');
+  dd.innerHTML=editCityOptions.map(c=>`<div class="city-option" onmousedown="selectEditCity('${c}')">${hl(c)}</div>`).join('');
+  dd.classList.add('open');
+}
+function selectEditCity(c){document.getElementById('editCity').value=c;closeEditCityDD();}
+function closeEditCityDD(){document.getElementById('editCityDropdown').classList.remove('open');editCityFocusIdx=-1;}
+function editCityBlur(){setTimeout(closeEditCityDD,150);}
+function editCityKeyDown(e){
+  const items=document.getElementById('editCityDropdown').querySelectorAll('.city-option');if(!items.length)return;
+  if(e.key==='ArrowDown'){e.preventDefault();editCityFocusIdx=Math.min(editCityFocusIdx+1,items.length-1);}
+  else if(e.key==='ArrowUp'){e.preventDefault();editCityFocusIdx=Math.max(editCityFocusIdx-1,0);}
+  else if(e.key==='Enter'&&editCityFocusIdx>=0){e.preventDefault();selectEditCity(editCityOptions[editCityFocusIdx]);return;}
+  else if(e.key==='Escape'){closeEditCityDD();return;}
+  items.forEach((it,i)=>it.classList.toggle('focused',i===editCityFocusIdx));
+  if(editCityFocusIdx>=0)items[editCityFocusIdx].scrollIntoView({block:'nearest'});
+}
 
 /* ══ CART ══ */
 function addToCart(item){cart.push(item);updateCartUI();showToast(T('toastCart'));closeItemModal();}
@@ -1068,14 +1211,9 @@ function updateCartUI(){
   footer.style.display='block';
   el.innerHTML=cart.map((item,i)=>{
     const thumb=item.photos.length?`<img src="${item.photos[0]}" alt=""/>`:`${item.emoji}`;
-    return `<div class="cart-item">
-      <div class="cart-item-img">${thumb}</div>
-      <div class="cart-item-info">
-        <div class="cart-item-name">${item.title}</div>
-        <div class="cart-item-price">CHF ${item.price} · ${item.brand}</div>
-      </div>
-      <button class="cart-remove" onclick="removeCart(${i})">✕</button>
-    </div>`;
+    return `<div class="cart-item"><div class="cart-item-img">${thumb}</div>
+      <div class="cart-item-info"><div class="cart-item-name">${item.title}</div><div class="cart-item-price">CHF ${item.price} · ${item.brand}</div></div>
+      <button class="cart-remove" onclick="removeCart(${i})">✕</button></div>`;
   }).join('');
   document.getElementById('cartTotalLabel').textContent=T('cartTotalLabel');
   document.getElementById('btnCheckout').textContent=T('btnCheckout');
@@ -1085,40 +1223,9 @@ function openCart(){openPanel('cartPanel');}
 function closeCart(){closePanel('cartPanel');}
 
 /* ══ PANEL HELPERS ══ */
-function openPanel(id){
-  closeAllPanels();
-  document.getElementById(id).classList.add('open');
-  document.getElementById('panelOverlay').classList.add('open');
-}
-function closePanel(id){
-  document.getElementById(id).classList.remove('open');
-  document.getElementById('panelOverlay').classList.remove('open');
-}
-function closeAllPanels(){
-  ['cartPanel','favPanel','profilePanel'].forEach(id=>document.getElementById(id).classList.remove('open'));
-  document.getElementById('panelOverlay').classList.remove('open');
-}
-
-/* ══ USER PROFILE PANEL ══ */
-function myListings(){return listings.filter((_,i)=>i>=12);} // ultimi 2 come "miei" per demo
-function renderProfilePanel(){
-  const my=myListings();
-  document.getElementById('profileStatItemsVal').textContent=my.length;
-  const el=document.getElementById('profileListings');
-  if(!my.length){el.innerHTML=`<div style="color:var(--silver-dim);font-size:.82rem;padding:1rem 0;letter-spacing:.06em">${T('profileNoListings')}</div>`;return;}
-  el.innerHTML=my.map(l=>{
-    const thumb=l.photos.length?`<img src="${l.photos[0]}" alt=""/>`:`<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:1.6rem">${l.emoji}</div>`;
-    return `<div class="profile-listing-row" onclick="openItem(${l.id});closeProfilePanel()">
-      <div class="profile-listing-img">${thumb}</div>
-      <div class="profile-listing-info">
-        <div class="profile-listing-title">${l.title}</div>
-        <div class="profile-listing-price">CHF ${l.price} · ${catLabel(l.cat)}</div>
-      </div>
-    </div>`;
-  }).join('');
-}
-function openProfilePanel(){renderProfilePanel();openPanel('profilePanel');}
-function closeProfilePanel(){closePanel('profilePanel');}
+function openPanel(id){closeAllPanels();document.getElementById(id).classList.add('open');document.getElementById('panelOverlay').classList.add('open');}
+function closePanel(id){document.getElementById(id).classList.remove('open');document.getElementById('panelOverlay').classList.remove('open');}
+function closeAllPanels(){['cartPanel','favPanel','profilePanel'].forEach(id=>document.getElementById(id).classList.remove('open'));document.getElementById('panelOverlay').classList.remove('open');}
 
 /* ══ STRIPE CHECKOUT ══ */
 function openStripeCheckout(){
@@ -1141,14 +1248,12 @@ function openStripeCheckout(){
     cardElement.on('change',e=>{document.getElementById('stripe-card-error').textContent=e.error?e.error.message:'';});
     cardMounted=true;
   }
-  document.getElementById('stripeOverlay').classList.add('open');
-  closeAllPanels();
+  document.getElementById('stripeOverlay').classList.add('open');closeAllPanels();
 }
 async function submitPayment(){
   const email=document.getElementById('stripeEmail').value.trim();
   if(!email||!email.includes('@')){showToast(T('toastEmailRequired'));return;}
-  const btn=document.getElementById('stripeSubmitBtn');
-  btn.classList.add('loading');btn.disabled=true;
+  const btn=document.getElementById('stripeSubmitBtn');btn.classList.add('loading');btn.disabled=true;
   await new Promise(r=>setTimeout(r,1800));
   btn.classList.remove('loading');btn.disabled=false;
   closeStripeModal();
@@ -1164,7 +1269,7 @@ function closeStripeModal(){document.getElementById('stripeOverlay').classList.r
 function closeSuccess(e){if(e.target.id==='successOverlay')closeSuccessModal();}
 function closeSuccessModal(){document.getElementById('successOverlay').classList.remove('open');}
 
-/* ══ PHOTOS ══ */
+/* ══ PHOTOS (sell) ══ */
 function handlePhotos(e){
   const files=[...e.target.files],remaining=5-currentPhotos.length;
   files.slice(0,remaining).forEach(f=>{const r=new FileReader();r.onload=ev=>{currentPhotos.push(ev.target.result);renderPreviews();};r.readAsDataURL(f);});
@@ -1188,7 +1293,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   });
 });
 
-/* ══ CITY AUTOCOMPLETE ══ */
+/* ══ CITY AUTOCOMPLETE (sell) ══ */
 function cityInput(){
   const val=document.getElementById('sellCity').value.trim();cityFocusIdx=-1;
   if(val.length<1){closeCityDropdown();return;}
@@ -1228,7 +1333,8 @@ function publishItem(){
   const city=document.getElementById('sellCity').value.trim();
   if(!currentPhotos.length){showToast(T('toastPhotos'));return;}
   if(!title||isNaN(price)||price<0||!city){showToast(T('toastRequired'));return;}
-  listings.unshift({id:Date.now(),photos:[...currentPhotos],emoji:'👗',title,brand,price,cat,cond,size,city,desc,seller:0});
+  /* ✅ seller = MR_IDX — l'annuncio appartiene all'utente loggato */
+  listings.unshift({id:Date.now(),photos:[...currentPhotos],emoji:'👗',title,brand,price,cat,cond,size,city,desc,seller:MR_IDX});
   closeSellModal();activeCat=T('all');renderCats();renderListings();renderProfilePanel();
   showToast(T('toastPublish'));
   ['sellTitle','sellBrand','sellPrice','sellSize','sellDesc','sellCity'].forEach(id=>document.getElementById(id).value='');
@@ -1240,6 +1346,7 @@ function showToast(msg){const t=document.getElementById('toast');t.textContent=m
 
 /* ══ INIT ══ */
 setLang('it');
+syncNavAvatar();
 </script>
 </body>
 </html>
