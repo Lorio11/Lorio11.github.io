@@ -198,6 +198,8 @@ nav{position:sticky;top:0;z-index:100;background:var(--pine-deep);border-bottom:
 .seller-msg-btn{width:100%;justify-content:center;padding:.75rem;margin-top:1.2rem;font-size:.75rem}
 
 /* ── EDIT PROFILE MODAL ── */
+/* z-index 400 → sopra i side-panel (301) e il loro overlay (300) */
+#editProfileOverlay{z-index:400}
 .edit-profile-modal{max-width:520px}
 .edit-profile-header{padding:1.8rem 2rem 1rem;border-bottom:1px solid var(--border-c)}
 .edit-profile-header h3{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:var(--silver)}
@@ -326,13 +328,86 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
 .footer-ch{font-size:.72rem;color:var(--accent);letter-spacing:.1em;text-transform:uppercase}
 .toast{position:fixed;bottom:2.5rem;left:50%;transform:translateX(-50%);background:var(--pine-deep);border:1px solid var(--border-m);color:var(--silver);padding:.7rem 1.8rem;font-size:.78rem;letter-spacing:.08em;z-index:600;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1}
-@media(max-width:680px){
+/* ── MOBILE ── */
+@media(max-width:768px){
+  /* Nav */
+  nav{padding:0 1rem;height:58px}
+  .nav-logo{font-size:1.4rem}
   .nav-center{display:none}
+  .nav-actions{gap:.4rem}
+  .lang-switcher{display:none}          /* nascosto su mobile — accessibile dal profilo */
+  #btnSell{display:none}                /* il + Vendi sparisce dalla nav su mobile */
+  .icon-btn{width:34px;height:34px;font-size:.9rem}
+  .profile-nav-btn{width:34px;height:34px}
+
+  /* Floating sell button su mobile */
+  #fabSell{display:flex}
+
+  /* Hero */
+  .hero{padding:3.5rem 1.2rem 3rem}
+  .hero h1{font-size:clamp(2.4rem,11vw,3.8rem)}
+  .hero-sub{font-size:.85rem}
+  .ch-badge{font-size:.65rem}
+  .search-wrap{margin-top:1.8rem}
+  .hero-stats{gap:1.5rem;margin-top:2.5rem}
+  .hero-stat .num{font-size:1.6rem}
+  .hero-stat .lbl{font-size:.6rem}
+
+  /* Listings */
+  .main{padding:2rem 1rem}
+  .listings-grid{grid-template-columns:repeat(2,1fr)}
+
+  /* Modals: full-screen su mobile */
+  .overlay{padding:.5rem;align-items:flex-end}
+  .modal{max-width:100%;width:100%;max-height:95vh;border-radius:2px 2px 0 0}
+  .stripe-modal,.msg-modal,.edit-profile-modal,.seller-profile-modal,.success-modal{max-width:100%}
+
+  /* Side panels: full-width */
+  .side-panel{width:100%;right:-100%}
+  .side-panel.open{right:0}
+
+  /* Forms */
   .form-row{grid-template-columns:1fr}
-  .hero-stats{gap:2rem}
-  footer{flex-direction:column;text-align:center}
+  .sell-body{padding:0 1rem 1.5rem}
+  .sell-title-bar{padding:1.2rem 1rem 0}
+  .edit-profile-body{padding:1.2rem 1rem 1.5rem}
+  .edit-profile-header{padding:1.2rem 1rem .8rem}
+  .modal-body{padding:1.2rem 1rem 1.5rem}
+  .stripe-body{padding:1.2rem 1rem 1.5rem}
+  .stripe-header{padding:1.2rem 1rem .8rem}
+  .seller-profile-hero{flex-direction:column;align-items:flex-start;padding:1.5rem 1rem}
+  .seller-profile-body{padding:1rem}
+
+  /* Seller grid */
   .seller-listings-grid{grid-template-columns:repeat(2,1fr)}
+
+  /* Modal actions */
+  .modal-actions{flex-direction:column}
+
+  /* Cart */
+  .cart-header,.side-panel-header,.profile-stats-row{padding:1.2rem 1rem}
+  .cart-inner,.profile-section{padding:0 1rem}
+  .cart-footer{padding:1rem}
+
+  /* Hero stats */
+  .hero-stats{gap:1.5rem}
+
+  /* Footer */
+  footer{flex-direction:column;text-align:center;padding:1.5rem 1rem}
 }
+
+/* Sell FAB (floating action button) su mobile */
+#fabSell{
+  display:none; /* mostrato solo su mobile via media query */
+  position:fixed;bottom:1.5rem;right:1.5rem;z-index:150;
+  width:52px;height:52px;border-radius:50%;
+  background:var(--accent);color:var(--pine-deep);
+  border:none;font-size:1.6rem;cursor:pointer;
+  align-items:center;justify-content:center;
+  box-shadow:0 4px 20px rgba(15,36,24,.5);
+  transition:transform .2s,box-shadow .2s;
+}
+#fabSell:hover{transform:scale(1.08);box-shadow:0 6px 24px rgba(15,36,24,.7)}
 </style>
 </head>
 <body>
@@ -627,6 +702,9 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- FAB mobile: pulsante "vendi" flottante -->
+<button id="fabSell" onclick="openSell()" title="Vendi">+</button>
 
 <script>
 /* ══ STRIPE ══ */
@@ -1118,7 +1196,8 @@ function closeProfilePanel(){closePanel('profilePanel');}
 
 /* ══ EDIT PROFILE MODAL ══ */
 function openEditProfile(){
-  // Traduzioni
+  /* Chiude il pannello profilo — il modal di modifica va sopra grazie a z-index:400 */
+  closeAllPanels();
   document.getElementById('editProfileTitle').textContent=T('editProfileTitle');
   document.getElementById('editLblName').textContent=T('editLblName');
   document.getElementById('editLblEmail').textContent=T('editLblEmail');
