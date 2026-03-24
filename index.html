@@ -328,6 +328,59 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
 .footer-ch{font-size:.72rem;color:var(--accent);letter-spacing:.1em;text-transform:uppercase}
 .toast{position:fixed;bottom:2.5rem;left:50%;transform:translateX(-50%);background:var(--pine-deep);border:1px solid var(--border-m);color:var(--silver);padding:.7rem 1.8rem;font-size:.78rem;letter-spacing:.08em;z-index:600;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1}
+
+/* ── DISCOVERY TOOLS ── */
+.discovery-tools{display:grid;grid-template-columns:1.2fr .8fr;gap:1rem;align-items:start;margin-bottom:1.4rem}
+.filters-card,.sort-card{border:1px solid var(--border-c);background:rgba(255,255,255,.03);padding:1rem;border-radius:2px}
+.filters-head,.sort-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem}
+.filters-title,.sort-title{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+.filters-reset{background:none;border:none;color:var(--silver-dim);font-size:.72rem;cursor:pointer}
+.filters-reset:hover{color:var(--silver)}
+.filters-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem}
+.filter-group label{display:block;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--silver-dim);margin-bottom:.45rem}
+.filter-group select,.sort-select{width:100%;padding:.68rem .85rem;background:rgba(255,255,255,.04);border:1px solid var(--border-c);color:var(--silver);font-family:'Jost',sans-serif;font-size:.82rem;border-radius:2px}
+.filter-group select option,.sort-select option{background:var(--pine-deep)}
+.price-slider-wrap{grid-column:span 2}
+.price-values{display:flex;justify-content:space-between;font-size:.76rem;color:var(--silver);margin-bottom:.45rem}
+.range-dual{position:relative;height:34px}
+.range-track{position:absolute;top:14px;left:0;right:0;height:4px;background:rgba(212,221,216,.12);border-radius:999px}
+.range-fill{position:absolute;top:14px;height:4px;background:var(--accent);border-radius:999px}
+.range-dual input[type=range]{position:absolute;left:0;top:6px;width:100%;pointer-events:none;-webkit-appearance:none;background:none}
+.range-dual input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--silver);border:none;pointer-events:auto;cursor:pointer}
+.range-dual input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--silver);border:none;pointer-events:auto;cursor:pointer}
+.range-dual input[type=range]::-webkit-slider-runnable-track{height:4px;background:transparent}
+.range-dual input[type=range]::-moz-range-track{height:4px;background:transparent}
+.sort-card p{font-size:.78rem;line-height:1.6;color:var(--silver-dim);margin-bottom:.8rem}
+.listing-topline{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.35rem}
+.listing-views{font-size:.64rem;color:rgba(212,221,216,.45);letter-spacing:.06em}
+.listing-badge.boosted{background:#f4d58d;color:var(--pine-deep)}
+.boost-chip{display:inline-flex;align-items:center;gap:.35rem;padding:.18rem .55rem;border:1px solid rgba(244,213,141,.35);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:#f4d58d}
+.profile-listing-actions{display:flex;gap:.45rem;align-items:center}
+.profile-mini-btn{background:none;border:1px solid var(--border-c);padding:.28rem .5rem;color:var(--silver-dim);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.profile-mini-btn:hover{border-color:var(--accent);color:var(--accent)}
+.profile-mini-btn.active{border-color:#f4d58d;color:#f4d58d}
+.listing-share-link{font-size:.7rem;color:var(--silver-dim);margin-top:.9rem;word-break:break-all}
+.listing-share-link a{color:var(--accent);text-decoration:none}
+.notification-item{padding:1rem 0;border-bottom:1px solid var(--border-c)}
+.notification-item.unread .notification-title{color:var(--silver)}
+.notification-title{font-size:.82rem;color:var(--silver-dim);line-height:1.5}
+.notification-meta{font-size:.65rem;color:rgba(212,221,216,.4);letter-spacing:.08em;text-transform:uppercase;margin-top:.3rem}
+.notification-empty{text-align:center;padding:3rem 0;font-size:.82rem;color:var(--silver-dim);letter-spacing:.08em;text-transform:uppercase}
+.boost-row{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.8rem 1rem;border:1px solid var(--border-c);margin-bottom:1rem;background:rgba(255,255,255,.03)}
+.boost-row-copy{font-size:.8rem;color:var(--silver-dim);line-height:1.55}
+.boost-row-copy strong{color:var(--silver)}
+.switch{position:relative;width:46px;height:26px;flex-shrink:0}
+.switch input{display:none}
+.slider-switch{position:absolute;inset:0;background:rgba(212,221,216,.2);border-radius:999px;cursor:pointer;transition:.2s}
+.slider-switch::before{content:'';position:absolute;width:20px;height:20px;left:3px;top:3px;background:var(--silver);border-radius:50%;transition:.2s}
+.switch input:checked + .slider-switch{background:rgba(244,213,141,.4)}
+.switch input:checked + .slider-switch::before{transform:translateX(20px);background:#f4d58d}
+@media(max-width:768px){
+  .discovery-tools{grid-template-columns:1fr}
+  .filters-grid{grid-template-columns:1fr 1fr}
+  .price-slider-wrap{grid-column:1/-1}
+}
+
 /* ── MOBILE ── */
 @media(max-width:768px){
   /* Nav */
@@ -428,6 +481,7 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
       <button class="lang-btn" onclick="setLang('fr')">FR</button>
     </div>
     <button class="btn btn-ghost" id="btnSell" onclick="openSell()"></button>
+    <button class="icon-btn" onclick="openNotifications()">🔔<span class="icon-badge" id="notifBadge"></span></button>
     <button class="icon-btn" onclick="openFavPanel()">♥<span class="icon-badge" id="favBadge"></span></button>
     <button class="icon-btn" onclick="openCart()">🛍<span class="icon-badge" id="cartBadge"></span></button>
     <button class="profile-nav-btn" id="profileNavBtn" onclick="openProfilePanel()"></button>
@@ -454,6 +508,43 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
 <div class="main">
   <div class="sec-head"><h2 class="sec-title" id="secTitle"></h2><span id="resultCount"></span></div>
   <div class="cats" id="catPills"></div>
+  <div class="discovery-tools">
+    <div class="filters-card">
+      <div class="filters-head">
+        <div class="filters-title" id="filtersTitle"></div>
+        <button class="filters-reset" onclick="resetFilters()" id="filtersReset"></button>
+      </div>
+      <div class="filters-grid">
+        <div class="filter-group price-slider-wrap">
+          <label id="priceFilterLabel"></label>
+          <div class="price-values"><span id="minPriceLabel"></span><span id="maxPriceLabel"></span></div>
+          <div class="range-dual">
+            <div class="range-track"></div>
+            <div class="range-fill" id="priceRangeFill"></div>
+            <input type="range" id="minPriceRange" min="0" max="500" step="5" value="0" oninput="updatePriceRange('min')"/>
+            <input type="range" id="maxPriceRange" min="0" max="500" step="5" value="500" oninput="updatePriceRange('max')"/>
+          </div>
+        </div>
+        <div class="filter-group">
+          <label id="sizeFilterLabel"></label>
+          <select id="sizeFilter" onchange="filterListings()"></select>
+        </div>
+        <div class="filter-group">
+          <label id="condFilterLabel"></label>
+          <select id="condFilter" onchange="filterListings()"></select>
+        </div>
+        <div class="filter-group">
+          <label id="cityFilterLabel"></label>
+          <select id="cityFilter" onchange="filterListings()"></select>
+        </div>
+      </div>
+    </div>
+    <div class="sort-card">
+      <div class="sort-head"><div class="sort-title" id="sortTitle"></div></div>
+      <p id="sortSub"></p>
+      <select class="sort-select" id="sortSelect" onchange="renderListings()"></select>
+    </div>
+  </div>
   <div class="listings-grid" id="listingsGrid"></div>
 </div>
 
@@ -493,8 +584,10 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
       </div>
       <div class="modal-actions">
         <button class="btn btn-ghost"  id="modalContactBtn" onclick="openMsgFromItem()"></button>
+        <button class="btn btn-ghost"  id="modalBoostBtn" onclick="boostCurrentItem()"></button>
         <button class="btn btn-silver" id="modalBuyBtn"></button>
       </div>
+      <div class="listing-share-link" id="modalShareLink"></div>
     </div>
   </div>
 </div>
@@ -610,6 +703,13 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
         <input type="text" id="sellCity" autocomplete="off" oninput="cityInput()" onkeydown="cityKeyDown(event)" onblur="cityBlur()"/>
         <div class="city-dropdown" id="cityDropdown"></div>
       </div>
+      <div class="boost-row">
+        <div class="boost-row-copy"><strong id="boostSellTitle"></strong><br><span id="boostSellSub"></span></div>
+        <label class="switch">
+          <input type="checkbox" id="sellBoost"/>
+          <span class="slider-switch"></span>
+        </label>
+      </div>
       <button class="btn btn-silver" id="btnPublish" style="width:100%;justify-content:center;padding:.85rem;font-size:.78rem;letter-spacing:.14em;" onclick="publishItem()"></button>
     </div>
   </div>
@@ -686,6 +786,15 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
     <div class="profile-section-label" id="ppSectionLabel"></div>
     <div id="profileListings"></div>
   </div>
+</div>
+
+<!-- ══ NOTIFICATIONS PANEL ══ -->
+<div class="side-panel" id="notifPanel">
+  <div class="side-panel-header">
+    <div class="side-panel-title" id="notifPanelTitle"></div>
+    <button class="side-panel-close" onclick="closeNotifications()">✕</button>
+  </div>
+  <div style="padding:1rem 1.5rem;flex:1"><div id="notifItems"></div></div>
 </div>
 
 <!-- ══ CART PANEL ══ -->
@@ -769,6 +878,12 @@ const TR={
     editLblCity:'Città',editLblBio:'Descrizione (bio)',editBioPlaceholder:'Racconta qualcosa di te…',
     editAvatarHint:'Clicca sulla foto per cambiarla.<br><span>Carica una nuova immagine</span> (JPG, PNG, max 5 MB)',
     editCancel:'Annulla',editSave:'Salva modifiche',toastProfileSaved:'✓ Profilo aggiornato!',
+    filtersTitle:'Ricerca avanzata',filtersReset:'Reset',priceFilterLabel:'Prezzo',sizeFilterLabel:'Taglia',condFilterLabel:'Condizione',cityFilterLabel:'Città',
+    sortTitle:'Ordina annunci',sortSub:'Ordina per prezzo, freschezza o visibilità.',sortNewest:'Più recenti',sortPriceAsc:'Prezzo crescente',sortPriceDesc:'Prezzo decrescente',sortViews:'Più visti',
+    sizeAll:'Tutte',condAll:'Tutte',cityAll:'Tutte',notifTitle:'Notifiche',notifEmpty:'Nessuna notifica',
+    notifFav:'ha messo il cuore al tuo annuncio',notifMsg:'ti ha inviato un messaggio',notifBoost:'Boost attivato con successo',notifPublish:'Il tuo annuncio è ora online',notifPrice:'ha abbassato il prezzo di un articolo salvato',
+    boostSellTitle:'Boost annuncio',boostSellSub:'Metti l’annuncio in evidenza nel feed e nel profilo.',boostCta:'⚡ Boost',boostActive:'⚡ Boost attivo',boostToast:'⚡ Annuncio messo in evidenza',
+    modalBoost:'⚡ Metti in boost',modalBoostActive:'⚡ Già in boost',shareLabel:'Link diretto:',
   },
   de:{
     all:'Alle',catKleider:'Kleider',catSchuhe:'Schuhe',catAccessoires:'Accessoires',
@@ -820,6 +935,12 @@ const TR={
     editLblCity:'Ort',editLblBio:'Beschreibung',editBioPlaceholder:'Erzähl etwas über dich…',
     editAvatarHint:'Klicke auf das Foto zum Ändern.<br><span>Neues Bild hochladen</span> (JPG, PNG)',
     editCancel:'Abbrechen',editSave:'Änderungen speichern',toastProfileSaved:'✓ Profil aktualisiert!',
+    filtersTitle:'Erweiterte Suche',filtersReset:'Zurücksetzen',priceFilterLabel:'Preis',sizeFilterLabel:'Grösse',condFilterLabel:'Zustand',cityFilterLabel:'Ort',
+    sortTitle:'Inserate sortieren',sortSub:'Nach Preis, Aktualität oder Aufrufen sortieren.',sortNewest:'Neueste zuerst',sortPriceAsc:'Preis aufsteigend',sortPriceDesc:'Preis absteigend',sortViews:'Meist angesehen',
+    sizeAll:'Alle',condAll:'Alle',cityAll:'Alle',notifTitle:'Benachrichtigungen',notifEmpty:'Keine Benachrichtigungen',
+    notifFav:'hat dein Inserat favorisiert',notifMsg:'hat dir eine Nachricht geschickt',notifBoost:'Boost erfolgreich aktiviert',notifPublish:'Dein Inserat ist jetzt online',notifPrice:'hat den Preis eines gemerkten Artikels gesenkt',
+    boostSellTitle:'Inserat boosten',boostSellSub:'Hebt dein Inserat im Feed und Profil hervor.',boostCta:'⚡ Boost',boostActive:'⚡ Boost aktiv',boostToast:'⚡ Inserat hervorgehoben',
+    modalBoost:'⚡ Boosten',modalBoostActive:'⚡ Bereits geboostet',shareLabel:'Direktlink:',
   },
   fr:{
     all:'Tout',catKleider:'Vêtements',catSchuhe:'Chaussures',catAccessoires:'Accessoires',
@@ -871,6 +992,12 @@ const TR={
     editLblCity:'Ville',editLblBio:'Description (bio)',editBioPlaceholder:'Parlez de vous…',
     editAvatarHint:"Cliquez sur la photo pour la changer.<br><span>Télécharger une image</span> (JPG, PNG)",
     editCancel:'Annuler',editSave:'Enregistrer',toastProfileSaved:'✓ Profil mis à jour !',
+    filtersTitle:'Recherche avancée',filtersReset:'Réinitialiser',priceFilterLabel:'Prix',sizeFilterLabel:'Taille',condFilterLabel:'État',cityFilterLabel:'Ville',
+    sortTitle:'Trier les annonces',sortSub:'Triez par prix, récence ou popularité.',sortNewest:'Plus récentes',sortPriceAsc:'Prix croissant',sortPriceDesc:'Prix décroissant',sortViews:'Plus vues',
+    sizeAll:'Toutes',condAll:'Tous',cityAll:'Toutes',notifTitle:'Notifications',notifEmpty:'Aucune notification',
+    notifFav:'a mis un cœur sur votre annonce',notifMsg:'vous a envoyé un message',notifBoost:'Boost activé avec succès',notifPublish:'Votre annonce est maintenant en ligne',notifPrice:'a baissé le prix d’un article sauvegardé',
+    boostSellTitle:'Booster l’annonce',boostSellSub:'Met l’annonce en avant dans le feed et le profil.',boostCta:'⚡ Boost',boostActive:'⚡ Boost actif',boostToast:'⚡ Annonce mise en avant',
+    modalBoost:'⚡ Mettre en boost',modalBoostActive:'⚡ Déjà boostée',shareLabel:'Lien direct :',
   }
 };
 
@@ -938,7 +1065,13 @@ let listings=[
 ];
 
 /* ══ STATE ══ */
-let cart=[],favorites=new Set(),lang='it',activeCat='Tutti',currentPhotos=[],cityFocusIdx=-1,cityOptions=[];
+const MAX_PRICE=500;
+listings=listings.map((l,idx)=>({...l,boosted:!!l.boosted,views:l.views||Math.floor(Math.random()*80)+12,createdAt:l.createdAt||Date.now()-idx*3600_000}));
+let cart=[],favorites=new Set(),notifications=[
+  {id:1,type:'price',text:'Massimo Dutti',time:Date.now()-1000*60*45,unread:true},
+  {id:2,type:'msg',text:'Lea M.',time:Date.now()-1000*60*120,unread:true},
+  {id:3,type:'fav',text:'Cravatta Hermès seta blu',time:Date.now()-1000*60*60*18,unread:false},
+],lang='it',activeCat='Tutti',currentPhotos=[],cityFocusIdx=-1,cityOptions=[];
 let editCityFocusIdx=-1,editCityOptions=[];
 let modalPhotoIdx=0,currentItemId=null,currentSellerIdx=null,msgTargetName='';
 
@@ -949,6 +1082,22 @@ function condLabel(i){return T('cond')[i]??T('cond')[0];}
 function catKeyFromLabel(lbl){const f=T('cats').find(c=>c.l===lbl);return f?f.v:lbl;}
 function cartTotal(){return cart.reduce((s,i)=>s+i.price,0);}
 function myListings(){return listings.filter(l=>l.seller===MR_IDX);}
+function formatTimeAgo(ts){
+  const d=Math.max(1,Math.floor((Date.now()-ts)/60000));
+  if(d<60)return d+' min';
+  if(d<1440)return Math.floor(d/60)+' h';
+  return Math.floor(d/1440)+' g';
+}
+function directItemUrl(id){return `${location.origin}${location.pathname}?item=${id}`;}
+function addNotification(type,text){
+  notifications.unshift({id:Date.now()+Math.random(),type,text,time:Date.now(),unread:true});
+  updateNotifBadge();renderNotifPanel();
+}
+function notificationText(n){
+  const map={fav:T('notifFav'),msg:T('notifMsg'),boost:T('notifBoost'),publish:T('notifPublish'),price:T('notifPrice')};
+  if(n.type==='boost' || n.type==='publish') return map[n.type];
+  return `${n.text} ${map[n.type]}`;
+}
 
 /* ══ NAV AVATAR SYNC ══ */
 function syncNavAvatar(){
@@ -999,8 +1148,26 @@ function applyTranslations(){
   s('footerCopy',T('footerCopy'));
   s('favPanelTitle',T('favTitle'));
   s('profilePanelTitle',T('profileTitle'));
+  s('notifPanelTitle',T('notifTitle'));
   s('ppStatSalesLbl',T('ppStatSales'));s('ppStatRatingLbl',T('ppStatRating'));
   s('ppStatItemsLbl',T('ppStatItems'));s('ppSectionLabel',T('ppSectionLabel'));
+  s('filtersTitle',T('filtersTitle'));s('filtersReset',T('filtersReset'));s('priceFilterLabel',T('priceFilterLabel'));
+  s('sizeFilterLabel',T('sizeFilterLabel'));s('condFilterLabel',T('condFilterLabel'));s('cityFilterLabel',T('cityFilterLabel'));
+  s('sortTitle',T('sortTitle'));s('sortSub',T('sortSub'));
+  s('boostSellTitle',T('boostSellTitle'));s('boostSellSub',T('boostSellSub'));
+  const sizeValues=['all',...new Set(listings.map(l=>l.size))];
+  document.getElementById('sizeFilter').innerHTML=sizeValues.map(v=>`<option value="${v}">${v==='all'?T('sizeAll'):v}</option>`).join('');
+  document.getElementById('condFilter').innerHTML=['all',...T('cond').map((c,i)=>i)].map(v=>`<option value="${v}">${v==='all'?T('condAll'):condLabel(+v)}</option>`).join('');
+  const cityValues=['all',...new Set(listings.map(l=>l.city))].sort((a,b)=>String(a).localeCompare(String(b)));
+  document.getElementById('cityFilter').innerHTML=cityValues.map(v=>`<option value="${v}">${v==='all'?T('cityAll'):v}</option>`).join('');
+  document.getElementById('sortSelect').innerHTML=`
+    <option value="newest">${T('sortNewest')}</option>
+    <option value="priceAsc">${T('sortPriceAsc')}</option>
+    <option value="priceDesc">${T('sortPriceDesc')}</option>
+    <option value="views">${T('sortViews')}</option>`;
+  updatePriceLabels();
+  renderNotifPanel();
+  updateNotifBadge();
 }
 
 /* ══ CATEGORIES ══ */
@@ -1016,10 +1183,59 @@ function setCat(c){activeCat=c;renderCats();renderListings();}
 function getFiltered(){
   const q=document.getElementById('searchInput').value.toLowerCase();
   const isAll=activeCat===T('all'),ak=isAll?null:catKeyFromLabel(activeCat);
-  return listings.filter(l=>(isAll||l.cat===ak)&&
-    (l.title.toLowerCase().includes(q)||l.brand.toLowerCase().includes(q)||catLabel(l.cat).toLowerCase().includes(q)));
+  const minPrice=+document.getElementById('minPriceRange').value;
+  const maxPrice=+document.getElementById('maxPriceRange').value;
+  const size=document.getElementById('sizeFilter').value;
+  const cond=document.getElementById('condFilter').value;
+  const city=document.getElementById('cityFilter').value;
+  let filtered=listings.filter(l=>(isAll||l.cat===ak)&&
+    (l.title.toLowerCase().includes(q)||l.brand.toLowerCase().includes(q)||catLabel(l.cat).toLowerCase().includes(q)||l.city.toLowerCase().includes(q))&&
+    l.price>=minPrice&&l.price<=maxPrice&&
+    (size==='all'||l.size===size)&&
+    (cond==='all'||String(l.cond)===cond)&&
+    (city==='all'||l.city===city)
+  );
+  const sort=document.getElementById('sortSelect').value;
+  filtered=filtered.sort((a,b)=>{
+    if(a.boosted!==b.boosted) return a.boosted?-1:1;
+    if(sort==='priceAsc') return a.price-b.price;
+    if(sort==='priceDesc') return b.price-a.price;
+    if(sort==='views') return b.views-a.views;
+    return b.createdAt-a.createdAt;
+  });
+  return filtered;
 }
 function filterListings(){renderListings();}
+function updatePriceLabels(){
+  const min=+document.getElementById('minPriceRange').value;
+  const max=+document.getElementById('maxPriceRange').value;
+  document.getElementById('minPriceLabel').textContent=`CHF ${min}`;
+  document.getElementById('maxPriceLabel').textContent=`CHF ${max}`;
+  const fill=document.getElementById('priceRangeFill');
+  fill.style.left=(min/MAX_PRICE*100)+'%';
+  fill.style.right=(100-max/MAX_PRICE*100)+'%';
+}
+function updatePriceRange(which){
+  const minEl=document.getElementById('minPriceRange');
+  const maxEl=document.getElementById('maxPriceRange');
+  if(+minEl.value > +maxEl.value-5){
+    if(which==='min') minEl.value=maxEl.value-5;
+    else maxEl.value=+minEl.value+5;
+  }
+  updatePriceLabels();
+  filterListings();
+}
+function resetFilters(){
+  document.getElementById('searchInput').value='';
+  document.getElementById('minPriceRange').value=0;
+  document.getElementById('maxPriceRange').value=MAX_PRICE;
+  document.getElementById('sizeFilter').value='all';
+  document.getElementById('condFilter').value='all';
+  document.getElementById('cityFilter').value='all';
+  document.getElementById('sortSelect').value='newest';
+  updatePriceLabels();
+  renderListings();
+}
 function renderListings(){
   const f=getFiltered();
   document.getElementById('resultCount').textContent=f.length+' '+T('resultSuffix');
@@ -1032,11 +1248,11 @@ function renderListings(){
     const isFav=favorites.has(l.id);
     return `<div class="listing-card" onclick="openItem(${l.id})">
       <div class="listing-img" style="background:${BG[i%BG.length]}">${img}
-        <span class="listing-badge">${condLabel(l.cond)}</span>
+        <span class="listing-badge${l.boosted?' boosted':''}">${l.boosted?T('boostCta'):condLabel(l.cond)}</span>
         <button class="fav-btn${isFav?' active':''}" id="favBtn_${l.id}" onclick="event.stopPropagation();toggleFav(${l.id},this)">${isFav?'♥':'♡'}</button>
       </div>
       <div class="listing-body">
-        <div class="listing-brand">${l.brand} · ${catLabel(l.cat)}</div>
+        <div class="listing-topline"><div class="listing-brand">${l.brand} · ${catLabel(l.cat)}</div><div class="listing-views">👁 ${l.views}</div></div>
         <div class="listing-title">${l.title}</div>
         <div class="listing-meta">
           <div class="listing-price">CHF ${l.price}</div>
@@ -1049,8 +1265,12 @@ function renderListings(){
 
 /* ══ FAVOURITES ══ */
 function toggleFav(id,btn){
+  const item=listings.find(l=>l.id===id);
   if(favorites.has(id)){favorites.delete(id);btn.textContent='♡';btn.classList.remove('active');showToast(T('toastFavRemove'));}
-  else{favorites.add(id);btn.textContent='♥';btn.classList.add('active');showToast(T('toastFavAdd'));}
+  else{
+    favorites.add(id);btn.textContent='♥';btn.classList.add('active');showToast(T('toastFavAdd'));
+    if(item && item.seller===MR_IDX) addNotification('fav',item.title);
+  }
   updateFavBadge();renderFavPanel();
 }
 function updateFavBadge(){
@@ -1081,14 +1301,34 @@ function removeFav(id){
 function openFavPanel(){openPanel('favPanel');}
 function closeFavPanel(){closePanel('favPanel');}
 
+/* ══ NOTIFICATIONS ══ */
+function updateNotifBadge(){
+  const unread=notifications.filter(n=>n.unread).length;
+  const b=document.getElementById('notifBadge');
+  b.style.display=unread?'flex':'none';b.textContent=unread;
+}
+function renderNotifPanel(){
+  const el=document.getElementById('notifItems');
+  if(!notifications.length){el.innerHTML=`<div class="notification-empty">${T('notifEmpty')}</div>`;return;}
+  el.innerHTML=notifications.map(n=>`<div class="notification-item ${n.unread?'unread':''}">
+    <div class="notification-title">${notificationText(n)}</div>
+    <div class="notification-meta">${formatTimeAgo(n.time)}</div>
+  </div>`).join('');
+}
+function openNotifications(){
+  notifications=notifications.map(n=>({...n,unread:false}));
+  updateNotifBadge();renderNotifPanel();openPanel('notifPanel');
+}
+function closeNotifications(){closePanel('notifPanel');}
+
 /* ══ ITEM MODAL ══ */
 function buildSellerAvatar(s,el){
   if(s.photo){el.innerHTML=`<img src="${s.photo}" alt=""/>`;}
   else{el.textContent=s.init;}
 }
-function openItem(id){
+function openItem(id,skipHistory=false){
   const l=listings.find(x=>x.id===id);if(!l)return;
-  currentItemId=id;currentSellerIdx=l.seller;
+  currentItemId=id;currentSellerIdx=l.seller;l.views=(l.views||0)+1;
   const s=getSeller(l.seller),idx=listings.indexOf(l);
   modalPhotoIdx=0;
   const mp=document.getElementById('modalPhotos'),pn=document.getElementById('photoNav');
@@ -1102,20 +1342,32 @@ function openItem(id){
   document.getElementById('modalPrice').textContent='CHF '+l.price;
   document.getElementById('modalDesc').textContent=l.desc;
   document.getElementById('modalTags').innerHTML=
-    `<span class="modal-tag">${catLabel(l.cat)}</span><span class="modal-tag">${condLabel(l.cond)}</span><span class="modal-tag">${T('lblSize')}: ${l.size}</span><span class="modal-tag">📍 ${l.city}</span>`;
+    `<span class="modal-tag">${catLabel(l.cat)}</span><span class="modal-tag">${condLabel(l.cond)}</span><span class="modal-tag">${T('lblSize')}: ${l.size}</span><span class="modal-tag">📍 ${l.city}</span>${l.boosted?`<span class="modal-tag">${T('boostActive')}</span>`:''}`;
   buildSellerAvatar(s,document.getElementById('sellerAvatar'));
   document.getElementById('sellerName').textContent=s.name;
-  document.getElementById('sellerRating').textContent=`${s.rating} · ${s.city}`;
+  document.getElementById('sellerRating').textContent=`${s.rating} · ${s.city} · 👁 ${l.views}`;
   document.getElementById('sellerViewHint').textContent=T('sellerViewHint');
   document.getElementById('modalContactBtn').textContent=T('modalContact');
   document.getElementById('modalBuyBtn').textContent=T('modalBuy');
+  document.getElementById('modalBoostBtn').textContent=l.boosted?T('modalBoostActive'):T('modalBoost');
+  document.getElementById('modalBoostBtn').disabled=l.boosted;
   document.getElementById('modalBuyBtn').onclick=()=>addToCart(l);
+  const url=directItemUrl(l.id);
+  document.getElementById('modalShareLink').innerHTML=`${T('shareLabel')} <a href="${url}" target="_blank">${url}</a>`;
   document.getElementById('itemOverlay').classList.add('open');
+  renderListings();
+  if(!skipHistory){history.pushState({itemId:l.id},'',url);}
 }
 function nextPhoto(id){const l=listings.find(x=>x.id===id);if(!l||l.photos.length<2)return;modalPhotoIdx=(modalPhotoIdx+1)%l.photos.length;goPhoto(modalPhotoIdx,id);}
 function goPhoto(i,id){modalPhotoIdx=i;document.querySelectorAll('#modalPhotos img').forEach((img,j)=>img.classList.toggle('active',j===i));document.querySelectorAll('#photoNav .photo-dot').forEach((d,j)=>d.classList.toggle('active',j===i));}
 function closeItem(e){if(e.target.id==='itemOverlay')closeItemModal();}
-function closeItemModal(){document.getElementById('itemOverlay').classList.remove('open');}
+function closeItemModal(resetHistory=true){
+  document.getElementById('itemOverlay').classList.remove('open');
+  if(resetHistory){
+    const clean=`${location.origin}${location.pathname}`;
+    history.pushState({},'',clean);
+  }
+}
 
 /* ══ SELLER PROFILE ══ */
 function openSellerProfile(){
@@ -1156,7 +1408,7 @@ function openMsgModal(){
   document.getElementById('msgCancelBtn').textContent=T('msgCancel');
   document.getElementById('msgOverlay').classList.add('open');
 }
-function sendMsg(){const txt=document.getElementById('msgText').value.trim();if(!txt){showToast(T('toastMsgEmpty'));return;}closeMsgModal();showToast(T('toastMsgSent'));}
+function sendMsg(){const txt=document.getElementById('msgText').value.trim();if(!txt){showToast(T('toastMsgEmpty'));return;}closeMsgModal();addNotification('msg',msgTargetName);showToast(T('toastMsgSent'));}
 function closeMsg(e){if(e.target.id==='msgOverlay')closeMsgModal();}
 function closeMsgModal(){document.getElementById('msgOverlay').classList.remove('open');}
 
@@ -1186,7 +1438,10 @@ function renderProfilePanel(){
       ${imgEl}
       <div class="profile-listing-info">
         <div class="profile-listing-title">${l.title}</div>
-        <div class="profile-listing-price">CHF ${l.price} · ${catLabel(l.cat)}</div>
+        <div class="profile-listing-price">CHF ${l.price} · ${catLabel(l.cat)} ${l.boosted?`<span class="boost-chip">${T('boostActive')}</span>`:''}</div>
+      </div>
+      <div class="profile-listing-actions">
+        <button class="profile-mini-btn ${l.boosted?'active':''}" onclick="event.stopPropagation();toggleBoost(${l.id})">${l.boosted?T('boostActive'):T('boostCta')}</button>
       </div>
     </div>`;
   }).join('');
@@ -1279,6 +1534,22 @@ function editCityKeyDown(e){
   if(editCityFocusIdx>=0)items[editCityFocusIdx].scrollIntoView({block:'nearest'});
 }
 
+function toggleBoost(id){
+  const item=listings.find(l=>l.id===id); if(!item) return;
+  item.boosted=!item.boosted;
+  renderListings();renderProfilePanel();
+  if(item.boosted){addNotification('boost',item.title);showToast(T('boostToast'));}
+}
+function boostCurrentItem(){
+  if(currentItemId===null) return;
+  const item=listings.find(l=>l.id===currentItemId); if(!item||item.boosted) return;
+  item.boosted=true;
+  document.getElementById('modalBoostBtn').textContent=T('modalBoostActive');
+  document.getElementById('modalBoostBtn').disabled=true;
+  addNotification('boost',item.title);
+  renderListings();renderProfilePanel();showToast(T('boostToast'));
+}
+
 /* ══ CART ══ */
 function addToCart(item){cart.push(item);updateCartUI();showToast(T('toastCart'));closeItemModal();}
 function removeCart(i){cart.splice(i,1);updateCartUI();}
@@ -1304,7 +1575,7 @@ function closeCart(){closePanel('cartPanel');}
 /* ══ PANEL HELPERS ══ */
 function openPanel(id){closeAllPanels();document.getElementById(id).classList.add('open');document.getElementById('panelOverlay').classList.add('open');}
 function closePanel(id){document.getElementById(id).classList.remove('open');document.getElementById('panelOverlay').classList.remove('open');}
-function closeAllPanels(){['cartPanel','favPanel','profilePanel'].forEach(id=>document.getElementById(id).classList.remove('open'));document.getElementById('panelOverlay').classList.remove('open');}
+function closeAllPanels(){['cartPanel','favPanel','profilePanel','notifPanel'].forEach(id=>document.getElementById(id).classList.remove('open'));document.getElementById('panelOverlay').classList.remove('open');}
 
 /* ══ STRIPE CHECKOUT ══ */
 function openStripeCheckout(){
@@ -1398,7 +1669,11 @@ function cityKeyDown(e){
 }
 
 /* ══ SELL ══ */
-function openSell(){currentPhotos=[];renderPreviews();document.getElementById('sellOverlay').classList.add('open');}
+function openSell(){
+  currentPhotos=[];renderPreviews();
+  document.getElementById('sellBoost').checked=false;
+  document.getElementById('sellOverlay').classList.add('open');
+}
 function closeSell(e){if(e.target.id==='sellOverlay')closeSellModal();}
 function closeSellModal(){document.getElementById('sellOverlay').classList.remove('open');}
 function publishItem(){
@@ -1413,8 +1688,11 @@ function publishItem(){
   if(!currentPhotos.length){showToast(T('toastPhotos'));return;}
   if(!title||isNaN(price)||price<0||!city){showToast(T('toastRequired'));return;}
   /* ✅ seller = MR_IDX — l'annuncio appartiene all'utente loggato */
-  listings.unshift({id:Date.now(),photos:[...currentPhotos],emoji:'👗',title,brand,price,cat,cond,size,city,desc,seller:MR_IDX});
-  closeSellModal();activeCat=T('all');renderCats();renderListings();renderProfilePanel();
+  const boosted=document.getElementById('sellBoost').checked;
+  listings.unshift({id:Date.now(),photos:[...currentPhotos],emoji:'👗',title,brand,price,cat,cond,size,city,desc,seller:MR_IDX,boosted,views:0,createdAt:Date.now()});
+  closeSellModal();activeCat=T('all');renderCats();applyTranslations();renderListings();renderProfilePanel();
+  addNotification('publish',title);
+  if(boosted) addNotification('boost',title);
   showToast(T('toastPublish'));
   ['sellTitle','sellBrand','sellPrice','sellSize','sellDesc','sellCity'].forEach(id=>document.getElementById(id).value='');
   currentPhotos=[];renderPreviews();
@@ -1426,6 +1704,14 @@ function showToast(msg){const t=document.getElementById('toast');t.textContent=m
 /* ══ INIT ══ */
 setLang('it');
 syncNavAvatar();
+resetFilters();
+const initialItem=new URLSearchParams(location.search).get('item');
+if(initialItem) setTimeout(()=>openItem(Number(initialItem),true),0);
+window.addEventListener('popstate',()=>{
+  const current=new URLSearchParams(location.search).get('item');
+  if(current) openItem(Number(current),true);
+  else document.getElementById('itemOverlay').classList.remove('open');
+});
 </script>
 </body>
 </html>
