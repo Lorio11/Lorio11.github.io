@@ -366,7 +366,34 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
 .notification-title{font-size:.82rem;color:var(--silver-dim);line-height:1.5}
 .notification-meta{font-size:.65rem;color:rgba(212,221,216,.4);letter-spacing:.08em;text-transform:uppercase;margin-top:.3rem}
 .notification-empty{text-align:center;padding:3rem 0;font-size:.82rem;color:var(--silver-dim);letter-spacing:.08em;text-transform:uppercase}
+.notification-item.clickable{cursor:pointer;transition:background .18s,border-color .18s;padding:1rem .2rem 1rem 0}
+.notification-item.clickable:hover{background:rgba(168,196,184,.05)}
+.notification-link-hint{font-size:.62rem;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-top:.45rem}
 .boost-row{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.8rem 1rem;border:1px solid var(--border-c);margin-bottom:1rem;background:rgba(255,255,255,.03)}
+.boost-payment-modal{max-width:720px}
+.boost-payment-header{padding:1.7rem 2rem 1rem;border-bottom:1px solid var(--border-c)}
+.boost-payment-header h3{font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:var(--silver);font-weight:600}
+.boost-payment-sub{font-size:.8rem;color:var(--silver-dim);margin-top:.35rem;line-height:1.6}
+.boost-payment-body{padding:1.5rem 2rem 2rem}
+.boost-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:1.2rem}
+.boost-select-box,.boost-plan-box,.boost-summary-box{border:1px solid var(--border-c);background:rgba(255,255,255,.03);padding:1rem}
+.boost-box-title{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:.8rem}
+.boost-item-option{display:flex;align-items:flex-start;gap:.75rem;padding:.75rem 0;border-bottom:1px solid var(--border-c)}
+.boost-item-option:last-child{border-bottom:none;padding-bottom:0}
+.boost-item-option input{margin-top:.25rem}
+.boost-item-meta strong{display:block;font-size:.84rem;color:var(--silver);font-weight:500}
+.boost-item-meta span{font-size:.73rem;color:var(--silver-dim);line-height:1.55}
+.boost-plan{display:flex;align-items:flex-start;gap:.7rem;padding:.8rem;border:1px solid var(--border-c);margin-bottom:.7rem;cursor:pointer;transition:border-color .18s,background .18s}
+.boost-plan:hover,.boost-plan.active{border-color:var(--accent);background:rgba(168,196,184,.06)}
+.boost-plan:last-child{margin-bottom:0}
+.boost-plan strong{display:block;font-size:.84rem;color:var(--silver)}
+.boost-plan span{font-size:.72rem;color:var(--silver-dim);line-height:1.55}
+.boost-summary-row{display:flex;justify-content:space-between;gap:1rem;font-size:.8rem;color:var(--silver-dim);padding:.35rem 0}
+.boost-summary-row.total{margin-top:.45rem;padding-top:.8rem;border-top:1px solid var(--border-c);font-size:1rem;color:var(--silver)}
+.boost-summary-row.total strong{font-family:'Cormorant Garamond',serif;font-size:1.7rem;color:var(--accent);font-weight:600}
+.boost-discount-note{margin-top:.55rem;font-size:.68rem;color:var(--accent);letter-spacing:.06em;line-height:1.5}
+.boost-payment-actions{display:flex;gap:.8rem;margin-top:1.2rem}
+@media(max-width:760px){.boost-grid{grid-template-columns:1fr}}
 .boost-row-copy{font-size:.8rem;color:var(--silver-dim);line-height:1.55}
 .boost-row-copy strong{color:var(--silver)}
 .switch{position:relative;width:46px;height:26px;flex-shrink:0}
@@ -715,6 +742,44 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
   </div>
 </div>
 
+
+<!-- ══ BOOST PAYMENT ══ -->
+<div class="overlay" id="boostOverlay" onclick="closeBoostPayment(event)">
+  <div class="modal boost-payment-modal">
+    <button class="modal-close" onclick="closeBoostPaymentDirect()">✕</button>
+    <div class="boost-payment-header">
+      <h3 id="boostPaymentTitle"></h3>
+      <div class="boost-payment-sub" id="boostPaymentSub"></div>
+    </div>
+    <div class="boost-payment-body">
+      <div class="boost-grid">
+        <div class="boost-select-box">
+          <div class="boost-box-title" id="boostItemsLabel"></div>
+          <div id="boostItemOptions"></div>
+        </div>
+        <div>
+          <div class="boost-plan-box">
+            <div class="boost-box-title" id="boostPlanLabel"></div>
+            <div id="boostPlans"></div>
+          </div>
+          <div class="boost-summary-box" style="margin-top:1rem">
+            <div class="boost-box-title" id="boostSummaryLabel"></div>
+            <div class="boost-summary-row"><span id="boostSummaryItemsText"></span><span id="boostSummaryItemsValue"></span></div>
+            <div class="boost-summary-row"><span id="boostSummaryPlanText"></span><span id="boostSummaryPlanValue"></span></div>
+            <div class="boost-summary-row"><span id="boostSummaryDiscountText"></span><span id="boostSummaryDiscountValue"></span></div>
+            <div class="boost-summary-row total"><span id="boostSummaryTotalText"></span><strong id="boostSummaryTotalValue"></strong></div>
+            <div class="boost-discount-note" id="boostDiscountNote"></div>
+          </div>
+        </div>
+      </div>
+      <div class="boost-payment-actions">
+        <button class="btn btn-ghost" style="flex:1;justify-content:center" onclick="closeBoostPaymentDirect()" id="boostCancelBtn"></button>
+        <button class="btn btn-accent" style="flex:1;justify-content:center" onclick="confirmBoostPayment()" id="boostConfirmBtn"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ══ STRIPE CHECKOUT ══ -->
 <div class="overlay" id="stripeOverlay" onclick="closeStripe(event)">
   <div class="modal stripe-modal">
@@ -884,6 +949,7 @@ const TR={
     notifFav:'ha messo il cuore al tuo annuncio',notifMsg:'ti ha inviato un messaggio',notifBoost:'Boost attivato con successo',notifPublish:'Il tuo annuncio è ora online',notifPrice:'ha abbassato il prezzo di un articolo salvato',
     boostSellTitle:'Boost annuncio',boostSellSub:'Metti l’annuncio in evidenza nel feed e nel profilo.',boostCta:'⚡ Boost',boostActive:'⚡ Boost attivo',boostToast:'⚡ Annuncio messo in evidenza',
     modalBoost:'⚡ Metti in boost',modalBoostActive:'⚡ Già in boost',shareLabel:'Link diretto:',
+    boostPaymentTitle:'Pagamento boost locale',boostPaymentSub:'Scegli la durata del boost e, se vuoi, metti in evidenza più articoli con il 10% di sconto sul totale.',boostItemsLabel:'Articoli da mettere in boost',boostPlanLabel:'Durata del boost',boostSummaryLabel:'Riepilogo',boostSummaryItemsText:'Articoli selezionati',boostSummaryPlanText:'Piano scelto',boostSummaryDiscountText:'Sconto multi-articolo',boostSummaryTotalText:'Totale',boostDiscountNote:'Lo sconto del 10% si applica automaticamente se selezioni almeno 2 articoli.',boostOpenHint:'Apri articolo o profilo',boostGoArticle:'Apri articolo',boostGoProfile:'Apri profilo',boostCancel:'Annulla',boostConfirm:'Conferma pagamento locale',boostPlan3:'Boost locale · 3 giorni',boostPlan7:'Boost locale · 7 giorni',boostPlan10:'Boost locale · 10 giorni',boostToastPaid:'Pagamento registrato · boost attivato',
   },
   de:{
     all:'Alle',catKleider:'Kleider',catSchuhe:'Schuhe',catAccessoires:'Accessoires',
@@ -941,6 +1007,7 @@ const TR={
     notifFav:'hat dein Inserat favorisiert',notifMsg:'hat dir eine Nachricht geschickt',notifBoost:'Boost erfolgreich aktiviert',notifPublish:'Dein Inserat ist jetzt online',notifPrice:'hat den Preis eines gemerkten Artikels gesenkt',
     boostSellTitle:'Inserat boosten',boostSellSub:'Hebt dein Inserat im Feed und Profil hervor.',boostCta:'⚡ Boost',boostActive:'⚡ Boost aktiv',boostToast:'⚡ Inserat hervorgehoben',
     modalBoost:'⚡ Boosten',modalBoostActive:'⚡ Bereits geboostet',shareLabel:'Direktlink:',
+    boostPaymentTitle:'Lokale Boost-Zahlung',boostPaymentSub:'Wähle die Boost-Dauer und hebe auf Wunsch mehrere Artikel mit 10% Rabatt auf den Gesamtbetrag hervor.',boostItemsLabel:'Zu boostende Artikel',boostPlanLabel:'Boost-Dauer',boostSummaryLabel:'Zusammenfassung',boostSummaryItemsText:'Ausgewählte Artikel',boostSummaryPlanText:'Gewählter Plan',boostSummaryDiscountText:'Rabatt für mehrere Artikel',boostSummaryTotalText:'Gesamt',boostDiscountNote:'Der 10%-Rabatt wird automatisch angewendet, wenn mindestens 2 Artikel ausgewählt werden.',boostOpenHint:'Artikel oder Profil öffnen',boostGoArticle:'Artikel öffnen',boostGoProfile:'Profil öffnen',boostCancel:'Abbrechen',boostConfirm:'Lokale Zahlung bestätigen',boostPlan3:'Lokaler Boost · 3 Tage',boostPlan7:'Lokaler Boost · 7 Tage',boostPlan10:'Lokaler Boost · 10 Tage',boostToastPaid:'Zahlung registriert · Boost aktiviert',
   },
   fr:{
     all:'Tout',catKleider:'Vêtements',catSchuhe:'Chaussures',catAccessoires:'Accessoires',
@@ -998,6 +1065,7 @@ const TR={
     notifFav:'a mis un cœur sur votre annonce',notifMsg:'vous a envoyé un message',notifBoost:'Boost activé avec succès',notifPublish:'Votre annonce est maintenant en ligne',notifPrice:'a baissé le prix d’un article sauvegardé',
     boostSellTitle:'Booster l’annonce',boostSellSub:'Met l’annonce en avant dans le feed et le profil.',boostCta:'⚡ Boost',boostActive:'⚡ Boost actif',boostToast:'⚡ Annonce mise en avant',
     modalBoost:'⚡ Mettre en boost',modalBoostActive:'⚡ Déjà boostée',shareLabel:'Lien direct :',
+    boostPaymentTitle:'Paiement boost local',boostPaymentSub:'Choisissez la durée du boost et mettez éventuellement plusieurs articles en avant avec 10% de réduction sur le total.',boostItemsLabel:'Articles à booster',boostPlanLabel:'Durée du boost',boostSummaryLabel:'Récapitulatif',boostSummaryItemsText:'Articles sélectionnés',boostSummaryPlanText:'Formule choisie',boostSummaryDiscountText:'Remise multi-articles',boostSummaryTotalText:'Total',boostDiscountNote:'La remise de 10% s’applique automatiquement si vous sélectionnez au moins 2 articles.',boostOpenHint:'Ouvrir l’article ou le profil',boostGoArticle:'Ouvrir l’article',boostGoProfile:'Ouvrir le profil',boostCancel:'Annuler',boostConfirm:'Confirmer le paiement local',boostPlan3:'Boost local · 3 jours',boostPlan7:'Boost local · 7 jours',boostPlan10:'Boost local · 10 jours',boostToastPaid:'Paiement enregistré · boost activé',
   }
 };
 
@@ -1068,12 +1136,14 @@ let listings=[
 const MAX_PRICE=500;
 listings=listings.map((l,idx)=>({...l,boosted:!!l.boosted,views:l.views||Math.floor(Math.random()*80)+12,createdAt:l.createdAt||Date.now()-idx*3600_000}));
 let cart=[],favorites=new Set(),notifications=[
-  {id:1,type:'price',text:'Massimo Dutti',time:Date.now()-1000*60*45,unread:true},
-  {id:2,type:'msg',text:'Lea M.',time:Date.now()-1000*60*120,unread:true},
-  {id:3,type:'fav',text:'Cravatta Hermès seta blu',time:Date.now()-1000*60*60*18,unread:false},
+  {id:1,type:'price',text:'Massimo Dutti',targetType:'item',targetId:3,time:Date.now()-1000*60*45,unread:true},
+  {id:2,type:'msg',text:'Lea M.',targetType:'seller',targetId:2,time:Date.now()-1000*60*120,unread:true},
+  {id:3,type:'fav',text:'Sofia R.',targetType:'seller',targetId:1,time:Date.now()-1000*60*60*18,unread:false},
 ],lang='it',activeCat='Tutti',currentPhotos=[],cityFocusIdx=-1,cityOptions=[];
 let editCityFocusIdx=-1,editCityOptions=[];
 let modalPhotoIdx=0,currentItemId=null,currentSellerIdx=null,msgTargetName='';
+let boostSelection=new Set(),boostPlan='3';
+const BOOST_PLANS={3:2.99,7:5.49,10:6.99};
 
 /* ══ HELPERS ══ */
 function T(k){return TR[lang][k]??k;}
@@ -1089,8 +1159,8 @@ function formatTimeAgo(ts){
   return Math.floor(d/1440)+' g';
 }
 function directItemUrl(id){return `${location.origin}${location.pathname}?item=${id}`;}
-function addNotification(type,text){
-  notifications.unshift({id:Date.now()+Math.random(),type,text,time:Date.now(),unread:true});
+function addNotification(type,text,targetType=null,targetId=null){
+  notifications.unshift({id:Date.now()+Math.random(),type,text,targetType,targetId,time:Date.now(),unread:true});
   updateNotifBadge();renderNotifPanel();
 }
 function notificationText(n){
@@ -1310,9 +1380,10 @@ function updateNotifBadge(){
 function renderNotifPanel(){
   const el=document.getElementById('notifItems');
   if(!notifications.length){el.innerHTML=`<div class="notification-empty">${T('notifEmpty')}</div>`;return;}
-  el.innerHTML=notifications.map(n=>`<div class="notification-item ${n.unread?'unread':''}">
+  el.innerHTML=notifications.map(n=>`<div class="notification-item ${n.unread?'unread':''} ${n.targetType?'clickable':''}" ${n.targetType?`onclick="handleNotificationClick(${JSON.stringify(n.id).replace(/"/g,'&quot;')})"`:''}>
     <div class="notification-title">${notificationText(n)}</div>
     <div class="notification-meta">${formatTimeAgo(n.time)}</div>
+    ${n.targetType?`<div class="notification-link-hint">${T('boostOpenHint')}</div>`:''}
   </div>`).join('');
 }
 function openNotifications(){
@@ -1320,6 +1391,15 @@ function openNotifications(){
   updateNotifBadge();renderNotifPanel();openPanel('notifPanel');
 }
 function closeNotifications(){closePanel('notifPanel');}
+function handleNotificationClick(id){
+  const n=notifications.find(x=>String(x.id)===String(id));
+  if(!n||!n.targetType) return;
+  closeNotifications();
+  setTimeout(()=>{
+    if(n.targetType==='item' && n.targetId!=null) openItem(n.targetId);
+    if(n.targetType==='seller' && n.targetId!=null){ currentSellerIdx=n.targetId; openSellerProfileByIdx(n.targetId); }
+  },160);
+}
 
 /* ══ ITEM MODAL ══ */
 function buildSellerAvatar(s,el){
@@ -1392,6 +1472,16 @@ function openSellerProfile(){
   msgTargetName=s.name;
   document.getElementById('sellerProfileOverlay').classList.add('open');
 }
+function openSellerProfileByIdx(idx){currentSellerIdx=idx;const s=getSeller(idx);const sellerListings=listings.filter(l=>l.seller===idx);
+  document.getElementById('spAvatar').innerHTML=s.photo?`<img src="${s.photo}" alt=""/>`:`${s.name.split(' ').map(p=>p[0]).join('').slice(0,2)}`;
+  document.getElementById('spName').textContent=s.name;
+  document.getElementById('spMeta').textContent=`${s.city} · ${s.sales} ${T('spSalesLbl').toLowerCase()} · ${s.rating}★`;
+  document.getElementById('spBio').textContent=s.bio;
+  document.getElementById('spSales').textContent=s.sales; document.getElementById('spRating').textContent=s.rating; document.getElementById('spItems').textContent=sellerListings.length;
+  document.getElementById('spSalesLbl').textContent=T('spSalesLbl'); document.getElementById('spRatingLbl').textContent=T('spRatingLbl'); document.getElementById('spItemsLbl').textContent=T('spItemsLbl');
+  document.getElementById('spListingsTitle').textContent=T('spListingsTitle'); document.getElementById('spMsgBtn').textContent=T('spMsgBtn');
+  document.getElementById('spListingsGrid').innerHTML=sellerListings.map(l=>{ const thumb=l.photos.length?`<img src="${l.photos[0]}" alt=""/>` : `<div class="thumb-emoji">${l.emoji}</div>`; return `<div class="seller-listing-thumb" onclick="openItemFromSeller(${l.id})">${thumb}<div class="slabel">${l.title}<br><span class="sprice">CHF ${l.price}</span></div></div>`; }).join('');
+  msgTargetName=s.name; document.getElementById('sellerProfileOverlay').classList.add('open');}
 function openItemFromSeller(id){closeSellerProfileDirect();closeItemModal();setTimeout(()=>openItem(id),200);}
 function closeSellerProfileModal(e){if(e.target.id==='sellerProfileOverlay')closeSellerProfileDirect();}
 function closeSellerProfileDirect(){document.getElementById('sellerProfileOverlay').classList.remove('open');}
@@ -1534,21 +1624,51 @@ function editCityKeyDown(e){
   if(editCityFocusIdx>=0)items[editCityFocusIdx].scrollIntoView({block:'nearest'});
 }
 
-function toggleBoost(id){
-  const item=listings.find(l=>l.id===id); if(!item) return;
-  item.boosted=!item.boosted;
-  renderListings();renderProfilePanel();
-  if(item.boosted){addNotification('boost',item.title);showToast(T('boostToast'));}
+function toggleBoost(id){ openBoostPayment(id); }
+function boostCurrentItem(){ if(currentItemId===null) return; openBoostPayment(currentItemId); }
+function openBoostPayment(initialId){
+  const mine=myListings();
+  if(!mine.length) return;
+  boostSelection=new Set();
+  if(initialId) boostSelection.add(initialId);
+  boostPlan='3';
+  document.getElementById('boostPaymentTitle').textContent=T('boostPaymentTitle');
+  document.getElementById('boostPaymentSub').textContent=T('boostPaymentSub');
+  document.getElementById('boostItemsLabel').textContent=T('boostItemsLabel');
+  document.getElementById('boostPlanLabel').textContent=T('boostPlanLabel');
+  document.getElementById('boostSummaryLabel').textContent=T('boostSummaryLabel');
+  document.getElementById('boostSummaryItemsText').textContent=T('boostSummaryItemsText');
+  document.getElementById('boostSummaryPlanText').textContent=T('boostSummaryPlanText');
+  document.getElementById('boostSummaryDiscountText').textContent=T('boostSummaryDiscountText');
+  document.getElementById('boostSummaryTotalText').textContent=T('boostSummaryTotalText');
+  document.getElementById('boostDiscountNote').textContent=T('boostDiscountNote');
+  document.getElementById('boostCancelBtn').textContent=T('boostCancel');
+  document.getElementById('boostConfirmBtn').textContent=T('boostConfirm');
+  document.getElementById('boostItemOptions').innerHTML=mine.map(l=>`<label class="boost-item-option"><input type="checkbox" ${boostSelection.has(l.id)?'checked':''} onchange="toggleBoostSelection(${l.id},this.checked)" ${l.boosted?'disabled':''}><div class="boost-item-meta"><strong>${l.title}</strong><span>CHF ${l.price} · ${l.city}${l.boosted?' · già in boost':''}</span></div></label>`).join('');
+  const plans=[['3',T('boostPlan3'),2.99],['7',T('boostPlan7'),5.49],['10',T('boostPlan10'),6.99]];
+  document.getElementById('boostPlans').innerHTML=plans.map(([k,label,price])=>`<div class="boost-plan ${boostPlan===k?'active':''}" onclick="selectBoostPlan('${k}')"><input type="radio" name="boostPlan" ${boostPlan===k?'checked':''} onchange="selectBoostPlan('${k}')"><div><strong>${label}</strong><span>CHF ${price.toFixed(2)}</span></div></div>`).join('');
+  updateBoostSummary();
+  document.getElementById('boostOverlay').classList.add('open');
 }
-function boostCurrentItem(){
-  if(currentItemId===null) return;
-  const item=listings.find(l=>l.id===currentItemId); if(!item||item.boosted) return;
-  item.boosted=true;
-  document.getElementById('modalBoostBtn').textContent=T('modalBoostActive');
-  document.getElementById('modalBoostBtn').disabled=true;
-  addNotification('boost',item.title);
-  renderListings();renderProfilePanel();showToast(T('boostToast'));
+function toggleBoostSelection(id,checked){ if(checked) boostSelection.add(id); else boostSelection.delete(id); updateBoostSummary(); }
+function selectBoostPlan(k){ boostPlan=String(k); const nodes=[...document.querySelectorAll('#boostPlans .boost-plan')]; nodes.forEach((el,idx)=>{ const map=['3','7','10']; el.classList.toggle('active',map[idx]===boostPlan); el.querySelector('input').checked=map[idx]===boostPlan; }); updateBoostSummary(); }
+function updateBoostSummary(){
+  const count=boostSelection.size; const price=BOOST_PLANS[boostPlan]||0; const subtotal=count*price; const discount=count>1?subtotal*0.10:0; const total=subtotal-discount;
+  document.getElementById('boostSummaryItemsValue').textContent=String(count);
+  document.getElementById('boostSummaryPlanValue').textContent=`CHF ${price.toFixed(2)}`;
+  document.getElementById('boostSummaryDiscountValue').textContent=discount>0?`- CHF ${discount.toFixed(2)}`:'CHF 0.00';
+  document.getElementById('boostSummaryTotalValue').textContent=`CHF ${total.toFixed(2)}`;
+  document.getElementById('boostConfirmBtn').disabled=count===0;
 }
+function confirmBoostPayment(){
+  const ids=[...boostSelection]; if(!ids.length) return;
+  ids.forEach(id=>{ const item=listings.find(l=>l.id===id); if(item){ item.boosted=true; addNotification('boost',item.title,'item',item.id); } });
+  closeBoostPaymentDirect();
+  if(currentItemId!==null){ const l=listings.find(x=>x.id===currentItemId); if(l){ document.getElementById('modalBoostBtn').textContent=l.boosted?T('modalBoostActive'):T('modalBoost'); document.getElementById('modalBoostBtn').disabled=!!l.boosted; } }
+  renderListings(); renderProfilePanel(); showToast(T('boostToastPaid'));
+}
+function closeBoostPayment(e){ if(e.target.id==='boostOverlay') closeBoostPaymentDirect(); }
+function closeBoostPaymentDirect(){ document.getElementById('boostOverlay').classList.remove('open'); }
 
 /* ══ CART ══ */
 function addToCart(item){cart.push(item);updateCartUI();showToast(T('toastCart'));closeItemModal();}
