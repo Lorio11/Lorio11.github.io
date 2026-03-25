@@ -548,8 +548,8 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
           <div class="range-dual">
             <div class="range-track"></div>
             <div class="range-fill" id="priceRangeFill"></div>
-            <input type="range" id="minPriceRange" min="0" max="500" step="5" value="0" oninput="updatePriceRange('min')"/>
-            <input type="range" id="maxPriceRange" min="0" max="500" step="5" value="500" oninput="updatePriceRange('max')"/>
+            <input type="range" id="minPriceRange" min="0" max="10000" step="10" value="0" oninput="updatePriceRange('min')"/>
+            <input type="range" id="maxPriceRange" min="0" max="10000" step="10" value="10000" oninput="updatePriceRange('max')"/>
           </div>
         </div>
         <div class="filter-group">
@@ -560,9 +560,10 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
           <label id="condFilterLabel"></label>
           <select id="condFilter" onchange="filterListings()"></select>
         </div>
-        <div class="filter-group">
+        <div class="filter-group city-autocomplete">
           <label id="cityFilterLabel"></label>
-          <select id="cityFilter" onchange="filterListings()"></select>
+          <input type="text" id="cityFilter" autocomplete="off" oninput="cityFilterInput()" onkeydown="cityFilterKeyDown(event)" onblur="cityFilterBlur()"/>
+          <div class="city-dropdown" id="cityFilterDropdown"></div>
         </div>
       </div>
     </div>
@@ -712,6 +713,15 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
         </div>
         <div class="photo-previews" id="photoPreviews"></div>
       </div>
+      <div class="form-group">
+        <label id="lblVideo">Video (opzionale, max 1)</label>
+        <div class="photo-upload-area" id="videoUploadArea" style="min-height:120px">
+          <input type="file" id="videoInput" accept="video/*" onchange="handleVideo(event)"/>
+          <div class="photo-upload-icon">🎥</div>
+          <div class="photo-upload-hint" id="videoHint">Carica un video del prodotto</div>
+        </div>
+        <div class="photo-previews" id="videoPreview"></div>
+      </div>
       <div class="form-row">
         <div class="form-group"><label id="lblTitle"></label><input type="text" id="sellTitle"/></div>
         <div class="form-group"><label id="lblBrand"></label><input type="text" id="sellBrand"/></div>
@@ -733,7 +743,7 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
       <div class="boost-row">
         <div class="boost-row-copy"><strong id="boostSellTitle"></strong><br><span id="boostSellSub"></span></div>
         <label class="switch">
-          <input type="checkbox" id="sellBoost"/>
+          <input type="checkbox" id="sellBoost" onclick="handleSellBoostToggle(event)"/>
           <span class="slider-switch"></span>
         </label>
       </div>
@@ -904,7 +914,7 @@ const TR={
     cartTitle:'Il tuo carrello',cartEmpty:'Il carrello è vuoto',
     cartTotalLabel:'Totale',btnCheckout:'💳 Paga con Stripe',
     sellModalTitle:'Pubblica un annuncio',
-    lblPhotos:'Foto (fino a 5)',photoHint:'Trascina le foto qui o <span>clicca per sceglierle</span>',
+    lblPhotos:'Foto (fino a 10)',photoHint:'Trascina le foto qui o <span>clicca per sceglierle</span>',
     lblTitle:'Titolo',lblBrand:'Brand',lblPrice:'Prezzo CHF',lblSize:'Taglia',
     lblCat:'Categoria',lblCond:'Condizioni',lblDesc:'Descrizione',lblCity:'Città (CH)',
     cityPlaceholder:'Digita la città…',
@@ -967,7 +977,7 @@ const TR={
     cartTitle:'Warenkorb',cartEmpty:'Warenkorb ist leer',
     cartTotalLabel:'Total',btnCheckout:'💳 Mit Stripe bezahlen',
     sellModalTitle:'Inserat aufgeben',
-    lblPhotos:'Fotos (bis zu 5)',photoHint:'Fotos hierher ziehen oder <span>klicken</span>',
+    lblPhotos:'Fotos (bis zu 10)',photoHint:'Bis zu 10 Fotos hierher ziehen oder <span>klicken</span>',
     lblTitle:'Titel',lblBrand:'Marke',lblPrice:'Preis CHF',lblSize:'Grösse',
     lblCat:'Kategorie',lblCond:'Zustand',lblDesc:'Beschreibung',lblCity:'Ort (CH)',
     cityPlaceholder:'Stadt eingeben…',
@@ -1025,7 +1035,7 @@ const TR={
     cartTitle:'Votre panier',cartEmpty:'Votre panier est vide',
     cartTotalLabel:'Total',btnCheckout:'💳 Payer avec Stripe',
     sellModalTitle:'Publier une annonce',
-    lblPhotos:"Photos (jusqu'à 5)",photoHint:'Glissez des photos ou <span>cliquez</span>',
+    lblPhotos:"Photos (jusqu'à 10)",photoHint:'Glissez jusqu’à 10 photos ou <span>cliquez</span>',
     lblTitle:'Titre',lblBrand:'Marque',lblPrice:'Prix CHF',lblSize:'Taille',
     lblCat:'Catégorie',lblCond:'État',lblDesc:'Description',lblCity:'Ville (CH)',
     cityPlaceholder:'Tapez la ville…',
@@ -1133,13 +1143,13 @@ let listings=[
 ];
 
 /* ══ STATE ══ */
-const MAX_PRICE=500;
+const MAX_PRICE=10000;
 listings=listings.map((l,idx)=>({...l,boosted:!!l.boosted,views:l.views||Math.floor(Math.random()*80)+12,createdAt:l.createdAt||Date.now()-idx*3600_000}));
 let cart=[],favorites=new Set(),notifications=[
   {id:1,type:'price',text:'Massimo Dutti',targetType:'item',targetId:3,time:Date.now()-1000*60*45,unread:true},
   {id:2,type:'msg',text:'Lea M.',targetType:'seller',targetId:2,time:Date.now()-1000*60*120,unread:true},
   {id:3,type:'fav',text:'Sofia R.',targetType:'seller',targetId:1,time:Date.now()-1000*60*60*18,unread:false},
-],lang='it',activeCat='Tutti',currentPhotos=[],cityFocusIdx=-1,cityOptions=[];
+],lang='it',activeCat='Tutti',currentPhotos=[],currentVideo=null,cityFocusIdx=-1,cityOptions=[],cityFilterOptions=[],cityFilterFocusIdx=-1;
 let editCityFocusIdx=-1,editCityOptions=[];
 let modalPhotoIdx=0,currentItemId=null,currentSellerIdx=null,msgTargetName='';
 let boostSelection=new Set(),boostPlan='3';
@@ -1228,8 +1238,7 @@ function applyTranslations(){
   const sizeValues=['all',...new Set(listings.map(l=>l.size))];
   document.getElementById('sizeFilter').innerHTML=sizeValues.map(v=>`<option value="${v}">${v==='all'?T('sizeAll'):v}</option>`).join('');
   document.getElementById('condFilter').innerHTML=['all',...T('cond').map((c,i)=>i)].map(v=>`<option value="${v}">${v==='all'?T('condAll'):condLabel(+v)}</option>`).join('');
-  const cityValues=['all',...new Set(listings.map(l=>l.city))].sort((a,b)=>String(a).localeCompare(String(b)));
-  document.getElementById('cityFilter').innerHTML=cityValues.map(v=>`<option value="${v}">${v==='all'?T('cityAll'):v}</option>`).join('');
+  document.getElementById('cityFilter').placeholder=T('cityPlaceholder');
   document.getElementById('sortSelect').innerHTML=`
     <option value="newest">${T('sortNewest')}</option>
     <option value="priceAsc">${T('sortPriceAsc')}</option>
@@ -1257,13 +1266,13 @@ function getFiltered(){
   const maxPrice=+document.getElementById('maxPriceRange').value;
   const size=document.getElementById('sizeFilter').value;
   const cond=document.getElementById('condFilter').value;
-  const city=document.getElementById('cityFilter').value;
+  const city=document.getElementById('cityFilter').value.trim().toLowerCase();
   let filtered=listings.filter(l=>(isAll||l.cat===ak)&&
     (l.title.toLowerCase().includes(q)||l.brand.toLowerCase().includes(q)||catLabel(l.cat).toLowerCase().includes(q)||l.city.toLowerCase().includes(q))&&
     l.price>=minPrice&&l.price<=maxPrice&&
     (size==='all'||l.size===size)&&
     (cond==='all'||String(l.cond)===cond)&&
-    (city==='all'||l.city===city)
+    (!city||l.city.toLowerCase().includes(city))
   );
   const sort=document.getElementById('sortSelect').value;
   filtered=filtered.sort((a,b)=>{
@@ -1301,7 +1310,7 @@ function resetFilters(){
   document.getElementById('maxPriceRange').value=MAX_PRICE;
   document.getElementById('sizeFilter').value='all';
   document.getElementById('condFilter').value='all';
-  document.getElementById('cityFilter').value='all';
+  document.getElementById('cityFilter').value='';
   document.getElementById('sortSelect').value='newest';
   updatePriceLabels();
   renderListings();
@@ -1422,15 +1431,18 @@ function openItem(id,skipHistory=false){
   document.getElementById('modalPrice').textContent='CHF '+l.price;
   document.getElementById('modalDesc').textContent=l.desc;
   document.getElementById('modalTags').innerHTML=
-    `<span class="modal-tag">${catLabel(l.cat)}</span><span class="modal-tag">${condLabel(l.cond)}</span><span class="modal-tag">${T('lblSize')}: ${l.size}</span><span class="modal-tag">📍 ${l.city}</span>${l.boosted?`<span class="modal-tag">${T('boostActive')}</span>`:''}`;
+    `<span class="modal-tag">${catLabel(l.cat)}</span><span class="modal-tag">${condLabel(l.cond)}</span><span class="modal-tag">${T('lblSize')}: ${l.size}</span><span class="modal-tag">📍 ${l.city}</span>${l.video?`<span class="modal-tag">🎥 Video</span>`:''}${l.boosted?`<span class="modal-tag">${T('boostActive')}</span>`:''}`;
   buildSellerAvatar(s,document.getElementById('sellerAvatar'));
   document.getElementById('sellerName').textContent=s.name;
   document.getElementById('sellerRating').textContent=`${s.rating} · ${s.city} · 👁 ${l.views}`;
   document.getElementById('sellerViewHint').textContent=T('sellerViewHint');
   document.getElementById('modalContactBtn').textContent=T('modalContact');
   document.getElementById('modalBuyBtn').textContent=T('modalBuy');
+  const ownListing=l.seller===MR_IDX;
   document.getElementById('modalBoostBtn').textContent=l.boosted?T('modalBoostActive'):T('modalBoost');
-  document.getElementById('modalBoostBtn').disabled=l.boosted;
+  document.getElementById('modalBoostBtn').disabled=l.boosted || !ownListing;
+  document.getElementById('modalBoostBtn').style.opacity=ownListing? '1' : '.45';
+  document.getElementById('modalBoostBtn').title=ownListing ? '' : 'Puoi mettere in boost solo i tuoi annunci';
   document.getElementById('modalBuyBtn').onclick=()=>addToCart(l);
   const url=directItemUrl(l.id);
   document.getElementById('modalShareLink').innerHTML=`${T('shareLabel')} <a href="${url}" target="_blank">${url}</a>`;
@@ -1627,8 +1639,12 @@ function editCityKeyDown(e){
 function toggleBoost(id){ openBoostPayment(id); }
 function boostCurrentItem(){ if(currentItemId===null) return; openBoostPayment(currentItemId); }
 function openBoostPayment(initialId){
-  const mine=myListings();
+  const mine=myListings().filter(l=>!l.boosted);
   if(!mine.length) return;
+  if(initialId){
+    const initialItem=listings.find(l=>l.id===initialId);
+    if(!initialItem || initialItem.seller!==MR_IDX || initialItem.boosted) return;
+  }
   boostSelection=new Set();
   if(initialId) boostSelection.add(initialId);
   boostPlan='3';
@@ -1662,9 +1678,9 @@ function updateBoostSummary(){
 }
 function confirmBoostPayment(){
   const ids=[...boostSelection]; if(!ids.length) return;
-  ids.forEach(id=>{ const item=listings.find(l=>l.id===id); if(item){ item.boosted=true; addNotification('boost',item.title,'item',item.id); } });
+  ids.forEach(id=>{ const item=listings.find(l=>l.id===id); if(item && item.seller===MR_IDX){ item.boosted=true; addNotification('boost',item.title,'item',item.id); } });
   closeBoostPaymentDirect();
-  if(currentItemId!==null){ const l=listings.find(x=>x.id===currentItemId); if(l){ document.getElementById('modalBoostBtn').textContent=l.boosted?T('modalBoostActive'):T('modalBoost'); document.getElementById('modalBoostBtn').disabled=!!l.boosted; } }
+  if(currentItemId!==null){ const l=listings.find(x=>x.id===currentItemId); if(l){ const ownListing=l.seller===MR_IDX; document.getElementById('modalBoostBtn').textContent=l.boosted?T('modalBoostActive'):T('modalBoost'); document.getElementById('modalBoostBtn').disabled=!!l.boosted || !ownListing; document.getElementById('modalBoostBtn').style.opacity=ownListing ? '1' : '.45'; } }
   renderListings(); renderProfilePanel(); showToast(T('boostToastPaid'));
 }
 function closeBoostPayment(e){ if(e.target.id==='boostOverlay') closeBoostPaymentDirect(); }
@@ -1741,7 +1757,7 @@ function closeSuccessModal(){document.getElementById('successOverlay').classList
 
 /* ══ PHOTOS (sell) ══ */
 function handlePhotos(e){
-  const files=[...e.target.files],remaining=5-currentPhotos.length;
+  const files=[...e.target.files].filter(f=>f.type.startsWith('image/')),remaining=10-currentPhotos.length;
   files.slice(0,remaining).forEach(f=>{const r=new FileReader();r.onload=ev=>{currentPhotos.push(ev.target.result);renderPreviews();};r.readAsDataURL(f);});
   e.target.value='';
 }
@@ -1750,7 +1766,7 @@ function renderPreviews(){
   document.getElementById('photoPreviews').innerHTML=currentPhotos.map((p,i)=>
     `<div class="photo-thumb"><img src="${p}" alt=""/><button class="photo-thumb-remove" onclick="removePhoto(${i})">✕</button></div>`
   ).join('');
-  document.getElementById('photoUploadArea').style.opacity=currentPhotos.length>=5?'.5':'1';
+  document.getElementById('photoUploadArea').style.opacity=currentPhotos.length>=10?'.5':'1';
 }
 document.addEventListener('DOMContentLoaded',()=>{
   const area=document.getElementById('photoUploadArea');
@@ -1758,10 +1774,55 @@ document.addEventListener('DOMContentLoaded',()=>{
   area.addEventListener('dragleave',()=>area.classList.remove('drag-over'));
   area.addEventListener('drop',e=>{
     e.preventDefault();area.classList.remove('drag-over');
-    const files=[...e.dataTransfer.files].filter(f=>f.type.startsWith('image/')),remaining=5-currentPhotos.length;
+    const files=[...e.dataTransfer.files].filter(f=>f.type.startsWith('image/')),remaining=10-currentPhotos.length;
     files.slice(0,remaining).forEach(f=>{const r=new FileReader();r.onload=ev=>{currentPhotos.push(ev.target.result);renderPreviews();};r.readAsDataURL(f);});
   });
 });
+
+
+function handleSellBoostToggle(e){
+  if(e.target.checked && myListings().filter(l=>!l.boosted).length){
+    showToast('Il boost si seleziona al pagamento dopo la pubblicazione.');
+  }
+}
+function handleVideo(e){
+  const file=(e.target.files||[])[0];
+  if(!file) return;
+  const r=new FileReader();
+  r.onload=ev=>{ currentVideo=ev.target.result; renderVideoPreview(); };
+  r.readAsDataURL(file);
+  e.target.value='';
+}
+function removeVideo(){ currentVideo=null; renderVideoPreview(); }
+function renderVideoPreview(){
+  const el=document.getElementById('videoPreview');
+  if(!el) return;
+  if(!currentVideo){ el.innerHTML=''; return; }
+  el.innerHTML=`<div class="photo-thumb" style="width:160px;height:110px"><video src="${currentVideo}" controls style="width:100%;height:100%;object-fit:cover"></video><button class="photo-thumb-remove" onclick="removeVideo()">✕</button></div>`;
+}
+function cityFilterInput(){
+  filterListings();
+  const val=document.getElementById('cityFilter').value.trim(); cityFilterFocusIdx=-1;
+  if(val.length<1){ closeCityFilterDropdown(); return; }
+  cityFilterOptions=[...new Set(listings.map(l=>l.city))].filter(c=>c.toLowerCase().startsWith(val.toLowerCase())).slice(0,8);
+  if(!cityFilterOptions.length){ closeCityFilterDropdown(); return; }
+  const hl=v=>v.replace(new RegExp(`^(${escRe(val)})`,'i'),m=>`<span class="city-match">${m}</span>`);
+  const dd=document.getElementById('cityFilterDropdown');
+  dd.innerHTML=cityFilterOptions.map(c=>`<div class="city-option" onmousedown="selectCityFilter('${c}')">${hl(c)}</div>`).join('');
+  dd.classList.add('open');
+}
+function selectCityFilter(c){ document.getElementById('cityFilter').value=c; closeCityFilterDropdown(); filterListings(); }
+function closeCityFilterDropdown(){ const el=document.getElementById('cityFilterDropdown'); if(el) el.classList.remove('open'); cityFilterFocusIdx=-1; }
+function cityFilterBlur(){ setTimeout(closeCityFilterDropdown,150); }
+function cityFilterKeyDown(e){
+  const items=document.getElementById('cityFilterDropdown').querySelectorAll('.city-option'); if(!items.length) return;
+  if(e.key==='ArrowDown'){ e.preventDefault(); cityFilterFocusIdx=Math.min(cityFilterFocusIdx+1,items.length-1); }
+  else if(e.key==='ArrowUp'){ e.preventDefault(); cityFilterFocusIdx=Math.max(cityFilterFocusIdx-1,0); }
+  else if(e.key==='Enter' && cityFilterFocusIdx>=0){ e.preventDefault(); selectCityFilter(cityFilterOptions[cityFilterFocusIdx]); return; }
+  else if(e.key==='Escape'){ closeCityFilterDropdown(); return; }
+  items.forEach((it,i)=>it.classList.toggle('focused',i===cityFilterFocusIdx));
+  if(cityFilterFocusIdx>=0) items[cityFilterFocusIdx].scrollIntoView({block:'nearest'});
+}
 
 /* ══ CITY AUTOCOMPLETE (sell) ══ */
 function cityInput(){
@@ -1790,7 +1851,7 @@ function cityKeyDown(e){
 
 /* ══ SELL ══ */
 function openSell(){
-  currentPhotos=[];renderPreviews();
+  currentPhotos=[];currentVideo=null;renderPreviews();renderVideoPreview();
   document.getElementById('sellBoost').checked=false;
   document.getElementById('sellOverlay').classList.add('open');
 }
@@ -1807,15 +1868,16 @@ function publishItem(){
   const city=document.getElementById('sellCity').value.trim();
   if(!currentPhotos.length){showToast(T('toastPhotos'));return;}
   if(!title||isNaN(price)||price<0||!city){showToast(T('toastRequired'));return;}
-  /* ✅ seller = MR_IDX — l'annuncio appartiene all'utente loggato */
-  const boosted=document.getElementById('sellBoost').checked;
-  listings.unshift({id:Date.now(),photos:[...currentPhotos],emoji:'👗',title,brand,price,cat,cond,size,city,desc,seller:MR_IDX,boosted,views:0,createdAt:Date.now()});
+  const wantsBoost=document.getElementById('sellBoost').checked;
+  const newId=Date.now();
+  listings.unshift({id:newId,photos:[...currentPhotos],video:currentVideo,emoji:'👗',title,brand,price,cat,cond,size,city,desc,seller:MR_IDX,boosted:false,views:0,createdAt:Date.now()});
   closeSellModal();activeCat=T('all');renderCats();applyTranslations();renderListings();renderProfilePanel();
-  addNotification('publish',title);
-  if(boosted) addNotification('boost',title);
+  addNotification('publish',title,'item',newId);
   showToast(T('toastPublish'));
   ['sellTitle','sellBrand','sellPrice','sellSize','sellDesc','sellCity'].forEach(id=>document.getElementById(id).value='');
-  currentPhotos=[];renderPreviews();
+  currentPhotos=[];currentVideo=null;renderPreviews();renderVideoPreview();
+  document.getElementById('sellBoost').checked=false;
+  if(wantsBoost){ setTimeout(()=>openBoostPayment(newId),180); }
 }
 
 /* ══ TOAST ══ */
