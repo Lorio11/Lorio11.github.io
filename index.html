@@ -488,6 +488,49 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
   transition:transform .2s,box-shadow .2s;
 }
 #fabSell:hover{transform:scale(1.08);box-shadow:0 6px 24px rgba(15,36,24,.7)}
+
+/* ── SOLD badge ── */
+.listing-card.sold{opacity:.55;pointer-events:none}
+.listing-card.sold .listing-img::after{background:linear-gradient(to top,rgba(15,36,24,.85) 0%,transparent 50%)}
+.sold-overlay{position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center}
+.sold-chip{background:rgba(30,30,30,.82);color:#ccc;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;padding:.35rem 1rem;border:1px solid rgba(200,200,200,.25)}
+.profile-listing-row.sold-row .profile-listing-title{text-decoration:line-through;color:var(--silver-dim)}
+/* ── VERIFIED badge ── */
+.verified-badge{display:inline-flex;align-items:center;gap:.28rem;padding:.18rem .6rem;background:rgba(168,196,184,.15);border:1px solid rgba(168,196,184,.4);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-left:.4rem;border-radius:2px}
+.verified-badge svg{flex-shrink:0}
+/* ── SHARE actions ── */
+.share-actions{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.9rem}
+.share-actions .btn{flex:1;min-width:120px;justify-content:center;font-size:.7rem;padding:.55rem .8rem}
+/* ── OFFER modal ── */
+.offer-modal{max-width:460px}
+.offer-header{padding:1.6rem 2rem 1rem;border-bottom:1px solid var(--border-c)}
+.offer-header h3{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:var(--silver);margin-bottom:.2rem}
+.offer-sub{font-size:.76rem;color:var(--silver-dim)}
+.offer-body{padding:1.4rem 2rem 2rem}
+.offer-price-row{display:flex;align-items:center;gap:.6rem;margin-bottom:1rem}
+.offer-chf{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--accent);font-weight:600}
+.offer-price-row input{flex:1;padding:.7rem 1rem;background:rgba(255,255,255,.04);border:1px solid var(--border-c);border-radius:2px;font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--accent);outline:none;transition:border-color .2s}
+.offer-price-row input:focus{border-color:var(--accent)}
+.offer-note{font-size:.72rem;color:var(--silver-dim);line-height:1.55;margin-bottom:1rem;padding:.6rem .9rem;background:rgba(168,196,184,.06);border-left:2px solid var(--accent)}
+/* ── VERIFY modal ── */
+.verify-modal{max-width:460px}
+.verify-header{padding:1.6rem 2rem 1rem;border-bottom:1px solid var(--border-c)}
+.verify-header h3{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:var(--silver);margin-bottom:.2rem}
+.verify-sub{font-size:.76rem;color:var(--silver-dim)}
+.verify-body{padding:1.4rem 2rem 2rem}
+.verify-step{display:flex;align-items:flex-start;gap:1rem;padding:.9rem 0;border-bottom:1px solid var(--border-c)}
+.verify-step:last-of-type{border-bottom:none}
+.verify-step-icon{width:36px;height:36px;border-radius:50%;background:var(--pine-mid);border:1px solid var(--border-m);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.verify-step-info{flex:1}
+.verify-step-title{font-size:.84rem;font-weight:500;color:var(--silver);margin-bottom:.2rem}
+.verify-step-desc{font-size:.74rem;color:var(--silver-dim);line-height:1.5}
+.verify-check{width:20px;height:20px;accent-color:var(--accent);flex-shrink:0;margin-top:.2rem;cursor:pointer}
+.verify-note{font-size:.72rem;color:var(--silver-dim);line-height:1.55;margin:1rem 0;padding:.6rem .9rem;background:rgba(168,196,184,.06);border-left:2px solid var(--accent)}
+.verify-btn-row{display:flex;gap:.8rem;margin-top:1.2rem}
+/* ── Mark sold button in profile ── */
+.profile-mini-btn.sold-btn{border-color:rgba(200,50,50,.4);color:#e07070}
+.profile-mini-btn.sold-btn:hover{background:rgba(200,50,50,.1)}
+
 </style>
 </head>
 <body>
@@ -610,12 +653,20 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
           <div class="seller-view-hint" id="sellerViewHint"></div>
         </div>
       </div>
-      <div class="modal-actions">
+      <div class="modal-actions" id="modalActions">
         <button class="btn btn-ghost"  id="modalContactBtn" onclick="openMsgFromItem()"></button>
-        <button class="btn btn-ghost"  id="modalBoostBtn" onclick="boostCurrentItem()"></button>
+        <button class="btn btn-accent" id="modalOfferBtn"   onclick="openOfferModal()"></button>
+        <button class="btn btn-ghost"  id="modalBoostBtn"   onclick="boostCurrentItem()"></button>
         <button class="btn btn-silver" id="modalBuyBtn"></button>
+        <button class="btn btn-ghost"  id="modalSoldBtn"    onclick="markCurrentSold()" style="display:none"></button>
       </div>
-      <div class="listing-share-link" id="modalShareLink"></div>
+      <!-- Share buttons -->
+      <div class="share-actions" id="shareActions">
+        <button class="btn btn-ghost" id="shareWhatsBtn"  onclick="shareItem('whatsapp')"></button>
+        <button class="btn btn-ghost" id="shareInstaBtn"  onclick="shareItem('instagram')"></button>
+        <button class="btn btn-ghost" id="shareCopyBtn"   onclick="shareItem('copy')"></button>
+      </div>
+      <div class="listing-share-link" id="modalShareLink" style="margin-top:.5rem"></div>
     </div>
   </div>
 </div>
@@ -959,7 +1010,7 @@ const TR={
     notifFav:'ha messo il cuore al tuo annuncio',notifMsg:'ti ha inviato un messaggio',notifBoost:'Boost attivato con successo',notifPublish:'Il tuo annuncio è ora online',notifPrice:'ha abbassato il prezzo di un articolo salvato',
     boostSellTitle:'Boost annuncio',boostSellSub:'Metti l’annuncio in evidenza nel feed e nel profilo.',boostCta:'⚡ Boost',boostActive:'⚡ Boost attivo',boostToast:'⚡ Annuncio messo in evidenza',
     modalBoost:'⚡ Metti in boost',modalBoostActive:'⚡ Già in boost',shareLabel:'Link diretto:',
-    boostPaymentTitle:'Pagamento boost locale',boostPaymentSub:'Scegli la durata del boost e, se vuoi, metti in evidenza più articoli con il 10% di sconto sul totale.',boostItemsLabel:'Articoli da mettere in boost',boostPlanLabel:'Durata del boost',boostSummaryLabel:'Riepilogo',boostSummaryItemsText:'Articoli selezionati',boostSummaryPlanText:'Piano scelto',boostSummaryDiscountText:'Sconto multi-articolo',boostSummaryTotalText:'Totale',boostDiscountNote:'Lo sconto del 10% si applica automaticamente se selezioni almeno 2 articoli.',boostOpenHint:'Apri articolo o profilo',boostGoArticle:'Apri articolo',boostGoProfile:'Apri profilo',boostCancel:'Annulla',boostConfirm:'Conferma pagamento locale',boostPlan3:'Boost locale · 3 giorni',boostPlan7:'Boost locale · 7 giorni',boostPlan10:'Boost locale · 10 giorni',boostToastPaid:'Pagamento registrato · boost attivato',
+    boostPaymentTitle:'Pagamento boost locale',boostPaymentSub:'Scegli la durata del boost e, se vuoi, metti in evidenza più articoli con il 10% di sconto sul totale.',boostItemsLabel:'Articoli da mettere in boost',boostPlanLabel:'Durata del boost',boostSummaryLabel:'Riepilogo',boostSummaryItemsText:'Articoli selezionati',boostSummaryPlanText:'Piano scelto',boostSummaryDiscountText:'Sconto multi-articolo',boostSummaryTotalText:'Totale',boostDiscountNote:'Lo sconto del 10% si applica automaticamente se selezioni almeno 2 articoli.',boostOpenHint:'Apri articolo o profilo',boostGoArticle:'Apri articolo',boostGoProfile:'Apri profilo',boostCancel:'Annulla',boostConfirm:'Conferma pagamento locale',boostPlan3:'Boost locale · 3 giorni',boostPlan7:'Boost locale · 7 giorni',boostPlan10:'Boost locale · 10 giorni',boostToastPaid:'Pagamento registrato · boost attivato',modalOffer:'💸 Fai un\'offerta',offerTitle:'Fai un\'offerta',offerSub:'Proponi un prezzo al venditore',offerAmountLabel:'Il tuo prezzo (CHF)',offerMsgLabel:'Messaggio (opzionale)',offerMsgPh:'es. Posso venire a ritirare domani…',offerNote:'Il venditore vedrà la tua offerta e potrà accettarla o controproporla.',offerCancel:'Annulla',offerSend:'Invia offerta',toastOfferSent:'✓ Offerta inviata!',shareLabel:'Condividi:',shareWhatsApp:'📱 WhatsApp',shareInsta:'📸 Instagram',shareCopy:'🔗 Copia link',toastLinkCopied:'✓ Link copiato!',markSold:'Segna come venduto',soldChip:'Venduto',soldBadge:'Venduto',toastSoldDone:'✓ Annuncio segnato come venduto',verifyTitle:'Verifica identità',verifySub:'Ottieni il badge ✓ Verificato',verifyEmailStep:'Conferma email',verifyEmailDesc:'Spunta per simulare la conferma email.',verifyIdStep:'Documento d\'identità',verifyIdDesc:'Spunta per simulare il caricamento del documento.',verifyNote:'Demo: spunta entrambi gli step e conferma.',verifyCancel:'Annulla',verifyConfirm:'Conferma verifica',toastVerified:'✓ Profilo verificato!',verifyBtn:'🛡 Verifica identità',verified:'✓ Verificato',
   },
   de:{
     all:'Alle',catKleider:'Kleider',catSchuhe:'Schuhe',catAccessoires:'Accessoires',
@@ -1017,7 +1068,7 @@ const TR={
     notifFav:'hat dein Inserat favorisiert',notifMsg:'hat dir eine Nachricht geschickt',notifBoost:'Boost erfolgreich aktiviert',notifPublish:'Dein Inserat ist jetzt online',notifPrice:'hat den Preis eines gemerkten Artikels gesenkt',
     boostSellTitle:'Inserat boosten',boostSellSub:'Hebt dein Inserat im Feed und Profil hervor.',boostCta:'⚡ Boost',boostActive:'⚡ Boost aktiv',boostToast:'⚡ Inserat hervorgehoben',
     modalBoost:'⚡ Boosten',modalBoostActive:'⚡ Bereits geboostet',shareLabel:'Direktlink:',
-    boostPaymentTitle:'Lokale Boost-Zahlung',boostPaymentSub:'Wähle die Boost-Dauer und hebe auf Wunsch mehrere Artikel mit 10% Rabatt auf den Gesamtbetrag hervor.',boostItemsLabel:'Zu boostende Artikel',boostPlanLabel:'Boost-Dauer',boostSummaryLabel:'Zusammenfassung',boostSummaryItemsText:'Ausgewählte Artikel',boostSummaryPlanText:'Gewählter Plan',boostSummaryDiscountText:'Rabatt für mehrere Artikel',boostSummaryTotalText:'Gesamt',boostDiscountNote:'Der 10%-Rabatt wird automatisch angewendet, wenn mindestens 2 Artikel ausgewählt werden.',boostOpenHint:'Artikel oder Profil öffnen',boostGoArticle:'Artikel öffnen',boostGoProfile:'Profil öffnen',boostCancel:'Abbrechen',boostConfirm:'Lokale Zahlung bestätigen',boostPlan3:'Lokaler Boost · 3 Tage',boostPlan7:'Lokaler Boost · 7 Tage',boostPlan10:'Lokaler Boost · 10 Tage',boostToastPaid:'Zahlung registriert · Boost aktiviert',
+    boostPaymentTitle:'Lokale Boost-Zahlung',boostPaymentSub:'Wähle die Boost-Dauer und hebe auf Wunsch mehrere Artikel mit 10% Rabatt auf den Gesamtbetrag hervor.',boostItemsLabel:'Zu boostende Artikel',boostPlanLabel:'Boost-Dauer',boostSummaryLabel:'Zusammenfassung',boostSummaryItemsText:'Ausgewählte Artikel',boostSummaryPlanText:'Gewählter Plan',boostSummaryDiscountText:'Rabatt für mehrere Artikel',boostSummaryTotalText:'Gesamt',boostDiscountNote:'Der 10%-Rabatt wird automatisch angewendet, wenn mindestens 2 Artikel ausgewählt werden.',boostOpenHint:'Artikel oder Profil öffnen',boostGoArticle:'Artikel öffnen',boostGoProfile:'Profil öffnen',boostCancel:'Abbrechen',boostConfirm:'Lokale Zahlung bestätigen',boostPlan3:'Lokaler Boost · 3 Tage',boostPlan7:'Lokaler Boost · 7 Tage',boostPlan10:'Lokaler Boost · 10 Tage',boostToastPaid:'Zahlung registriert · Boost aktiviert',modalOffer:'💸 Angebot machen',offerTitle:'Angebot machen',offerSub:'Schlage dem Verkäufer einen Preis vor',offerAmountLabel:'Dein Preis (CHF)',offerMsgLabel:'Nachricht (optional)',offerMsgPh:'z.B. Ich kann morgen abholen…',offerNote:'Der Verkäufer sieht dein Angebot und kann es annehmen oder kontern.',offerCancel:'Abbrechen',offerSend:'Angebot senden',toastOfferSent:'✓ Angebot gesendet!',shareLabel:'Teilen:',shareWhatsApp:'📱 WhatsApp',shareInsta:'📸 Instagram',shareCopy:'🔗 Link kopieren',toastLinkCopied:'✓ Link kopiert!',markSold:'Als verkauft markieren',soldChip:'Verkauft',soldBadge:'Verkauft',toastSoldDone:'✓ Inserat als verkauft markiert',verifyTitle:'Identität verifizieren',verifySub:'Erhalte das ✓ Verifiziert-Abzeichen',verifyEmailStep:'E-Mail bestätigen',verifyEmailDesc:'Haken setzen um E-Mail-Bestätigung zu simulieren.',verifyIdStep:'Ausweisdokument',verifyIdDesc:'Haken setzen um Ausweis-Upload zu simulieren.',verifyNote:'Demo: beide Schritte abhaken und bestätigen.',verifyCancel:'Abbrechen',verifyConfirm:'Verifizierung bestätigen',toastVerified:'✓ Profil verifiziert!',verifyBtn:'🛡 Identität verifizieren',verified:'✓ Verifiziert',
   },
   fr:{
     all:'Tout',catKleider:'Vêtements',catSchuhe:'Chaussures',catAccessoires:'Accessoires',
@@ -1075,7 +1126,7 @@ const TR={
     notifFav:'a mis un cœur sur votre annonce',notifMsg:'vous a envoyé un message',notifBoost:'Boost activé avec succès',notifPublish:'Votre annonce est maintenant en ligne',notifPrice:'a baissé le prix d’un article sauvegardé',
     boostSellTitle:'Booster l’annonce',boostSellSub:'Met l’annonce en avant dans le feed et le profil.',boostCta:'⚡ Boost',boostActive:'⚡ Boost actif',boostToast:'⚡ Annonce mise en avant',
     modalBoost:'⚡ Mettre en boost',modalBoostActive:'⚡ Déjà boostée',shareLabel:'Lien direct :',
-    boostPaymentTitle:'Paiement boost local',boostPaymentSub:'Choisissez la durée du boost et mettez éventuellement plusieurs articles en avant avec 10% de réduction sur le total.',boostItemsLabel:'Articles à booster',boostPlanLabel:'Durée du boost',boostSummaryLabel:'Récapitulatif',boostSummaryItemsText:'Articles sélectionnés',boostSummaryPlanText:'Formule choisie',boostSummaryDiscountText:'Remise multi-articles',boostSummaryTotalText:'Total',boostDiscountNote:'La remise de 10% s’applique automatiquement si vous sélectionnez au moins 2 articles.',boostOpenHint:'Ouvrir l’article ou le profil',boostGoArticle:'Ouvrir l’article',boostGoProfile:'Ouvrir le profil',boostCancel:'Annuler',boostConfirm:'Confirmer le paiement local',boostPlan3:'Boost local · 3 jours',boostPlan7:'Boost local · 7 jours',boostPlan10:'Boost local · 10 jours',boostToastPaid:'Paiement enregistré · boost activé',
+    boostPaymentTitle:'Paiement boost local',boostPaymentSub:'Choisissez la durée du boost et mettez éventuellement plusieurs articles en avant avec 10% de réduction sur le total.',boostItemsLabel:'Articles à booster',boostPlanLabel:'Durée du boost',boostSummaryLabel:'Récapitulatif',boostSummaryItemsText:'Articles sélectionnés',boostSummaryPlanText:'Formule choisie',boostSummaryDiscountText:'Remise multi-articles',boostSummaryTotalText:'Total',boostDiscountNote:'La remise de 10% s’applique automatiquement si vous sélectionnez au moins 2 articles.',boostOpenHint:'Ouvrir l’article ou le profil',boostGoArticle:'Ouvrir l’article',boostGoProfile:'Ouvrir le profil',boostCancel:'Annuler',boostConfirm:'Confirmer le paiement local',boostPlan3:'Boost local · 3 jours',boostPlan7:'Boost local · 7 jours',boostPlan10:'Boost local · 10 jours',boostToastPaid:'Paiement enregistré · boost activé',modalOffer:'💸 Faire une offre',offerTitle:'Faire une offre',offerSub:'Proposez un prix au vendeur',offerAmountLabel:'Votre prix (CHF)',offerMsgLabel:'Message (optionnel)',offerMsgPh:'ex. Je peux venir récupérer demain…',offerNote:'Le vendeur verra votre offre et pourra l\'accepter ou faire une contre-offre.',offerCancel:'Annuler',offerSend:'Envoyer l\'offre',toastOfferSent:'✓ Offre envoyée !',shareLabel:'Partager :',shareWhatsApp:'📱 WhatsApp',shareInsta:'📸 Instagram',shareCopy:'🔗 Copier le lien',toastLinkCopied:'✓ Lien copié !',markSold:'Marquer comme vendu',soldChip:'Vendu',soldBadge:'Vendu',toastSoldDone:'✓ Annonce marquée comme vendue',verifyTitle:'Vérifier l\'identité',verifySub:'Obtenez le badge ✓ Vérifié',verifyEmailStep:'Confirmer l\'email',verifyEmailDesc:'Cochez pour simuler la confirmation email.',verifyIdStep:'Pièce d\'identité',verifyIdDesc:'Cochez pour simuler le téléchargement du document.',verifyNote:'Démo : cochez les deux étapes et confirmez.',verifyCancel:'Annuler',verifyConfirm:'Confirmer',toastVerified:'✓ Profil vérifié !',verifyBtn:'🛡 Vérifier l\'identité',verified:'✓ Vérifié',
   }
 };
 
@@ -1088,6 +1139,7 @@ const MR_IDX = 5;
 
 let currentUser = {
   name:   'Marco Rossi',
+  verified: false,
   email:  'marco.rossi@example.ch',
   city:   'Zürich',
   bio:    'Appassionato di moda sostenibile. Vendo capi di qualità.',
@@ -1100,11 +1152,11 @@ function userInitials(){
 
 /* ══ SELLERS (indici 0-4 = altri, 5 = MR) ══ */
 const SELLERS=[
-  {name:'Lea M.',    rating:'⭐ 5.0',sales:41,city:'Zürich', init:'LM',joined:'2022',bio:''},
-  {name:'Sophie B.', rating:'⭐ 4.8',sales:22,city:'Genève', init:'SB',joined:'2023',bio:''},
-  {name:'Nadia R.',  rating:'⭐ 4.9',sales:17,city:'Basel',  init:'NR',joined:'2023',bio:''},
-  {name:'Anna K.',   rating:'⭐ 4.7',sales:9, city:'Bern',   init:'AK',joined:'2024',bio:''},
-  {name:'Chiara F.', rating:'⭐ 5.0',sales:34,city:'Lugano', init:'CF',joined:'2022',bio:''},
+  {name:'Lea M.',    verified:true,    rating:'⭐ 5.0',sales:41,city:'Zürich', init:'LM',joined:'2022',bio:''},
+  {name:'Sophie B.', verified:true, rating:'⭐ 4.8',sales:22,city:'Genève', init:'SB',joined:'2023',bio:''},
+  {name:'Nadia R.',  verified:false,  rating:'⭐ 4.9',sales:17,city:'Basel',  init:'NR',joined:'2023',bio:''},
+  {name:'Anna K.',   verified:true,   rating:'⭐ 4.7',sales:9, city:'Bern',   init:'AK',joined:'2024',bio:''},
+  {name:'Chiara F.', verified:true, rating:'⭐ 5.0',sales:34,city:'Lugano', init:'CF',joined:'2022',bio:''},
   /* index 5 = utente loggato, dati presi da currentUser */
   null,
 ];
@@ -1174,6 +1226,8 @@ function addNotification(type,text,targetType=null,targetId=null){
   updateNotifBadge();renderNotifPanel();
 }
 function notificationText(n){
+  if(n.type==='offer') return '💸 Nuova offerta: '+n.text;
+  if(n.type==='sold')  return '✓ Venduto: '+n.text;
   const map={fav:T('notifFav'),msg:T('notifMsg'),boost:T('notifBoost'),publish:T('notifPublish'),price:T('notifPrice')};
   if(n.type==='boost' || n.type==='publish') return map[n.type];
   return `${n.text} ${map[n.type]}`;
@@ -1267,7 +1321,7 @@ function getFiltered(){
   const size=document.getElementById('sizeFilter').value;
   const cond=document.getElementById('condFilter').value;
   const city=document.getElementById('cityFilter').value.trim().toLowerCase();
-  let filtered=listings.filter(l=>(isAll||l.cat===ak)&&
+  let filtered=listings.filter(l=>!l.sold&&(isAll||l.cat===ak)&&
     (l.title.toLowerCase().includes(q)||l.brand.toLowerCase().includes(q)||catLabel(l.cat).toLowerCase().includes(q)||l.city.toLowerCase().includes(q))&&
     l.price>=minPrice&&l.price<=maxPrice&&
     (size==='all'||l.size===size)&&
@@ -1436,16 +1490,39 @@ function openItem(id,skipHistory=false){
   document.getElementById('sellerName').textContent=s.name;
   document.getElementById('sellerRating').textContent=`${s.rating} · ${s.city} · 👁 ${l.views}`;
   document.getElementById('sellerViewHint').textContent=T('sellerViewHint');
+  const ownListing=l.seller===MR_IDX;
+  const s2=getSeller(l.seller);
+  // Seller name + verified badge
+  document.getElementById('sellerName').innerHTML=s2.name+verifiedBadgeHtml(s2);
   document.getElementById('modalContactBtn').textContent=T('modalContact');
   document.getElementById('modalBuyBtn').textContent=T('modalBuy');
-  const ownListing=l.seller===MR_IDX;
-  document.getElementById('modalBoostBtn').textContent=l.boosted?T('modalBoostActive'):T('modalBoost');
-  document.getElementById('modalBoostBtn').disabled=l.boosted || !ownListing;
-  document.getElementById('modalBoostBtn').style.opacity=ownListing? '1' : '.45';
-  document.getElementById('modalBoostBtn').title=ownListing ? '' : 'Puoi mettere in boost solo i tuoi annunci';
+  // Offer button — hide for own listings
+  const offerBtn=document.getElementById('modalOfferBtn');
+  if(offerBtn){offerBtn.textContent=T('modalOffer')||'💸 Fai un\'offerta';offerBtn.style.display=ownListing?'none':'inline-flex';}
+  // Sold button — show only for own non-sold listings
+  const soldBtn=document.getElementById('modalSoldBtn');
+  if(soldBtn){soldBtn.textContent=T('markSold');soldBtn.style.display=(ownListing&&!l.sold)?'inline-flex':'none';}
+  const boostBtn=document.getElementById('modalBoostBtn');
+  boostBtn.textContent=l.boosted?T('modalBoostActive'):T('modalBoost');
+  if(ownListing){
+    boostBtn.style.display='inline-flex';
+    boostBtn.disabled=!!l.boosted;
+    boostBtn.style.opacity='1';
+    boostBtn.title='';
+  }else{
+    boostBtn.style.display='none';
+    boostBtn.disabled=true;
+    boostBtn.style.opacity='1';
+    boostBtn.title='';
+  }
   document.getElementById('modalBuyBtn').onclick=()=>addToCart(l);
+  document.getElementById('modalBuyBtn').style.display=l.sold?'none':'inline-flex';
+  // Share buttons
+  const swb=document.getElementById('shareWhatsBtn'); if(swb)swb.textContent=T('shareWhatsApp');
+  const sib=document.getElementById('shareInstaBtn'); if(sib)sib.textContent=T('shareInsta');
+  const scb=document.getElementById('shareCopyBtn');  if(scb)scb.textContent=T('shareCopy');
   const url=directItemUrl(l.id);
-  document.getElementById('modalShareLink').innerHTML=`${T('shareLabel')} <a href="${url}" target="_blank">${url}</a>`;
+  document.getElementById('modalShareLink').innerHTML=`<span style="font-size:.68rem;color:var(--silver-dim)">${T('shareLabel')}</span> <a href="${url}" target="_blank" style="color:var(--accent);font-size:.68rem">${url}</a>`;
   document.getElementById('itemOverlay').classList.add('open');
   renderListings();
   if(!skipHistory){history.pushState({itemId:l.id},'',url);}
@@ -1520,10 +1597,12 @@ function renderProfilePanel(){
   const avatarHtml=currentUser.photo
     ?`<div class="profile-panel-avatar"><img src="${currentUser.photo}" alt=""/></div>`
     :`<div class="profile-panel-avatar"><span>${userInitials()}</span></div>`;
+  const verBadge=currentUser.verified?`<span class="verified-badge"><svg width="9" height="9" viewBox="0 0 9 9"><path d="M1.5 4.5l2 2 4-4" stroke="var(--accent)" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>${T('verified')}</span>`:
+    `<button class="btn btn-ghost" style="font-size:.65rem;padding:.2rem .7rem;margin-left:.5rem;border-color:rgba(168,196,184,.4);color:var(--accent)" onclick="openVerifyModal()">${T('verifyBtn')||'🛡 Verifica identità'}</button>`;
   hero.innerHTML=`
     ${avatarHtml}
     <div>
-      <div class="profile-panel-name">${currentUser.name}</div>
+      <div class="profile-panel-name">${currentUser.name}${verBadge}</div>
       <div class="profile-panel-sub">${currentUser.email} · ${currentUser.city}</div>
       ${currentUser.bio?`<div class="profile-panel-bio">${currentUser.bio}</div>`:''}
       <button class="btn btn-ghost profile-edit-btn" onclick="openEditProfile()">${T('editProfileTitle')} ✏️</button>
@@ -1536,14 +1615,16 @@ function renderProfilePanel(){
     const imgEl=l.photos.length
       ?`<div class="profile-listing-img"><img src="${l.photos[0]}" alt=""/></div>`
       :`<div class="profile-listing-emoji">${l.emoji}</div>`;
-    return `<div class="profile-listing-row" onclick="openItem(${l.id});closeProfilePanel()">
+    return `<div class="profile-listing-row${l.sold?' sold-row':''}" onclick="${l.sold?'':('openItem('+l.id+');closeProfilePanel()')}">
       ${imgEl}
       <div class="profile-listing-info">
-        <div class="profile-listing-title">${l.title}</div>
-        <div class="profile-listing-price">CHF ${l.price} · ${catLabel(l.cat)} ${l.boosted?`<span class="boost-chip">${T('boostActive')}</span>`:''}</div>
+        <div class="profile-listing-title">${l.title}${l.sold?` <span style="font-size:.62rem;color:#888;letter-spacing:.1em;text-transform:uppercase">${T('soldBadge')}</span>`:''}</div>
+        <div class="profile-listing-price">CHF ${l.price} · ${catLabel(l.cat)} ${l.boosted&&!l.sold?`<span class="boost-chip">${T('boostActive')}</span>`:''}</div>
       </div>
       <div class="profile-listing-actions">
-        <button class="profile-mini-btn ${l.boosted?'active':''}" onclick="event.stopPropagation();toggleBoost(${l.id})">${l.boosted?T('boostActive'):T('boostCta')}</button>
+        ${l.sold?`<span style="font-size:.65rem;color:var(--silver-dim);letter-spacing:.08em;text-transform:uppercase">${T('soldChip')}</span>`
+          :`<button class="profile-mini-btn ${l.boosted?'active':''}" onclick="event.stopPropagation();toggleBoost(${l.id})">${l.boosted?T('boostActive'):T('boostCta')}</button>
+           <button class="profile-mini-btn sold-btn" style="margin-left:.3rem" onclick="event.stopPropagation();markSoldFromProfile(${l.id})">${T('markSold')||'Vendi'}</button>`}
       </div>
     </div>`;
   }).join('');
@@ -1680,7 +1761,23 @@ function confirmBoostPayment(){
   const ids=[...boostSelection]; if(!ids.length) return;
   ids.forEach(id=>{ const item=listings.find(l=>l.id===id); if(item && item.seller===MR_IDX){ item.boosted=true; addNotification('boost',item.title,'item',item.id); } });
   closeBoostPaymentDirect();
-  if(currentItemId!==null){ const l=listings.find(x=>x.id===currentItemId); if(l){ const ownListing=l.seller===MR_IDX; document.getElementById('modalBoostBtn').textContent=l.boosted?T('modalBoostActive'):T('modalBoost'); document.getElementById('modalBoostBtn').disabled=!!l.boosted || !ownListing; document.getElementById('modalBoostBtn').style.opacity=ownListing ? '1' : '.45'; } }
+  if(currentItemId!==null){
+    const l=listings.find(x=>x.id===currentItemId);
+    if(l){
+      const ownListing=l.seller===MR_IDX;
+      const boostBtn=document.getElementById('modalBoostBtn');
+      boostBtn.textContent=l.boosted?T('modalBoostActive'):T('modalBoost');
+      if(ownListing){
+        boostBtn.style.display='inline-flex';
+        boostBtn.disabled=!!l.boosted;
+        boostBtn.style.opacity='1';
+      }else{
+        boostBtn.style.display='none';
+        boostBtn.disabled=true;
+        boostBtn.style.opacity='1';
+      }
+    }
+  }
   renderListings(); renderProfilePanel(); showToast(T('boostToastPaid'));
 }
 function closeBoostPayment(e){ if(e.target.id==='boostOverlay') closeBoostPaymentDirect(); }
@@ -1870,7 +1967,7 @@ function publishItem(){
   if(!title||isNaN(price)||price<0||!city){showToast(T('toastRequired'));return;}
   const wantsBoost=document.getElementById('sellBoost').checked;
   const newId=Date.now();
-  listings.unshift({id:newId,photos:[...currentPhotos],video:currentVideo,emoji:'👗',title,brand,price,cat,cond,size,city,desc,seller:MR_IDX,boosted:false,views:0,createdAt:Date.now()});
+  listings.unshift({id:newId,photos:[...currentPhotos],video:currentVideo,emoji:'👗',title,brand,price,cat,cond,size,city,desc,seller:MR_IDX,boosted:false,sold:false,views:0,createdAt:Date.now()});
   closeSellModal();activeCat=T('all');renderCats();applyTranslations();renderListings();renderProfilePanel();
   addNotification('publish',title,'item',newId);
   showToast(T('toastPublish'));
@@ -1878,6 +1975,101 @@ function publishItem(){
   currentPhotos=[];currentVideo=null;renderPreviews();renderVideoPreview();
   document.getElementById('sellBoost').checked=false;
   if(wantsBoost){ setTimeout(()=>openBoostPayment(newId),180); }
+}
+
+
+/* ══ OFFER ══ */
+function openOfferModal(){
+  const l=listings.find(x=>x.id===currentItemId);if(!l)return;
+  const s=getSeller(l.seller);
+  const setText=(id,k)=>{const e=document.getElementById(id);if(e)e.textContent=T(k);};
+  setText('offerTitle','offerTitle');
+  document.getElementById('offerSub').textContent=T('offerSub')+' — '+s.name;
+  setText('offerAmountLabel','offerAmountLabel');
+  setText('offerMsgLabel','offerMsgLabel');
+  document.getElementById('offerMsg').placeholder=T('offerMsgPh');
+  setText('offerNote','offerNote');
+  setText('offerCancelBtn','offerCancel');
+  setText('offerSendBtn','offerSend');
+  document.getElementById('offerAmount').value=Math.round(l.price*0.85);
+  document.getElementById('offerMsg').value='';
+  document.getElementById('offerOverlay').classList.add('open');
+}
+function closeOfferModal(){document.getElementById('offerOverlay').classList.remove('open');}
+function submitOffer(){
+  const amt=+document.getElementById('offerAmount').value;
+  if(!amt||amt<1){showToast('⚠️ Inserisci un importo valido');return;}
+  closeOfferModal();
+  const l=listings.find(x=>x.id===currentItemId);
+  if(l && l.seller===MR_IDX) addNotification('offer','CHF '+amt+' per '+l.title,'item',l.id);
+  showToast(T('toastOfferSent'));
+}
+
+/* ══ SHARE ══ */
+function shareItem(mode){
+  const l=listings.find(x=>x.id===currentItemId);if(!l)return;
+  const url=directItemUrl(l.id);
+  const txt='Guarda questo articolo su Reduse: '+l.title+' — CHF '+l.price;
+  if(mode==='whatsapp'){
+    window.open('https://wa.me/?text='+encodeURIComponent(txt+' '+url),'_blank');
+  } else if(mode==='instagram'){
+    navigator.clipboard.writeText(url).then(()=>showToast('📸 '+T('toastLinkCopied')+' — incolla nelle Stories'));
+  } else {
+    navigator.clipboard.writeText(url).then(()=>showToast(T('toastLinkCopied')));
+  }
+}
+
+/* ══ SOLD ══ */
+function markCurrentSold(){
+  const l=listings.find(x=>x.id===currentItemId);if(!l||l.seller!==MR_IDX)return;
+  if(!confirm('Segnare "'+l.title+'" come venduto? Verrà rimosso dai risultati.'))return;
+  l.sold=true;
+  closeItemModal();
+  renderListings();
+  renderProfilePanel();
+  showToast(T('toastSoldDone'));
+}
+
+/* ══ VERIFY ══ */
+function openVerifyModal(){
+  closeAllPanels();
+  const setText=(id,k)=>{const e=document.getElementById(id);if(e)e.textContent=T(k);};
+  setText('verifyTitle','verifyTitle');
+  setText('verifySub','verifySub');
+  setText('verifyEmailStep','verifyEmailStep');
+  setText('verifyEmailDesc','verifyEmailDesc');
+  setText('verifyIdStep','verifyIdStep');
+  setText('verifyIdDesc','verifyIdDesc');
+  setText('verifyNote','verifyNote');
+  setText('verifyCancelBtn','verifyCancel');
+  setText('verifyConfirmBtn','verifyConfirm');
+  document.getElementById('verifyEmailChk').checked=false;
+  document.getElementById('verifyIdChk').checked=false;
+  document.getElementById('verifyOverlay').classList.add('open');
+}
+function closeVerifyModal(){document.getElementById('verifyOverlay').classList.remove('open');}
+function submitVerify(){
+  const email=document.getElementById('verifyEmailChk').checked;
+  const idDoc=document.getElementById('verifyIdChk').checked;
+  if(!email||!idDoc){showToast('⚠️ Completa entrambi gli step per verificare il profilo');return;}
+  currentUser.verified=true;
+  closeVerifyModal();
+  renderProfilePanel();
+  syncNavAvatar();
+  showToast(T('toastVerified'));
+}
+
+/* ══ BADGE VERIFIED HELPER ══ */
+function verifiedBadgeHtml(s){
+  if(!s||!s.verified)return'';
+  return` <span class="verified-badge"><svg width="9" height="9" viewBox="0 0 9 9"><path d="M1.5 4.5l2 2 4-4" stroke="var(--accent)" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>${T('verified')}</span>`;
+}
+
+
+function markSoldFromProfile(id){
+  const l=listings.find(x=>x.id===id);if(!l)return;
+  if(!confirm('Segnare "'+l.title+'" come venduto?'))return;
+  l.sold=true;renderListings();renderProfilePanel();showToast(T('toastSoldDone'));
 }
 
 /* ══ TOAST ══ */
@@ -1895,5 +2087,64 @@ window.addEventListener('popstate',()=>{
   else document.getElementById('itemOverlay').classList.remove('open');
 });
 </script>
+
+<!-- ══ OFFER MODAL ══ -->
+<div class="overlay" id="offerOverlay" onclick="if(event.target.id==='offerOverlay')closeOfferModal()">
+  <div class="modal offer-modal">
+    <button class="modal-close" onclick="closeOfferModal()">✕</button>
+    <div class="offer-header">
+      <h3 id="offerTitle"></h3>
+      <div class="offer-sub" id="offerSub"></div>
+    </div>
+    <div class="offer-body">
+      <label style="font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:.5rem" id="offerAmountLabel"></label>
+      <div class="offer-price-row">
+        <span class="offer-chf">CHF</span>
+        <input type="number" id="offerAmount" min="1" step="1" placeholder="0"/>
+      </div>
+      <label style="font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:.5rem;margin-top:.8rem" id="offerMsgLabel"></label>
+      <textarea class="msg-textarea" id="offerMsg" style="min-height:80px"></textarea>
+      <div class="offer-note" id="offerNote"></div>
+      <div style="display:flex;gap:.8rem;margin-top:1rem">
+        <button class="btn btn-ghost" style="flex:1;justify-content:center" onclick="closeOfferModal()" id="offerCancelBtn"></button>
+        <button class="btn btn-accent" style="flex:1;justify-content:center" onclick="submitOffer()" id="offerSendBtn"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ VERIFY MODAL ══ -->
+<div class="overlay" id="verifyOverlay" onclick="if(event.target.id==='verifyOverlay')closeVerifyModal()">
+  <div class="modal verify-modal">
+    <button class="modal-close" onclick="closeVerifyModal()">✕</button>
+    <div class="verify-header">
+      <h3 id="verifyTitle"></h3>
+      <div class="verify-sub" id="verifySub"></div>
+    </div>
+    <div class="verify-body">
+      <div class="verify-step">
+        <div class="verify-step-icon">✉️</div>
+        <div class="verify-step-info">
+          <div class="verify-step-title" id="verifyEmailStep"></div>
+          <div class="verify-step-desc" id="verifyEmailDesc"></div>
+        </div>
+        <input type="checkbox" class="verify-check" id="verifyEmailChk"/>
+      </div>
+      <div class="verify-step">
+        <div class="verify-step-icon">🪪</div>
+        <div class="verify-step-info">
+          <div class="verify-step-title" id="verifyIdStep"></div>
+          <div class="verify-step-desc" id="verifyIdDesc"></div>
+        </div>
+        <input type="checkbox" class="verify-check" id="verifyIdChk"/>
+      </div>
+      <div class="verify-note" id="verifyNote"></div>
+      <div class="verify-btn-row">
+        <button class="btn btn-ghost" style="flex:1;justify-content:center" onclick="closeVerifyModal()" id="verifyCancelBtn"></button>
+        <button class="btn btn-accent" style="flex:1;justify-content:center" onclick="submitVerify()" id="verifyConfirmBtn"></button>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
