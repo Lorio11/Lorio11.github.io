@@ -6,6 +6,10 @@
 <title>Reduse — Second Hand Mode Schweiz</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
 <script src="https://js.stripe.com/v3/"></script>
+<!-- ══ Supabase SDK ══ -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- ══ Cloudinary Upload Widget ══ -->
+<script src="https://upload-widget.cloudinary.com/global/all.js"></script>
 <style>
 :root{
   --pine:       #1b3a2d;
@@ -947,6 +951,122 @@ const STRIPE_PK='pk_test_51OEXampleKeyReplaceWithYourOwnStripePublishableKey00';
 let stripe=null,cardElement=null,cardMounted=false;
 try{stripe=Stripe(STRIPE_PK);}catch(e){}
 
+
+/* ╔══════════════════════════════════════════════════════════════╗
+   ║  CONFIGURAZIONE SUPABASE + CLOUDINARY                        ║
+   ║  Sostituire i valori TODO con le proprie credenziali         ║
+   ╚══════════════════════════════════════════════════════════════╝ */
+
+/* ── SUPABASE ──────────────────────────────────────────────────── */
+const SUPABASE_URL  = 'TODO_SUPABASE_URL';
+const SUPABASE_ANON = 'TODO_SUPABASE_ANON_KEY';
+let _sb = null;
+function sb(){
+  if(!_sb && SUPABASE_URL !== 'TODO_SUPABASE_URL')
+    _sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  return _sb;
+}
+const SUPABASE_READY = SUPABASE_URL !== 'TODO_SUPABASE_URL';
+
+/* ── CLOUDINARY ────────────────────────────────────────────────── */
+const CLOUDINARY_CLOUD  = 'TODO_CLOUD_NAME';
+const CLOUDINARY_PRESET = 'TODO_UPLOAD_PRESET';
+const CLOUDINARY_READY  = CLOUDINARY_CLOUD !== 'TODO_CLOUD_NAME';
+
+/* ── Carica annunci da DB ──────────────────────────────────────── */
+async function loadListingsFromDB(){
+  if(!SUPABASE_READY) return;
+  try{
+    const {data,error}=await sb().from('listings').select('*').order('created_at',{ascending:false});
+    if(error)throw error;
+    if(data&&data.length){
+      listings=data.map(r=>({
+        id:r.id,title:r.title,brand:r.brand,price:r.price,cat:r.category,
+        cond:r.condition_idx,size:r.size,city:r.city,desc:r.description,
+        emoji:r.emoji||'👗',photos:r.photos||[],video:r.video_url||null,
+        seller:r.seller_idx??MR_IDX,boosted:r.boosted||false,sold:r.sold||false,
+        views:r.views||0,createdAt:new Date(r.created_at).getTime(),
+      }));
+      renderListings();renderCats();
+    }
+  }catch(e){console.warn('Supabase loadListings:',e.message);}
+}
+
+/* ── Salva annuncio su DB ─────────────────────────────────────── */
+async function saveListingToDB(l){
+  if(!SUPABASE_READY) return l.id;
+  try{
+    const {data,error}=await sb().from('listings').insert([{
+      title:l.title,brand:l.brand,price:l.price,category:l.cat,
+      condition_idx:l.cond,size:l.size,city:l.city,description:l.desc,
+      emoji:l.emoji,photos:l.photos,video_url:l.video||null,
+      seller_idx:l.seller,boosted:l.boosted,sold:l.sold,views:0,
+    }]).select().single();
+    if(error)throw error;
+    return data.id;
+  }catch(e){console.warn('Supabase saveListing:',e.message);return l.id;}
+}
+
+/* ── Marca come venduto su DB ─────────────────────────────────── */
+async function markSoldInDB(id){
+  if(!SUPABASE_READY) return;
+  try{ await sb().from('listings').update({sold:true}).eq('id',id); }
+  catch(e){console.warn('Supabase markSold:',e.message);}
+}
+
+/* ── Salva profilo su DB ──────────────────────────────────────── */
+async function saveProfileToDB(user){
+  if(!SUPABASE_READY) return;
+  try{
+    await sb().from('profiles').upsert([{
+      id:'marco-rossi',name:user.name,email:user.email,
+      city:user.city,bio:user.bio,photo_url:user.photo||null,verified:user.verified||false,
+    }]);
+  }catch(e){console.warn('Supabase saveProfile:',e.message);}
+}
+
+/* ── Carica profilo da DB ─────────────────────────────────────── */
+async function loadProfileFromDB(){
+  if(!SUPABASE_READY) return;
+  try{
+    const {data}=await sb().from('profiles').select('*').eq('id','marco-rossi').single();
+    if(data){
+      currentUser.name=data.name||currentUser.name;
+      currentUser.email=data.email||currentUser.email;
+      currentUser.city=data.city||currentUser.city;
+      currentUser.bio=data.bio||currentUser.bio;
+      currentUser.photo=data.photo_url||null;
+      currentUser.verified=data.verified||false;
+      syncNavAvatar();renderProfilePanel();
+    }
+  }catch(e){console.warn('Supabase loadProfile:',e.message);}
+}
+
+/* ── Upload foto su Cloudinary ────────────────────────────────── */
+function uploadToCloudinary(file){
+  return new Promise((resolve,reject)=>{
+    if(!CLOUDINARY_READY){
+      // Modalità demo: base64 in memoria
+      const r=new FileReader();
+      r.onload=ev=>resolve(ev.target.result);
+      r.onerror=reject;
+      r.readAsDataURL(file);
+      return;
+    }
+    const fd=new FormData();
+    fd.append('file',file);
+    fd.append('upload_preset',CLOUDINARY_PRESET);
+    fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`,{method:'POST',body:fd})
+      .then(r=>r.json())
+      .then(data=>{
+        if(data.secure_url) resolve(data.secure_url);
+        else reject(new Error(data.error?.message||'Upload fallito'));
+      })
+      .catch(reject);
+  });
+}
+function uploadAvatarToCloudinary(file){ return uploadToCloudinary(file); }
+
 /* ══ TRANSLATIONS ══ */
 const TR={
   it:{
@@ -1502,19 +1622,10 @@ function openItem(id,skipHistory=false){
   // Sold button — show only for own non-sold listings
   const soldBtn=document.getElementById('modalSoldBtn');
   if(soldBtn){soldBtn.textContent=T('markSold');soldBtn.style.display=(ownListing&&!l.sold)?'inline-flex':'none';}
-  const boostBtn=document.getElementById('modalBoostBtn');
-  boostBtn.textContent=l.boosted?T('modalBoostActive'):T('modalBoost');
-  if(ownListing){
-    boostBtn.style.display='inline-flex';
-    boostBtn.disabled=!!l.boosted;
-    boostBtn.style.opacity='1';
-    boostBtn.title='';
-  }else{
-    boostBtn.style.display='none';
-    boostBtn.disabled=true;
-    boostBtn.style.opacity='1';
-    boostBtn.title='';
-  }
+  document.getElementById('modalBoostBtn').textContent=l.boosted?T('modalBoostActive'):T('modalBoost');
+  document.getElementById('modalBoostBtn').disabled=l.boosted || !ownListing;
+  document.getElementById('modalBoostBtn').style.opacity=ownListing?'1':'.45';
+  document.getElementById('modalBoostBtn').title=ownListing?'':'Puoi mettere in boost solo i tuoi annunci';
   document.getElementById('modalBuyBtn').onclick=()=>addToCart(l);
   document.getElementById('modalBuyBtn').style.display=l.sold?'none':'inline-flex';
   // Share buttons
@@ -1667,12 +1778,16 @@ function renderEditAvatarPreview(){
     el.style.background='var(--pine-mid)';
   }
 }
-function handleAvatarUpload(e){
+async function handleAvatarUpload(e){
   const f=e.target.files[0];if(!f)return;
-  const r=new FileReader();
-  r.onload=ev=>{currentUser.photo=ev.target.result;renderEditAvatarPreview();};
-  r.readAsDataURL(f);
   e.target.value='';
+  try{
+    showToast('⬆️ Caricamento avatar…');
+    const url=await uploadAvatarToCloudinary(f);
+    currentUser.photo=url;
+    renderEditAvatarPreview();
+    showToast('✓ Foto profilo aggiornata');
+  }catch(err){console.warn('Avatar upload:',err);showToast('⚠️ Errore caricamento avatar');}
 }
 function saveProfile(){
   const name=document.getElementById('editName').value.trim();
@@ -1687,8 +1802,10 @@ function saveProfile(){
   closeEditProfileDirect();
   syncNavAvatar();
   renderProfilePanel();
-  renderListings(); // aggiorna eventuali card con seller MR
+  renderListings();
   showToast(T('toastProfileSaved'));
+  // Salva su Supabase (se configurato)
+  saveProfileToDB(currentUser);
 }
 function closeEditProfile(e){if(e.target.id==='editProfileOverlay')closeEditProfileDirect();}
 function closeEditProfileDirect(){document.getElementById('editProfileOverlay').classList.remove('open');}
@@ -1761,23 +1878,7 @@ function confirmBoostPayment(){
   const ids=[...boostSelection]; if(!ids.length) return;
   ids.forEach(id=>{ const item=listings.find(l=>l.id===id); if(item && item.seller===MR_IDX){ item.boosted=true; addNotification('boost',item.title,'item',item.id); } });
   closeBoostPaymentDirect();
-  if(currentItemId!==null){
-    const l=listings.find(x=>x.id===currentItemId);
-    if(l){
-      const ownListing=l.seller===MR_IDX;
-      const boostBtn=document.getElementById('modalBoostBtn');
-      boostBtn.textContent=l.boosted?T('modalBoostActive'):T('modalBoost');
-      if(ownListing){
-        boostBtn.style.display='inline-flex';
-        boostBtn.disabled=!!l.boosted;
-        boostBtn.style.opacity='1';
-      }else{
-        boostBtn.style.display='none';
-        boostBtn.disabled=true;
-        boostBtn.style.opacity='1';
-      }
-    }
-  }
+  if(currentItemId!==null){ const l=listings.find(x=>x.id===currentItemId); if(l){ const ownListing=l.seller===MR_IDX; document.getElementById('modalBoostBtn').textContent=l.boosted?T('modalBoostActive'):T('modalBoost'); document.getElementById('modalBoostBtn').disabled=!!l.boosted || !ownListing; document.getElementById('modalBoostBtn').style.opacity=ownListing ? '1' : '.45'; } }
   renderListings(); renderProfilePanel(); showToast(T('boostToastPaid'));
 }
 function closeBoostPayment(e){ if(e.target.id==='boostOverlay') closeBoostPaymentDirect(); }
@@ -1853,10 +1954,19 @@ function closeSuccess(e){if(e.target.id==='successOverlay')closeSuccessModal();}
 function closeSuccessModal(){document.getElementById('successOverlay').classList.remove('open');}
 
 /* ══ PHOTOS (sell) ══ */
-function handlePhotos(e){
+async function handlePhotos(e){
   const files=[...e.target.files].filter(f=>f.type.startsWith('image/')),remaining=10-currentPhotos.length;
-  files.slice(0,remaining).forEach(f=>{const r=new FileReader();r.onload=ev=>{currentPhotos.push(ev.target.result);renderPreviews();};r.readAsDataURL(f);});
+  const toUpload=files.slice(0,remaining);
   e.target.value='';
+  for(const file of toUpload){
+    try{
+      showToast('⬆️ Caricamento foto…');
+      const url = await uploadToCloudinary(file);
+      currentPhotos.push(url);
+      renderPreviews();
+    } catch(err){ console.warn('Foto upload error:',err); showToast('⚠️ Errore caricamento foto'); }
+  }
+  showToast('✓ '+toUpload.length+' foto caricate');
 }
 function removePhoto(i){currentPhotos.splice(i,1);renderPreviews();}
 function renderPreviews(){
@@ -1872,7 +1982,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   area.addEventListener('drop',e=>{
     e.preventDefault();area.classList.remove('drag-over');
     const files=[...e.dataTransfer.files].filter(f=>f.type.startsWith('image/')),remaining=10-currentPhotos.length;
-    files.slice(0,remaining).forEach(f=>{const r=new FileReader();r.onload=ev=>{currentPhotos.push(ev.target.result);renderPreviews();};r.readAsDataURL(f);});
+    (async()=>{for(const f of files.slice(0,remaining)){try{const url=await uploadToCloudinary(f);currentPhotos.push(url);renderPreviews();}catch(e){console.warn(e);}}})();
   });
 });
 
@@ -1967,10 +2077,15 @@ function publishItem(){
   if(!title||isNaN(price)||price<0||!city){showToast(T('toastRequired'));return;}
   const wantsBoost=document.getElementById('sellBoost').checked;
   const newId=Date.now();
-  listings.unshift({id:newId,photos:[...currentPhotos],video:currentVideo,emoji:'👗',title,brand,price,cat,cond,size,city,desc,seller:MR_IDX,boosted:false,sold:false,views:0,createdAt:Date.now()});
+  const newListing={id:newId,photos:[...currentPhotos],video:currentVideo,emoji:'👗',title,brand,price,cat,cond,size,city,desc,seller:MR_IDX,boosted:false,sold:false,views:0,createdAt:Date.now()};
+  listings.unshift(newListing);
   closeSellModal();activeCat=T('all');renderCats();applyTranslations();renderListings();renderProfilePanel();
   addNotification('publish',title,'item',newId);
   showToast(T('toastPublish'));
+  // Salva su Supabase (se configurato)
+  saveListingToDB(newListing).then(dbId=>{
+    if(dbId !== newId){ newListing.id=dbId; } // aggiorna id con quello del DB
+  });
   ['sellTitle','sellBrand','sellPrice','sellSize','sellDesc','sellCity'].forEach(id=>document.getElementById(id).value='');
   currentPhotos=[];currentVideo=null;renderPreviews();renderVideoPreview();
   document.getElementById('sellBoost').checked=false;
@@ -2028,6 +2143,7 @@ function markCurrentSold(){
   renderListings();
   renderProfilePanel();
   showToast(T('toastSoldDone'));
+  markSoldInDB(l.id);
 }
 
 /* ══ VERIFY ══ */
@@ -2070,6 +2186,7 @@ function markSoldFromProfile(id){
   const l=listings.find(x=>x.id===id);if(!l)return;
   if(!confirm('Segnare "'+l.title+'" come venduto?'))return;
   l.sold=true;renderListings();renderProfilePanel();showToast(T('toastSoldDone'));
+  markSoldInDB(id);
 }
 
 /* ══ TOAST ══ */
@@ -2079,6 +2196,14 @@ function showToast(msg){const t=document.getElementById('toast');t.textContent=m
 setLang('it');
 syncNavAvatar();
 resetFilters();
+// Carica dati persistenti da Supabase (se configurato)
+if(SUPABASE_READY){
+  loadListingsFromDB();
+  loadProfileFromDB();
+  if(!SUPABASE_READY) console.info('Supabase non configurato — dati demo locali');
+} else {
+  console.info('ℹ️  Modalità demo: dati in memoria. Configura SUPABASE_URL e SUPABASE_ANON_KEY per persistere i dati.');
+}
 const initialItem=new URLSearchParams(location.search).get('item');
 if(initialItem) setTimeout(()=>openItem(Number(initialItem),true),0);
 window.addEventListener('popstate',()=>{
