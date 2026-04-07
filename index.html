@@ -535,6 +535,47 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
 .profile-mini-btn.sold-btn{border-color:rgba(200,50,50,.4);color:#e07070}
 .profile-mini-btn.sold-btn:hover{background:rgba(200,50,50,.1)}
 
+
+/* ── INBOX PANEL ────────────────────────────────────────────── */
+.inbox-panel{width:400px;max-width:100vw}
+.inbox-empty{text-align:center;padding:3rem 1rem;color:var(--silver-dim);font-size:.82rem;letter-spacing:.08em;text-transform:uppercase}
+.inbox-thread-item{display:flex;align-items:center;gap:.9rem;padding:.9rem 1.5rem;border-bottom:1px solid var(--border-c);cursor:pointer;transition:background .18s;position:relative}
+.inbox-thread-item:hover{background:rgba(168,196,184,.05)}
+.inbox-thread-avatar{width:40px;height:40px;border-radius:50%;background:var(--pine-mid);border:1px solid var(--border-m);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:.9rem;font-weight:600;color:var(--silver);flex-shrink:0;overflow:hidden}
+.inbox-thread-avatar img{width:100%;height:100%;object-fit:cover}
+.inbox-thread-info{flex:1;min-width:0}
+.inbox-thread-name{font-size:.88rem;font-weight:500;color:var(--silver);display:flex;align-items:center;gap:.4rem}
+.inbox-thread-preview{font-size:.75rem;color:var(--silver-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:.15rem}
+.inbox-thread-meta{font-size:.65rem;color:rgba(212,221,216,.4);margin-top:.2rem;letter-spacing:.04em}
+.inbox-unread-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0}
+/* ── THREAD PANEL (inside inbox) ────────────────────────────── */
+.thread-panel-back{display:flex;align-items:center;gap:.7rem;padding:.9rem 1.5rem;border-bottom:1px solid var(--border-c);cursor:pointer}
+.thread-panel-back:hover .thread-back-arrow{color:var(--silver)}
+.thread-back-arrow{color:var(--silver-dim);font-size:1.1rem;transition:color .2s}
+.thread-panel-name{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;color:var(--silver)}
+.thread-panel-sub{font-size:.68rem;color:var(--accent);letter-spacing:.06em}
+.thread-messages{flex:1;overflow-y:auto;padding:.8rem 1.2rem;display:flex;flex-direction:column;gap:.6rem;min-height:0}
+.msg-bubble{max-width:82%;padding:.6rem .9rem;border-radius:12px;font-size:.86rem;line-height:1.5;position:relative;word-break:break-word}
+.msg-bubble.me{align-self:flex-end;background:var(--pine-mid);color:var(--silver);border-bottom-right-radius:3px}
+.msg-bubble.them{align-self:flex-start;background:rgba(255,255,255,.06);color:var(--silver);border-bottom-left-radius:3px}
+.msg-bubble-time{font-size:.6rem;color:rgba(212,221,216,.4);margin-top:.3rem;text-align:right}
+.msg-bubble.them .msg-bubble-time{text-align:left}
+.thread-composer{display:flex;gap:.6rem;padding:.8rem 1.2rem;border-top:1px solid var(--border-c);background:var(--pine-deep);flex-shrink:0}
+.thread-input{flex:1;padding:.6rem .9rem;background:rgba(255,255,255,.05);border:1px solid var(--border-c);border-radius:999px;font-family:'Jost',sans-serif;font-size:.86rem;color:var(--silver);outline:none;resize:none;min-height:36px;max-height:100px;overflow-y:auto;transition:border-color .2s;line-height:1.4}
+.thread-input:focus{border-color:var(--accent)}
+.thread-input::placeholder{color:rgba(212,221,216,.3)}
+.thread-send-btn{width:36px;height:36px;border-radius:50%;background:var(--accent);color:var(--pine-deep);border:none;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .2s}
+.thread-send-btn:hover{opacity:.85}
+.thread-send-btn:disabled{opacity:.35;cursor:not-allowed}
+/* Realtime indicator */
+.realtime-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-left:.35rem;animation:rtPulse 1.8s infinite}
+@keyframes rtPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.typing-indicator{align-self:flex-start;background:rgba(255,255,255,.06);border-radius:12px;border-bottom-left-radius:3px;padding:.55rem .9rem;display:flex;gap:.3rem;align-items:center}
+.typing-dot{width:6px;height:6px;border-radius:50%;background:var(--silver-dim);animation:typDot 1.2s infinite}
+.typing-dot:nth-child(2){animation-delay:.2s}
+.typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes typDot{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+
 </style>
 </head>
 <body>
@@ -556,6 +597,7 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
     </div>
     <button class="btn btn-ghost" id="btnSell" onclick="openSell()"></button>
     <button class="icon-btn" onclick="openNotifications()">🔔<span class="icon-badge" id="notifBadge"></span></button>
+    <button class="icon-btn" onclick="openInboxPanel()" id="inboxNavBtn">💬<span class="icon-badge" id="inboxBadge"></span></button>
     <button class="icon-btn" onclick="openFavPanel()">♥<span class="icon-badge" id="favBadge"></span></button>
     <button class="icon-btn" onclick="openCart()">🛍<span class="icon-badge" id="cartBadge"></span></button>
     <button class="profile-nav-btn" id="profileNavBtn" onclick="openProfilePanel()"></button>
@@ -927,6 +969,35 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
   <div style="padding:1rem 1.5rem;flex:1"><div id="notifItems"></div></div>
 </div>
 
+
+<!-- ══ INBOX PANEL ══ -->
+<div class="side-panel inbox-panel" id="inboxPanel">
+  <!-- List view -->
+  <div id="inboxListView" style="display:flex;flex-direction:column;height:100%">
+    <div class="side-panel-header">
+      <div class="side-panel-title" id="inboxPanelTitle">Chat</div>
+      <button class="side-panel-close" onclick="closeInboxPanel()">✕</button>
+    </div>
+    <div style="flex:1;overflow-y:auto" id="inboxThreadList"></div>
+  </div>
+  <!-- Thread view (hidden by default) -->
+  <div id="inboxThreadView" style="display:none;flex-direction:column;height:100%">
+    <div class="thread-panel-back" onclick="showInboxList()">
+      <span class="thread-back-arrow">←</span>
+      <div>
+        <div class="thread-panel-name" id="threadPanelName"></div>
+        <div class="thread-panel-sub" id="threadRealtimeStatus"></div>
+      </div>
+    </div>
+    <div class="thread-messages" id="threadMessages"></div>
+    <div class="thread-composer">
+      <textarea class="thread-input" id="threadInput" placeholder="Scrivi un messaggio…" rows="1"
+        onkeydown="threadInputKeyDown(event)" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+      <button class="thread-send-btn" onclick="sendThreadMsg()" id="threadSendBtn">➤</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══ CART PANEL ══ -->
 <div class="side-panel cart-panel" id="cartPanel">
   <div class="cart-header">
@@ -966,13 +1037,12 @@ function sb(){
     _sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
   return _sb;
 }
-const SUPABASE_READY = SUPABASE_URL !== 'TODO_SUPABASE_URL';
+const SUPABASE_READY = SUPABASE_URL !== 'https://jfgntailwunjrfsiyppl.supabase.co';
 
 /* ── CLOUDINARY ────────────────────────────────────────────────── */
 const CLOUDINARY_CLOUD  = 'dpft9hzxl';
 const CLOUDINARY_PRESET = 'reduse_upload';
 const CLOUDINARY_READY  = CLOUDINARY_CLOUD !== 'dpft9hzxl';
-
 
 /* ── Carica annunci da DB ──────────────────────────────────────── */
 async function loadListingsFromDB(){
@@ -1006,6 +1076,55 @@ async function saveListingToDB(l){
     if(error)throw error;
     return data.id;
   }catch(e){console.warn('Supabase saveListing:',e.message);return l.id;}
+}
+
+
+/* ── SUPABASE: messaggi ────────────────────────────────────── */
+async function loadMessagesFromDB(otherUserId){
+  if(!SUPABASE_READY) return null;
+  try{
+    const myId=currentUser.dbId;
+    const {data,error}=await sb().from('messages')
+      .select('*')
+      .or(`and(sender_id.eq.${myId},receiver_id.eq.${otherUserId}),and(sender_id.eq.${otherUserId},receiver_id.eq.${myId})`)
+      .order('created_at',{ascending:true});
+    if(error)throw error;
+    return data||[];
+  }catch(e){console.warn('loadMessages:',e.message);return null;}
+}
+
+async function saveMessageToDB(receiverId,text,listingId=null){
+  if(!SUPABASE_READY) return null;
+  try{
+    const {data,error}=await sb().from('messages').insert([{
+      sender_id:currentUser.dbId,receiver_id:receiverId,
+      text:text,listing_id:listingId||null,read:false,
+    }]).select().single();
+    if(error)throw error;
+    return data;
+  }catch(e){console.warn('saveMessage:',e.message);return null;}
+}
+
+async function markMessagesReadInDB(otherUserId){
+  if(!SUPABASE_READY) return;
+  try{
+    await sb().from('messages')
+      .update({read:true})
+      .eq('receiver_id',currentUser.dbId)
+      .eq('sender_id',otherUserId)
+      .eq('read',false);
+  }catch(e){console.warn('markRead:',e.message);}
+}
+
+async function countUnreadMessagesFromDB(){
+  if(!SUPABASE_READY) return;
+  try{
+    const {count}=await sb().from('messages')
+      .select('*',{count:'exact',head:true})
+      .eq('receiver_id',currentUser.dbId)
+      .eq('read',false);
+    updateInboxBadge(count||0);
+  }catch(e){console.warn('countUnread:',e.message);}
 }
 
 /* ── Marca come venduto su DB ─────────────────────────────────── */
@@ -1688,8 +1807,8 @@ function closeSellerProfileModal(e){if(e.target.id==='sellerProfileOverlay')clos
 function closeSellerProfileDirect(){document.getElementById('sellerProfileOverlay').classList.remove('open');}
 
 /* ══ MESSAGING ══ */
-function openMsgFromItem(){if(currentSellerIdx===null)return;msgTargetName=getSeller(currentSellerIdx).name;openMsgModal();}
-function openMsgFromSeller(){closeSellerProfileDirect();openMsgModal();}
+function openMsgFromItem(){if(currentSellerIdx===null)return;openMsgFromItemInbox();}
+function openMsgFromSeller(){openMsgFromSellerInbox();}
 function openMsgModal(){
   document.getElementById('msgTitle').textContent=T('msgTitle');
   document.getElementById('msgTo').textContent=T('msgTo')+msgTargetName;
@@ -1910,7 +2029,7 @@ function closeCart(){closePanel('cartPanel');}
 /* ══ PANEL HELPERS ══ */
 function openPanel(id){closeAllPanels();document.getElementById(id).classList.add('open');document.getElementById('panelOverlay').classList.add('open');}
 function closePanel(id){document.getElementById(id).classList.remove('open');document.getElementById('panelOverlay').classList.remove('open');}
-function closeAllPanels(){['cartPanel','favPanel','profilePanel','notifPanel'].forEach(id=>document.getElementById(id).classList.remove('open'));document.getElementById('panelOverlay').classList.remove('open');}
+function closeAllPanels(){['cartPanel','favPanel','profilePanel','notifPanel','inboxPanel'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('open');});document.getElementById('panelOverlay').classList.remove('open');}
 
 /* ══ STRIPE CHECKOUT ══ */
 function openStripeCheckout(){
@@ -2190,6 +2309,222 @@ function markSoldFromProfile(id){
   markSoldInDB(id);
 }
 
+
+/* ══ INBOX + REALTIME CHAT ══════════════════════════════════ */
+
+// id db dell'utente (in demo = stringa, in prod = auth.user.id)
+if(!currentUser.dbId) currentUser.dbId = 'dbfcd938-cd44-45ed-a598-3fa253ce1179';
+
+// Mappa in-memory dei thread: { sellerId: [{from,text,time,id}] }
+const _threads = {
+  0:[{id:'demo1',from:'them',text:'Ciao! Il Trench è ancora disponibile?',time:Date.now()-1000*60*90}],
+  1:[{id:'demo2',from:'them',text:'Posso vedere altre foto delle Air Max?', time:Date.now()-1000*60*60*5}],
+};
+let _activeThreadId   = null; // sellerId della conversazione aperta
+let _realtimeChannel  = null; // Supabase Realtime channel
+let _typingTimeout    = null;
+
+/* ── Badge inbox ─────────────────────────────────────────── */
+function updateInboxBadge(n){
+  const b=document.getElementById('inboxBadge');if(!b)return;
+  const count=n!=null?n:Object.values(_threads).reduce((s,t)=>s+t.filter(m=>m.from==='them'&&!m.read).length,0);
+  b.style.display=count?'flex':'none';b.textContent=count;
+}
+
+/* ── Apri / chiudi inbox panel ───────────────────────────── */
+function openInboxPanel(){
+  showInboxList();
+  renderInboxList();
+  openPanel('inboxPanel');
+  // Conta non letti da DB
+  countUnreadMessagesFromDB();
+}
+function closeInboxPanel(){closePanel('inboxPanel');}
+
+/* ── Lista thread ────────────────────────────────────────── */
+function showInboxList(){
+  document.getElementById('inboxListView').style.display='flex';
+  document.getElementById('inboxListView').style.flexDirection='column';
+  document.getElementById('inboxThreadView').style.display='none';
+  _activeThreadId=null;
+  unsubscribeRealtime();
+}
+function renderInboxList(){
+  const el=document.getElementById('inboxThreadList');
+  const entries=Object.entries(_threads).filter(([,t])=>t.length>0)
+    .sort((a,b)=>(b[1][b[1].length-1]?.time||0)-(a[1][a[1].length-1]?.time||0));
+  if(!entries.length){
+    el.innerHTML='<div class="inbox-empty">Nessun messaggio ancora</div>';
+    updateInboxBadge(0);return;
+  }
+  el.innerHTML=entries.map(([idxStr,thread])=>{
+    const idx=+idxStr;
+    const s=getSeller(idx);
+    const last=thread[thread.length-1];
+    const hasUnread=thread.some(m=>m.from==='them'&&!m.read);
+    const avatarInner=s.photo?`<img src="${s.photo}" alt=""/>`:s.init;
+    return `<div class="inbox-thread-item" onclick="openThread(${idx})">
+      <div class="inbox-thread-avatar">${avatarInner}</div>
+      <div class="inbox-thread-info">
+        <div class="inbox-thread-name">
+          ${s.name}${s.verified?`<span class="verified-badge" style="font-size:.52rem;padding:.1rem .4rem">✓</span>`:''}
+          ${hasUnread?'<span class="inbox-unread-dot"></span>':''}
+        </div>
+        <div class="inbox-thread-preview">${last?.from==='me'?'Tu: ':''} ${last?.text||''}</div>
+        <div class="inbox-thread-meta">${formatTimeAgo(last?.time||Date.now())}</div>
+      </div>
+    </div>`;
+  }).join('');
+  updateInboxBadge();
+}
+
+/* ── Apri thread specifico ───────────────────────────────── */
+async function openThread(sellerIdx){
+  _activeThreadId=sellerIdx;
+  if(!_threads[sellerIdx]) _threads[sellerIdx]=[];
+  // Marca come letti
+  _threads[sellerIdx].forEach(m=>{if(m.from==='them')m.read=true;});
+  updateInboxBadge();
+  const s=getSeller(sellerIdx);
+  document.getElementById('threadPanelName').textContent=s.name;
+  // Mostra thread view
+  document.getElementById('inboxListView').style.display='none';
+  document.getElementById('inboxThreadView').style.display='flex';
+  document.getElementById('inboxThreadView').style.flexDirection='column';
+  // Carica da DB se disponibile
+  if(SUPABASE_READY && s.dbId){
+    const dbMsgs=await loadMessagesFromDB(s.dbId);
+    if(dbMsgs){
+      _threads[sellerIdx]=dbMsgs.map(m=>({
+        id:m.id,
+        from: m.sender_id===currentUser.dbId?'me':'them',
+        text:m.text,
+        time:new Date(m.created_at).getTime(),
+        read:m.read,
+      }));
+    }
+    markMessagesReadInDB(s.dbId);
+    // Abilita Realtime
+    subscribeRealtime(sellerIdx, s.dbId);
+  }
+  renderThread();
+  // input focus
+  setTimeout(()=>document.getElementById('threadInput')?.focus(),150);
+}
+
+/* ── Render messaggi del thread ─────────────────────────── */
+function renderThread(){
+  const thread=_threads[_activeThreadId]||[];
+  const el=document.getElementById('threadMessages');
+  if(!thread.length){
+    el.innerHTML='<div style="text-align:center;color:var(--silver-dim);font-size:.8rem;padding:2rem 0;opacity:.6">Nessun messaggio ancora.<br>Scrivi il primo! 👋</div>';
+  } else {
+    el.innerHTML=thread.map(m=>`
+      <div class="msg-bubble ${m.from}">
+        ${escapeHtml(m.text)}
+        <div class="msg-bubble-time">${formatTimeAgo(m.time)}</div>
+      </div>`).join('');
+  }
+  el.scrollTop=el.scrollHeight;
+}
+function escapeHtml(t){
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ── Invia messaggio dal thread ─────────────────────────── */
+async function sendThreadMsg(){
+  const input=document.getElementById('threadInput');
+  const txt=(input?.value||'').trim();
+  if(!txt)return;
+  input.value='';input.style.height='auto';
+  const msg={id:'local_'+Date.now(),from:'me',text:txt,time:Date.now(),read:true};
+  if(!_threads[_activeThreadId]) _threads[_activeThreadId]=[];
+  _threads[_activeThreadId].push(msg);
+  renderThread();
+  renderInboxList();
+  // Salva su Supabase
+  const s=getSeller(_activeThreadId);
+  if(SUPABASE_READY && s?.dbId){
+    const saved=await saveMessageToDB(s.dbId, txt);
+    if(saved) msg.id=saved.id;
+  }
+  // Aggiorna anche il vecchio sistema di notifiche
+  addNotification('msg', s?.name||'Venditore');
+}
+function threadInputKeyDown(e){
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendThreadMsg();}
+}
+
+/* ── Realtime subscription ───────────────────────────────── */
+function subscribeRealtime(sellerIdx, senderDbId){
+  if(!SUPABASE_READY) return;
+  unsubscribeRealtime();
+  const el=document.getElementById('threadRealtimeStatus');
+  if(el) el.innerHTML='<span class="realtime-dot"></span> Live';
+  _realtimeChannel=sb().channel('msgs_'+sellerIdx)
+    .on('postgres_changes',{
+      event:'INSERT',schema:'public',table:'messages',
+      filter:`receiver_id=eq.${currentUser.dbId}`,
+    }, payload=>{
+      const m=payload.new;
+      if(String(m.sender_id)!==String(senderDbId)) return; // ignora altri mittenti
+      if(_threads[sellerIdx]?.some(x=>x.id===m.id)) return; // evita duplicati
+      const newMsg={id:m.id,from:'them',text:m.text,time:new Date(m.created_at).getTime(),read:true};
+      if(!_threads[sellerIdx]) _threads[sellerIdx]=[];
+      _threads[sellerIdx].push(newMsg);
+      renderThread();
+      renderInboxList();
+      markMessagesReadInDB(senderDbId);
+      // Rimuovi "sta scrivendo…"
+      clearTypingIndicator();
+    })
+    .subscribe();
+}
+function unsubscribeRealtime(){
+  if(_realtimeChannel){ sb()?.removeChannel(_realtimeChannel); _realtimeChannel=null; }
+  const el=document.getElementById('threadRealtimeStatus');
+  if(el) el.textContent='';
+}
+function clearTypingIndicator(){
+  clearTimeout(_typingTimeout);
+  const ti=document.getElementById('typingIndicator');
+  if(ti) ti.remove();
+}
+
+/* ── Collega openThread anche dal vecchio sendMsg ─────────── */
+// Override: quando si clicca "Scrivi al venditore" apre direttamente il thread
+function openMsgFromItemInbox(){
+  if(currentSellerIdx===null)return;
+  closeItemModal(false);
+  setTimeout(()=>{ openInboxPanel(); openThread(currentSellerIdx); },120);
+}
+function openMsgFromSellerInbox(){
+  closeSellerProfileDirect();
+  setTimeout(()=>{ openInboxPanel(); openThread(currentSellerIdx); },120);
+}
+
+/* ── Aggiorna closeAllPanels per includere inboxPanel ─────── */
+const _origCloseAllPanels=closeAllPanels;
+closeAllPanels=function(){
+  _origCloseAllPanels();
+  const ip=document.getElementById('inboxPanel');
+  if(ip) ip.classList.remove('open');
+  unsubscribeRealtime();
+};
+
+/* ── Init Realtime al caricamento ─────────────────────────── */
+function initRealtime(){
+  if(!SUPABASE_READY) return;
+  // Ascolta TUTTI i messaggi in arrivo per aggiornare il badge
+  sb().channel('inbox_badge')
+    .on('postgres_changes',{
+      event:'INSERT',schema:'public',table:'messages',
+      filter:`receiver_id=eq.${currentUser.dbId}`,
+    }, ()=>{ countUnreadMessagesFromDB(); })
+    .subscribe();
+}
+
+
 /* ══ TOAST ══ */
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);}
 
@@ -2201,6 +2536,7 @@ resetFilters();
 if(SUPABASE_READY){
   loadListingsFromDB();
   loadProfileFromDB();
+  initRealtime();
   if(!SUPABASE_READY) console.info('Supabase non configurato — dati demo locali');
 } else {
   console.info('ℹ️  Modalità demo: dati in memoria. Configura SUPABASE_URL e SUPABASE_ANON_KEY per persistere i dati.');
