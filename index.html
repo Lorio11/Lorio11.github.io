@@ -536,7 +536,29 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
 .profile-mini-btn.sold-btn:hover{background:rgba(200,50,50,.1)}
 
 
-/* ── INBOX PANEL ────────────────────────────────────────────── */
+/* ── AUTH MODAL ──────────────────────────────────────────────── */
+#authOverlay{z-index:500;background:rgba(10,25,16,.96);backdrop-filter:blur(8px)}
+.auth-modal{background:var(--pine-deep);border:1px solid var(--border-m);max-width:420px;width:100%;padding:0;position:relative;animation:fadeUp .35s ease}
+.auth-logo{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:600;letter-spacing:.06em;color:var(--silver);text-align:center;padding:2.2rem 2rem .5rem}
+.auth-logo span{color:var(--accent)}
+.auth-tabs{display:flex;border-bottom:1px solid var(--border-c)}
+.auth-tab{flex:1;padding:.75rem;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:.13em;text-transform:uppercase;background:transparent;border:none;color:var(--silver-dim);cursor:pointer;transition:all .2s;border-bottom:2px solid transparent}
+.auth-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.auth-body{padding:1.8rem 2rem 2rem}
+.auth-field{margin-bottom:1rem}
+.auth-field label{display:block;font-size:.63rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:.45rem}
+.auth-field input{width:100%;padding:.72rem 1rem;background:rgba(255,255,255,.04);border:1px solid var(--border-c);border-radius:2px;font-family:'Jost',sans-serif;font-size:.9rem;color:var(--silver);outline:none;transition:border-color .2s}
+.auth-field input:focus{border-color:var(--accent)}
+.auth-field input::placeholder{color:rgba(212,221,216,.25)}
+.auth-btn{width:100%;padding:.82rem;background:var(--accent);color:var(--pine-deep);border:none;border-radius:2px;font-family:'Jost',sans-serif;font-size:.78rem;letter-spacing:.13em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:opacity .2s;margin-top:.4rem}
+.auth-btn:hover{opacity:.87}
+.auth-btn:disabled{opacity:.4;cursor:not-allowed}
+.auth-error{font-size:.76rem;color:#e07070;letter-spacing:.03em;margin-top:.6rem;min-height:1.1em;text-align:center}
+.auth-footer-note{font-size:.7rem;color:var(--silver-dim);text-align:center;margin-top:1rem;letter-spacing:.04em;line-height:1.6}
+/* Auth gate: nasconde il body principale finché non loggato */
+body.auth-gate > *:not(#authOverlay){filter:blur(4px);pointer-events:none;user-select:none}
+
+
 .inbox-panel{width:400px;max-width:100vw}
 .inbox-empty{text-align:center;padding:3rem 1rem;color:var(--silver-dim);font-size:.82rem;letter-spacing:.08em;text-transform:uppercase}
 .inbox-thread-item{display:flex;align-items:center;gap:.9rem;padding:.9rem 1.5rem;border-bottom:1px solid var(--border-c);cursor:pointer;transition:background .18s;position:relative}
@@ -1033,11 +1055,10 @@ const SUPABASE_URL  = 'https://jfgntailwunjrfsiyppl.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpmZ250YWlsd3VuanJmc2l5cHBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0Mzk3MjgsImV4cCI6MjA5MTAxNTcyOH0.pBskwqKL789x4zkavrsDoTRgb76r0m8F0y2ro5lW9-k';
 let _sb = null;
 function sb(){
-  if(!_sb && SUPABASE_URL !== 'https://jfgntailwunjrfsiyppl.supabase.co')
-    _sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  if(!_sb) _sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
   return _sb;
 }
-const SUPABASE_READY = SUPABASE_URL !== 'https://jfgntailwunjrfsiyppl.supabase.co';
+const SUPABASE_READY = true;
 
 /* ── CLOUDINARY ────────────────────────────────────────────────── */
 const CLOUDINARY_CLOUD  = 'dpft9hzxl';
@@ -1136,28 +1157,31 @@ async function markSoldInDB(id){
 
 /* ── Salva profilo su DB ──────────────────────────────────────── */
 async function saveProfileToDB(user){
-  if(!SUPABASE_READY) return;
+  if(!SUPABASE_READY || !user.dbId) return;
   try{
     await sb().from('profiles').upsert([{
-      id:'marco-rossi',name:user.name,email:user.email,
-      city:user.city,bio:user.bio,photo_url:user.photo||null,verified:user.verified||false,
+      id: user.dbId, name:user.name, email:user.email,
+      city:user.city, bio:user.bio, photo_url:user.photo||null, verified:user.verified||false,
     }]);
   }catch(e){console.warn('Supabase saveProfile:',e.message);}
 }
 
 /* ── Carica profilo da DB ─────────────────────────────────────── */
 async function loadProfileFromDB(){
-  if(!SUPABASE_READY) return;
+  if(!SUPABASE_READY || !currentUser.dbId) return;
   try{
-    const {data}=await sb().from('profiles').select('*').eq('id','marco-rossi').single();
+    const {data}=await sb().from('profiles').select('*').eq('id', currentUser.dbId).single();
     if(data){
-      currentUser.name=data.name||currentUser.name;
-      currentUser.email=data.email||currentUser.email;
-      currentUser.city=data.city||currentUser.city;
-      currentUser.bio=data.bio||currentUser.bio;
-      currentUser.photo=data.photo_url||null;
-      currentUser.verified=data.verified||false;
-      syncNavAvatar();renderProfilePanel();
+      currentUser.name = data.name || currentUser.name;
+      currentUser.email = data.email || currentUser.email;
+      currentUser.city = data.city || currentUser.city;
+      currentUser.bio = data.bio || currentUser.bio;
+      currentUser.photo = data.photo_url || null;
+      currentUser.verified = data.verified || false;
+      syncNavAvatar(); renderProfilePanel();
+    } else {
+      // Primo accesso: crea profilo con dati base dall'auth
+      await saveProfileToDB(currentUser);
     }
   }catch(e){console.warn('Supabase loadProfile:',e.message);}
 }
@@ -1378,12 +1402,13 @@ const SWISS_CITIES=['Aarau','Adliswil','Allschwil','Arbon','Arlesheim','Arosa','
 const MR_IDX = 5;
 
 let currentUser = {
-  name:   'Marco Rossi',
+  name:   '',
   verified: false,
-  email:  'marco.rossi@example.ch',
+  email:  '',
   city:   'Zürich',
-  bio:    'Appassionato di moda sostenibile. Vendo capi di qualità.',
-  photo:  null,   // data URL quando carica una foto
+  bio:    '',
+  photo:  null,
+  dbId:   null,   // Supabase auth user UUID
 };
 
 function userInitials(){
@@ -1837,6 +1862,7 @@ function renderProfilePanel(){
       <div class="profile-panel-sub">${currentUser.email} · ${currentUser.city}</div>
       ${currentUser.bio?`<div class="profile-panel-bio">${currentUser.bio}</div>`:''}
       <button class="btn btn-ghost profile-edit-btn" onclick="openEditProfile()">${T('editProfileTitle')} ✏️</button>
+      <button class="btn btn-ghost profile-edit-btn" style="margin-left:.5rem;border-color:rgba(200,80,80,.35);color:#e07070;font-size:.65rem" onclick="doLogout()">⎋ Esci</button>
     </div>`;
   document.getElementById('ppStatItemsVal').textContent=myListings().length;
   const el=document.getElementById('profileListings');
@@ -2528,19 +2554,108 @@ function initRealtime(){
 /* ══ TOAST ══ */
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);}
 
+/* ══ AUTH ══ */
+function switchAuthTab(tab){
+  document.getElementById('tabLogin').classList.toggle('active', tab==='login');
+  document.getElementById('tabRegister').classList.toggle('active', tab==='register');
+  document.getElementById('formLogin').style.display = tab==='login'?'':'none';
+  document.getElementById('formRegister').style.display = tab==='register'?'':'none';
+  document.getElementById('loginError').textContent='';
+  document.getElementById('registerError').textContent='';
+}
+
+async function doLogin(){
+  const email = document.getElementById('authLoginEmail').value.trim();
+  const pwd   = document.getElementById('authLoginPwd').value;
+  const errEl = document.getElementById('loginError');
+  const btn   = document.getElementById('btnDoLogin');
+  if(!email||!pwd){errEl.textContent='⚠️ Inserisci email e password';return;}
+  btn.disabled=true; btn.textContent='…';
+  const {data,error} = await sb().auth.signInWithPassword({email,password:pwd});
+  btn.disabled=false; btn.textContent='Entra →';
+  if(error){ errEl.textContent='✕ '+error.message; return; }
+  // onAuthStateChange gestisce il resto
+}
+
+async function doRegister(){
+  const name  = document.getElementById('authRegName').value.trim();
+  const email = document.getElementById('authRegEmail').value.trim();
+  const pwd   = document.getElementById('authRegPwd').value;
+  const errEl = document.getElementById('registerError');
+  const btn   = document.getElementById('btnDoRegister');
+  if(!name){errEl.textContent='⚠️ Inserisci il tuo nome';return;}
+  if(!email||!pwd){errEl.textContent='⚠️ Email e password obbligatori';return;}
+  if(pwd.length<6){errEl.textContent='⚠️ Password min. 6 caratteri';return;}
+  btn.disabled=true; btn.textContent='…';
+  const {data,error} = await sb().auth.signUp({
+    email, password:pwd,
+    options:{ data:{ full_name: name } }
+  });
+  btn.disabled=false; btn.textContent='Crea account →';
+  if(error){ errEl.textContent='✕ '+error.message; return; }
+  // Se email confirmation è disabilitata su Supabase → login diretto
+  // altrimenti mostra messaggio di conferma
+  if(data.session){
+    // sessione attiva subito (email confirmation OFF)
+  } else {
+    errEl.style.color='var(--accent)';
+    errEl.textContent='✓ Controlla la tua email per confermare l\'account';
+  }
+}
+
+async function doLogout(){
+  closeAllPanels();
+  await sb().auth.signOut();
+  currentUser = {name:'',verified:false,email:'',city:'Zürich',bio:'',photo:null,dbId:null};
+  syncNavAvatar();
+  // Mostra auth overlay
+  document.body.classList.add('auth-gate');
+  document.getElementById('authOverlay').classList.add('open');
+  // Reset form
+  document.getElementById('authLoginEmail').value='';
+  document.getElementById('authLoginPwd').value='';
+  switchAuthTab('login');
+}
+
+function onUserLoggedIn(session){
+  const user = session.user;
+  currentUser.dbId   = user.id;
+  currentUser.email  = user.email;
+  currentUser.name   = user.user_metadata?.full_name || user.email.split('@')[0];
+  // Nascondi auth overlay
+  document.getElementById('authOverlay').classList.remove('open');
+  document.body.classList.remove('auth-gate');
+  // Carica dati
+  syncNavAvatar();
+  loadListingsFromDB();
+  loadProfileFromDB();
+  initRealtime();
+}
+
 /* ══ INIT ══ */
 setLang('it');
 syncNavAvatar();
 resetFilters();
-// Carica dati persistenti da Supabase (se configurato)
-if(SUPABASE_READY){
-  loadListingsFromDB();
-  loadProfileFromDB();
-  initRealtime();
-  if(!SUPABASE_READY) console.info('Supabase non configurato — dati demo locali');
-} else {
-  console.info('ℹ️  Modalità demo: dati in memoria. Configura SUPABASE_URL e SUPABASE_ANON_KEY per persistere i dati.');
-}
+
+// Mostra l'auth gate subito
+document.body.classList.add('auth-gate');
+document.getElementById('authOverlay').classList.add('open');
+
+// Ascolta cambi di stato auth
+sb().auth.onAuthStateChange((event, session) => {
+  if(session){
+    onUserLoggedIn(session);
+  } else if(event === 'SIGNED_OUT'){
+    document.body.classList.add('auth-gate');
+    document.getElementById('authOverlay').classList.add('open');
+  }
+});
+
+// Controlla se c'è già una sessione attiva (utente già loggato)
+sb().auth.getSession().then(({data:{session}}) => {
+  if(session) onUserLoggedIn(session);
+});
+
 const initialItem=new URLSearchParams(location.search).get('item');
 if(initialItem) setTimeout(()=>openItem(Number(initialItem),true),0);
 window.addEventListener('popstate',()=>{
@@ -2549,6 +2664,36 @@ window.addEventListener('popstate',()=>{
   else document.getElementById('itemOverlay').classList.remove('open');
 });
 </script>
+
+<!-- ══ AUTH OVERLAY ══ -->
+<div class="overlay" id="authOverlay">
+  <div class="auth-modal">
+    <div class="auth-logo">Reduse<span>·</span></div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Accedi</button>
+      <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Registrati</button>
+    </div>
+    <div class="auth-body">
+      <!-- Login form -->
+      <div id="formLogin">
+        <div class="auth-field"><label>Email</label><input type="email" id="authLoginEmail" placeholder="tua@email.ch" autocomplete="email"/></div>
+        <div class="auth-field"><label>Password</label><input type="password" id="authLoginPwd" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+        <button class="auth-btn" id="btnDoLogin" onclick="doLogin()">Entra →</button>
+        <div class="auth-error" id="loginError"></div>
+        <div class="auth-footer-note">Non hai un account? <span style="color:var(--accent);cursor:pointer" onclick="switchAuthTab('register')">Registrati gratis</span></div>
+      </div>
+      <!-- Register form -->
+      <div id="formRegister" style="display:none">
+        <div class="auth-field"><label>Nome completo</label><input type="text" id="authRegName" placeholder="es. Sofia Müller" autocomplete="name"/></div>
+        <div class="auth-field"><label>Email</label><input type="email" id="authRegEmail" placeholder="tua@email.ch" autocomplete="email"/></div>
+        <div class="auth-field"><label>Password</label><input type="password" id="authRegPwd" placeholder="min. 6 caratteri" autocomplete="new-password" onkeydown="if(event.key==='Enter')doRegister()"/></div>
+        <button class="auth-btn" id="btnDoRegister" onclick="doRegister()">Crea account →</button>
+        <div class="auth-error" id="registerError"></div>
+        <div class="auth-footer-note">Hai già un account? <span style="color:var(--accent);cursor:pointer" onclick="switchAuthTab('login')">Accedi</span></div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ══ OFFER MODAL ══ -->
 <div class="overlay" id="offerOverlay" onclick="if(event.target.id==='offerOverlay')closeOfferModal()">
