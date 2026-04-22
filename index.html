@@ -635,11 +635,11 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
       <button class="lang-btn" onclick="setLang('fr')">FR</button>
     </div>
     <button class="btn btn-ghost" id="btnSell" onclick="openSell()"></button>
-    <button class="icon-btn" onclick="openNotifications()">🔔<span class="icon-badge" id="notifBadge"></span></button>
-    <button class="icon-btn" onclick="openInboxPanel()" id="inboxNavBtn">💬<span class="icon-badge" id="inboxBadge"></span></button>
-    <button class="icon-btn heart-icon-btn" onclick="if(!currentUser.dbId){openAuthModal('login')}else{openFavPanel()}">♥<span class="icon-badge" id="favBadge"></span></button>
-    <button class="icon-btn cart-icon-btn" onclick="openCart()">🛍<span class="icon-badge" id="cartBadge"></span></button>
-    <button class="profile-nav-btn" id="profileNavBtn" onclick="openProfileOrAuth()"><span class="login-label">Accedi o registrati</span></button>
+    <button class="icon-btn" id="notifBtn" aria-label="Notifiche" onclick="openNotifications()">🔔<span class="icon-badge" id="notifBadge"></span></button>
+    <button class="icon-btn" id="inboxNavBtn" aria-label="Messaggi" onclick="openInboxPanel()">💬<span class="icon-badge" id="inboxBadge"></span></button>
+    <button class="icon-btn heart-icon-btn" id="favBtn" aria-label="Preferiti" onclick="if(!currentUser.dbId){openAuthModal('login')}else{openFavPanel()}">♥<span class="icon-badge" id="favBadge"></span></button>
+    <button class="icon-btn cart-icon-btn" id="cartBtn" aria-label="Carrello" onclick="openCart()">🛍<span class="icon-badge" id="cartBadge"></span></button>
+    <button class="profile-nav-btn" id="profileNavBtn" aria-label="Profilo" onclick="openProfileOrAuth()"><span class="login-label" id="profileNavLabel">Accedi o registrati</span></button>
   </div>
 </nav>
 
@@ -1295,6 +1295,8 @@ const TR={
     boostSellTitle:'Boost annuncio',boostSellSub:'Metti l’annuncio in evidenza nel feed e nel profilo.',boostCta:'⚡ Boost',boostActive:'⚡ Boost attivo',boostToast:'⚡ Annuncio messo in evidenza',
     modalBoost:'⚡ Metti in boost',modalBoostActive:'⚡ Già in boost',shareLabel:'Link diretto:',
     boostPaymentTitle:'Pagamento boost locale',boostPaymentSub:'Scegli la durata del boost e, se vuoi, metti in evidenza più articoli con il 10% di sconto sul totale.',boostItemsLabel:'Articoli da mettere in boost',boostPlanLabel:'Durata del boost',boostSummaryLabel:'Riepilogo',boostSummaryItemsText:'Articoli selezionati',boostSummaryPlanText:'Piano scelto',boostSummaryDiscountText:'Sconto multi-articolo',boostSummaryTotalText:'Totale',boostDiscountNote:'Lo sconto del 10% si applica automaticamente se selezioni almeno 2 articoli.',boostOpenHint:'Apri articolo o profilo',boostGoArticle:'Apri articolo',boostGoProfile:'Apri profilo',boostCancel:'Annulla',boostConfirm:'Conferma pagamento locale',boostPlan3:'Boost locale · 3 giorni',boostPlan7:'Boost locale · 7 giorni',boostPlan10:'Boost locale · 10 giorni',boostToastPaid:'Pagamento registrato · boost attivato',modalOffer:'💸 Fai un\'offerta',offerTitle:'Fai un\'offerta',offerSub:'Proponi un prezzo al venditore',offerAmountLabel:'Il tuo prezzo (CHF)',offerMsgLabel:'Messaggio (opzionale)',offerMsgPh:'es. Posso venire a ritirare domani…',offerNote:'Il venditore vedrà la tua offerta e potrà accettarla o controproporla.',offerCancel:'Annulla',offerSend:'Invia offerta',toastOfferSent:'✓ Offerta inviata!',shareLabel:'Condividi:',shareWhatsApp:'📱 Condividi su WhatsApp',shareInsta:'📸 Condividi su Instagram',shareCopy:'🔗 Copia link',toastLinkCopied:'✓ Link copiato!',markSold:'Segna come venduto',soldChip:'Venduto',soldBadge:'Venduto',toastSoldDone:'✓ Annuncio segnato come venduto',verifyTitle:'Verifica identità',verifySub:'Ottieni il badge ✓ Verificato',verifyEmailStep:'Conferma email',verifyEmailDesc:'Spunta per simulare la conferma email.',verifyIdStep:'Documento d\'identità',verifyIdDesc:'Spunta per simulare il caricamento del documento.',verifyNote:'Demo: spunta entrambi gli step e conferma.',verifyCancel:'Annulla',verifyConfirm:'Conferma verifica',toastVerified:'✓ Profilo verificato!',verifyBtn:'🛡 Verifica identità',verified:'✓ Verificato',
+    ariaNotif:'Notifiche',ariaInbox:'Messaggi',ariaFav:'Preferiti',ariaCart:'Carrello',ariaProfile:'Profilo',
+    loginLabel:'Accedi o registrati',
   },
   de:{
     all:'Alle',catKleider:'Kleider',catSchuhe:'Schuhe',catAccessoires:'Accessoires',
@@ -1353,6 +1355,8 @@ const TR={
     boostSellTitle:'Inserat boosten',boostSellSub:'Hebt dein Inserat im Feed und Profil hervor.',boostCta:'⚡ Boost',boostActive:'⚡ Boost aktiv',boostToast:'⚡ Inserat hervorgehoben',
     modalBoost:'⚡ Boosten',modalBoostActive:'⚡ Bereits geboostet',shareLabel:'Direktlink:',
     boostPaymentTitle:'Lokale Boost-Zahlung',boostPaymentSub:'Wähle die Boost-Dauer und hebe auf Wunsch mehrere Artikel mit 10% Rabatt auf den Gesamtbetrag hervor.',boostItemsLabel:'Zu boostende Artikel',boostPlanLabel:'Boost-Dauer',boostSummaryLabel:'Zusammenfassung',boostSummaryItemsText:'Ausgewählte Artikel',boostSummaryPlanText:'Gewählter Plan',boostSummaryDiscountText:'Rabatt für mehrere Artikel',boostSummaryTotalText:'Gesamt',boostDiscountNote:'Der 10%-Rabatt wird automatisch angewendet, wenn mindestens 2 Artikel ausgewählt werden.',boostOpenHint:'Artikel oder Profil öffnen',boostGoArticle:'Artikel öffnen',boostGoProfile:'Profil öffnen',boostCancel:'Abbrechen',boostConfirm:'Lokale Zahlung bestätigen',boostPlan3:'Lokaler Boost · 3 Tage',boostPlan7:'Lokaler Boost · 7 Tage',boostPlan10:'Lokaler Boost · 10 Tage',boostToastPaid:'Zahlung registriert · Boost aktiviert',modalOffer:'💸 Angebot machen',offerTitle:'Angebot machen',offerSub:'Schlage dem Verkäufer einen Preis vor',offerAmountLabel:'Dein Preis (CHF)',offerMsgLabel:'Nachricht (optional)',offerMsgPh:'z.B. Ich kann morgen abholen…',offerNote:'Der Verkäufer sieht dein Angebot und kann es annehmen oder kontern.',offerCancel:'Abbrechen',offerSend:'Angebot senden',toastOfferSent:'✓ Angebot gesendet!',shareLabel:'Teilen:',shareWhatsApp:'📱 Auf WhatsApp teilen',shareInsta:'📸 Auf Instagram teilen',shareCopy:'🔗 Link kopieren',toastLinkCopied:'✓ Link kopiert!',markSold:'Als verkauft markieren',soldChip:'Verkauft',soldBadge:'Verkauft',toastSoldDone:'✓ Inserat als verkauft markiert',verifyTitle:'Identität verifizieren',verifySub:'Erhalte das ✓ Verifiziert-Abzeichen',verifyEmailStep:'E-Mail bestätigen',verifyEmailDesc:'Haken setzen um E-Mail-Bestätigung zu simulieren.',verifyIdStep:'Ausweisdokument',verifyIdDesc:'Haken setzen um Ausweis-Upload zu simulieren.',verifyNote:'Demo: beide Schritte abhaken und bestätigen.',verifyCancel:'Abbrechen',verifyConfirm:'Verifizierung bestätigen',toastVerified:'✓ Profil verifiziert!',verifyBtn:'🛡 Identität verifizieren',verified:'✓ Verifiziert',
+    ariaNotif:'Benachrichtigungen',ariaInbox:'Nachrichten',ariaFav:'Favoriten',ariaCart:'Warenkorb',ariaProfile:'Profil',
+    loginLabel:'Anmelden oder registrieren',
   },
   fr:{
     all:'Tout',catKleider:'Vêtements',catSchuhe:'Chaussures',catAccessoires:'Accessoires',
@@ -1411,6 +1415,8 @@ const TR={
     boostSellTitle:'Booster l’annonce',boostSellSub:'Met l’annonce en avant dans le feed et le profil.',boostCta:'⚡ Boost',boostActive:'⚡ Boost actif',boostToast:'⚡ Annonce mise en avant',
     modalBoost:'⚡ Mettre en boost',modalBoostActive:'⚡ Déjà boostée',shareLabel:'Lien direct :',
     boostPaymentTitle:'Paiement boost local',boostPaymentSub:'Choisissez la durée du boost et mettez éventuellement plusieurs articles en avant avec 10% de réduction sur le total.',boostItemsLabel:'Articles à booster',boostPlanLabel:'Durée du boost',boostSummaryLabel:'Récapitulatif',boostSummaryItemsText:'Articles sélectionnés',boostSummaryPlanText:'Formule choisie',boostSummaryDiscountText:'Remise multi-articles',boostSummaryTotalText:'Total',boostDiscountNote:'La remise de 10% s’applique automatiquement si vous sélectionnez au moins 2 articles.',boostOpenHint:'Ouvrir l’article ou le profil',boostGoArticle:'Ouvrir l’article',boostGoProfile:'Ouvrir le profil',boostCancel:'Annuler',boostConfirm:'Confirmer le paiement local',boostPlan3:'Boost local · 3 jours',boostPlan7:'Boost local · 7 jours',boostPlan10:'Boost local · 10 jours',boostToastPaid:'Paiement enregistré · boost activé',modalOffer:'💸 Faire une offre',offerTitle:'Faire une offre',offerSub:'Proposez un prix au vendeur',offerAmountLabel:'Votre prix (CHF)',offerMsgLabel:'Message (optionnel)',offerMsgPh:'ex. Je peux venir récupérer demain…',offerNote:'Le vendeur verra votre offre et pourra l\'accepter ou faire une contre-offre.',offerCancel:'Annuler',offerSend:'Envoyer l\'offre',toastOfferSent:'✓ Offre envoyée !',shareLabel:'Partager :',shareWhatsApp:'📱 Partager sur WhatsApp',shareInsta:'📸 Partager sur Instagram',shareCopy:'🔗 Copier le lien',toastLinkCopied:'✓ Lien copié !',markSold:'Marquer comme vendu',soldChip:'Vendu',soldBadge:'Vendu',toastSoldDone:'✓ Annonce marquée comme vendue',verifyTitle:'Vérifier l\'identité',verifySub:'Obtenez le badge ✓ Vérifié',verifyEmailStep:'Confirmer l\'email',verifyEmailDesc:'Cochez pour simuler la confirmation email.',verifyIdStep:'Pièce d\'identité',verifyIdDesc:'Cochez pour simuler le téléchargement du document.',verifyNote:'Démo : cochez les deux étapes et confirmez.',verifyCancel:'Annuler',verifyConfirm:'Confirmer',toastVerified:'✓ Profil vérifié !',verifyBtn:'🛡 Vérifier l\'identité',verified:'✓ Vérifié',
+    ariaNotif:'Notifications',ariaInbox:'Messages',ariaFav:'Favoris',ariaCart:'Panier',ariaProfile:'Profil',
+    loginLabel:'Se connecter ou s\'inscrire',
   }
 };
 
@@ -1524,7 +1530,7 @@ function syncNavAvatar(){
   const btn=document.getElementById('profileNavBtn');
   if(!btn) return;
   if(!currentUser.dbId){
-    btn.innerHTML=`<span class="login-label">Accedi o registrati</span>`;
+    btn.innerHTML=`<span class="login-label">${T('loginLabel')}</span>`;
     btn.style.cssText='';
   } else if(currentUser.photo){
     btn.innerHTML=`<img src="${currentUser.photo}" alt=""/>`;
@@ -1542,6 +1548,7 @@ function syncNavAvatar(){
 /* ══ LANGUAGE ══ */
 function setLang(l){
   lang=l;
+  localStorage.setItem('reduse_lang',l);
   document.documentElement.lang={it:'it',de:'de-CH',fr:'fr-CH'}[l];
   document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase()===l));
   activeCat=T('all');
@@ -1550,6 +1557,9 @@ function setLang(l){
 function applyTranslations(){
   const s=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
   const h=(id,v)=>{const e=document.getElementById(id);if(e)e.innerHTML=v;};
+  const al=(id,v)=>{const e=document.getElementById(id);if(e)e.setAttribute('aria-label',v);};
+  al('notifBtn',T('ariaNotif'));al('inboxNavBtn',T('ariaInbox'));al('favBtn',T('ariaFav'));al('cartBtn',T('ariaCart'));al('profileNavBtn',T('ariaProfile'));
+  syncNavAvatar();
   s('navAll',T('all'));s('navKleider',T('catKleider'));s('navSchuhe',T('catSchuhe'));s('navAccessoires',T('catAccessoires'));
   s('btnSell',T('btnSell'));
   s('heroEyebrow',T('heroEyebrow'));h('heroTitle',T('heroTitle'));s('heroSub',T('heroSub'));s('chBadge',T('chBadge'));
@@ -2680,7 +2690,13 @@ function onUserLoggedIn(session){
 }
 
 /* ══ INIT ══ */
-setLang('it');
+(function(){
+  const supported=['it','de','fr'];
+  const saved=localStorage.getItem('reduse_lang');
+  if(saved&&supported.includes(saved)){setLang(saved);return;}
+  const browser=(navigator.language||'it').split('-')[0].toLowerCase();
+  setLang(supported.includes(browser)?browser:'it');
+})();
 resetFilters();
 
 // Il div #authOverlay è definito più in basso nel DOM — aspettiamo che sia pronto
