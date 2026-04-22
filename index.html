@@ -1083,7 +1083,7 @@ const SUPABASE_READY = true;
 /* ── CLOUDINARY ────────────────────────────────────────────────── */
 const CLOUDINARY_CLOUD  = 'dpft9hzxl';
 const CLOUDINARY_PRESET = 'reduse_upload';
-const CLOUDINARY_READY  = CLOUDINARY_CLOUD !== 'dpft9hzxl';
+const CLOUDINARY_READY  = true; // cloud name e preset configurati correttamente
 
 /* ── Carica annunci da DB ──────────────────────────────────────── */
 async function loadListingsFromDB(){
@@ -2159,15 +2159,25 @@ async function handlePhotos(e){
   const files=[...e.target.files].filter(f=>f.type.startsWith('image/')),remaining=10-currentPhotos.length;
   const toUpload=files.slice(0,remaining);
   e.target.value='';
+  if(!toUpload.length) return;
+  let ok=0,fail=0;
   for(const file of toUpload){
     try{
-      showToast('⬆️ Caricamento foto…');
+      showToast(`⬆️ Caricamento ${ok+fail+1}/${toUpload.length}…`);
       const url = await uploadToCloudinary(file);
+      if(!url || url.startsWith('data:')){ // base64 = Cloudinary non ha funzionato
+        throw new Error('Cloudinary non ha restituito un URL valido');
+      }
       currentPhotos.push(url);
       renderPreviews();
-    } catch(err){ console.warn('Foto upload error:',err); showToast('⚠️ Errore caricamento foto'); }
+      ok++;
+    } catch(err){
+      console.error('Foto upload error:',err);
+      fail++;
+      showToast('⚠️ Errore foto '+(ok+fail)+': '+err.message);
+    }
   }
-  showToast('✓ '+toUpload.length+' foto caricate');
+  if(ok>0) showToast('✓ '+ok+' foto caricate su Cloudinary');
 }
 function removePhoto(i){currentPhotos.splice(i,1);renderPreviews();}
 function renderPreviews(){
@@ -2279,7 +2289,7 @@ function publishItem(){
   if(!title||isNaN(price)||price<0||!city){showToast(T('toastRequired'));return;}
   const wantsBoost=document.getElementById('sellBoost').checked;
   const newId=Date.now();
-  const newListing={id:newId,photos:[...currentPhotos],video:currentVideo,emoji:'👗',title,brand,price,cat,cond,size,city,desc,seller:MR_IDX,boosted:false,sold:false,views:0,createdAt:Date.now(),userId:currentUser.dbId||null};
+  const newListing={id:newId,photos:[...currentPhotos],video:currentVideo,emoji:'👗',title,brand,price,cat,cond,size,city,desc,seller:MR_IDX,boosted:false,sold:false,views:0,createdAt:Date.now()};
   listings.unshift(newListing);
   closeSellModal();activeCat=T('all');renderCats();applyTranslations();renderListings();renderProfilePanel();
   addNotification('publish',title,'item',newId);
@@ -2674,6 +2684,7 @@ async function doLogout(){
 
 function onUserLoggedIn(session){
   const user = session.user;
+  if(user.is_anonymous) return;
   currentUser.dbId   = user.id;
   currentUser.email  = user.email || '';
   // Fallback a cascata: full_name → parte email prima @ → prime 6 char ID
@@ -2702,20 +2713,19 @@ resetFilters();
 document.addEventListener('DOMContentLoaded', () => {
   // Ascolta cambi di stato auth
   sb().auth.onAuthStateChange((event, session) => {
-    if(session){
+    if(session && !session.user?.is_anonymous){
       onUserLoggedIn(session);
-    } else if(event === 'SIGNED_OUT'){
-      // Nessun blocco — il sito resta navigabile
+    } else if(!session || session.user?.is_anonymous){
+      if(session?.user?.is_anonymous) sb().auth.signOut();
       syncNavAvatar();
     }
   });
 
-  // Controlla se c'è già una sessione attiva
+  // Controlla se c'è già una sessione attiva (non anonima)
   sb().auth.getSession().then(({data:{session}}) => {
-    if(session){
+    if(session && !session.user?.is_anonymous){
       onUserLoggedIn(session);
     } else {
-      // Non loggato: aggiorna il pulsante e carica annunci pubblici
       syncNavAvatar();
       loadListingsFromDB();
     }
