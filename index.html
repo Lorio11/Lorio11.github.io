@@ -1412,7 +1412,8 @@ let currentUser = {
 };
 
 function userInitials(){
-  return currentUser.name.split(' ').map(p=>p[0].toUpperCase()).join('').slice(0,2);
+  if(!currentUser.name) return '?';
+  return currentUser.name.split(' ').filter(p=>p).map(p=>p[0].toUpperCase()).join('').slice(0,2) || '?';
 }
 
 /* ══ SELLERS (indici 0-4 = altri, 5 = MR) ══ */
@@ -2637,23 +2638,26 @@ setLang('it');
 syncNavAvatar();
 resetFilters();
 
-// Mostra l'auth gate subito
-document.body.classList.add('auth-gate');
-document.getElementById('authOverlay').classList.add('open');
+// Il div #authOverlay è definito più in basso nel DOM — aspettiamo che sia pronto
+document.addEventListener('DOMContentLoaded', () => {
+  // Mostra l'auth gate subito
+  document.body.classList.add('auth-gate');
+  document.getElementById('authOverlay').classList.add('open');
 
-// Ascolta cambi di stato auth
-sb().auth.onAuthStateChange((event, session) => {
-  if(session){
-    onUserLoggedIn(session);
-  } else if(event === 'SIGNED_OUT'){
-    document.body.classList.add('auth-gate');
-    document.getElementById('authOverlay').classList.add('open');
-  }
-});
+  // Ascolta cambi di stato auth
+  sb().auth.onAuthStateChange((event, session) => {
+    if(session){
+      onUserLoggedIn(session);
+    } else if(event === 'SIGNED_OUT'){
+      document.body.classList.add('auth-gate');
+      document.getElementById('authOverlay').classList.add('open');
+    }
+  });
 
-// Controlla se c'è già una sessione attiva (utente già loggato)
-sb().auth.getSession().then(({data:{session}}) => {
-  if(session) onUserLoggedIn(session);
+  // Controlla se c'è già una sessione attiva (utente già loggato)
+  sb().auth.getSession().then(({data:{session}}) => {
+    if(session) onUserLoggedIn(session);
+  });
 });
 
 const initialItem=new URLSearchParams(location.search).get('item');
