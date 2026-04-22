@@ -50,7 +50,13 @@ nav{position:sticky;top:0;z-index:100;background:var(--pine-deep);border-bottom:
 .profile-nav-btn:hover{border-color:var(--accent);background:rgba(168,196,184,.08)}
 .profile-nav-btn img{width:32px;height:32px;object-fit:cover;border-radius:50%;margin:0 -.5rem}
 .profile-nav-btn span{font-family:'Cormorant Garamond',serif;font-size:.9rem;font-weight:600;color:var(--silver)}
-.profile-nav-btn .login-label{font-family:'Jost',sans-serif;font-size:.62rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);white-space:nowrap;padding:0 .3rem}
+.profile-nav-btn .login-label{font-family:'Jost',sans-serif;font-size:.6rem;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);white-space:nowrap;padding:0 .3rem}
+/* Cart icon — verde accent */
+.icon-btn.cart-icon-btn{background:rgba(168,196,184,.13);border-color:var(--accent) !important;color:var(--accent) !important}
+.icon-btn.cart-icon-btn:hover{background:rgba(168,196,184,.25)}
+/* Heart/favourites icon — rosso */
+.icon-btn.heart-icon-btn{color:#e07070 !important;border-color:rgba(224,112,112,.4) !important}
+.icon-btn.heart-icon-btn:hover{background:rgba(224,112,112,.08);border-color:#e07070 !important}
 
 .btn{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1.3rem;border-radius:2px;font-family:'Jost',sans-serif;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;cursor:pointer;border:none;transition:all .2s}
 .btn-ghost{background:transparent;border:1px solid var(--border-m);color:var(--silver-dim)}
@@ -537,9 +543,7 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
 .profile-mini-btn.sold-btn:hover{background:rgba(200,50,50,.1)}
 
 
-/* Cart icon — colorato accent */
-.cart-icon-btn{background:rgba(168,196,184,.12);border-color:var(--accent);color:var(--accent)}
-.cart-icon-btn:hover{background:rgba(168,196,184,.22);color:var(--silver)}
+/* (cart/heart styles consolidated above with profile nav btn) */
 
 /* ── MOBILE NAV STRIP ── */
 .mobile-nav-strip{display:none;overflow-x:auto;white-space:nowrap;padding:.5rem 1rem;gap:.5rem;background:var(--pine-deep);border-bottom:1px solid var(--border-c);-webkit-overflow-scrolling:touch;scrollbar-width:none}
@@ -631,7 +635,7 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
     <button class="btn btn-ghost" id="btnSell" onclick="openSell()"></button>
     <button class="icon-btn" onclick="openNotifications()">🔔<span class="icon-badge" id="notifBadge"></span></button>
     <button class="icon-btn" onclick="openInboxPanel()" id="inboxNavBtn">💬<span class="icon-badge" id="inboxBadge"></span></button>
-    <button class="icon-btn" onclick="openFavPanel()">♥<span class="icon-badge" id="favBadge"></span></button>
+    <button class="icon-btn heart-icon-btn" onclick="openFavPanel()">♥<span class="icon-badge" id="favBadge"></span></button>
     <button class="icon-btn cart-icon-btn" onclick="openCart()">🛍<span class="icon-badge" id="cartBadge"></span></button>
     <button class="profile-nav-btn" id="profileNavBtn" onclick="openProfileOrAuth()"></button>
   </div>
@@ -1459,17 +1463,17 @@ function getSeller(idx){
 const BG=['#264d3b','#1f4535','#2a5a42','#1b4030','#2f6349'];
 let listings=[
   {id:1, photos:['https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'🧥',title:'Trench Burberry Classic',  brand:'Burberry',     price:320,cat:'Kleider',   cond:0,size:'M',  city:'Zürich',   desc:"Trench originale M, colore camel. Una stagione, perfette condizioni.",seller:0},
-  {id:2, photos:['https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👟',title:'Nike Air Max 90 bianche',  brand:'Nike',         price:65, cat:'Schuhe',    cond:2,size:'40', city:'Genève',   desc:"Air Max 90 taglia 40. Qualche segno d'uso.",seller:1},
+  {id:2, photos:['https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👟',title:'Nike Air Max 90 bianche',  brand:'Nike',         price:65, cat:'Schuhe',    cond:2,size:'40', city:'Genève',   desc:"Air Max 90 taglia 40. Qualche segno d'uso.",seller:1},
   {id:3, photos:['https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👜',title:'Longchamp Le Pliage',      brand:'Longchamp',    price:89, cat:'Accessoires',cond:1,size:'M', city:'Lausanne', desc:'Le Pliage color navy. Pochissimi graffi.',seller:2},
   {id:4, photos:['https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'🕶️',title:'Ray-Ban Wayfarer neri',   brand:'Ray-Ban',      price:75, cat:'Occhiali',  cond:1,size:'uni',city:'Basel',    desc:'Wayfarer neri con astuccio. Lenti perfette.',seller:3},
   {id:5, photos:['https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👗',title:'Abito Massimo Dutti S',    brand:'Massimo Dutti',price:48, cat:'Kleider',   cond:0,size:'S', city:'Bern',     desc:'Abito midi crema. Indossato una volta.',seller:4},
   {id:6, photos:['https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👠',title:'Décolleté Zara beige 38',  brand:'Zara',         price:35, cat:'Schuhe',    cond:2,size:'38', city:'Zürich',   desc:"Ecopelle beige taglia 38. Tacco 7cm.",seller:0},
   {id:7, photos:['https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'💍',title:'Orecchini Agatha dorati',  brand:'Agatha Paris', price:28, cat:'Gioielli',  cond:0,size:'uni',city:'Genève',   desc:'Orecchini pendenti dorati. Mai indossati.',seller:1},
-  {id:8, photos:['https://images.unsplash.com/photo-1598808503745-f45379da5f80?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'🎗️',title:'Cravatta Hermès seta blu',brand:'Hermès',       price:95, cat:'Cravatte',  cond:1,size:'uni',city:'Zürich',   desc:'100% seta, fantasia geometrica blu e oro.',seller:2},
-  {id:9, photos:['https://images.unsplash.com/photo-1601924994987-69e26d50dc26?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'🧣',title:'Sciarpa Acne Studios',     brand:'Acne Studios', price:110,cat:'Accessoires',cond:0,size:'uni',city:'Luzern',  desc:'Sciarpa frangiata in lana. Perfette condizioni.',seller:3},
+  {id:8, photos:['https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'🎗️',title:'Cravatta Hermès seta blu',brand:'Hermès',       price:95, cat:'Cravatte',  cond:1,size:'uni',city:'Zürich',   desc:'100% seta, fantasia geometrica blu e oro.',seller:2},
+  {id:9, photos:['https://images.unsplash.com/photo-1520903920243-00d872a2d1c9?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'🧣',title:'Sciarpa Acne Studios',     brand:'Acne Studios', price:110,cat:'Accessoires',cond:0,size:'uni',city:'Luzern',  desc:'Sciarpa frangiata in lana. Perfette condizioni.',seller:3},
   {id:10,photos:['https://images.unsplash.com/photo-1596755389378-c31d21fd1273?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👔',title:'Camicia Ralph Lauren L',  brand:'Ralph Lauren', price:42, cat:'Kleider',   cond:2,size:'L', city:'Winterthur',desc:"Oxford button-down L. Lavata e stirata.",seller:4},
-  {id:11,photos:['https://images.unsplash.com/photo-1521369909029-2afed882baaa?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👒',title:'Cappello paglia Mango',   brand:'Mango',        price:18, cat:'Accessoires',cond:1,size:'uni',city:'Lugano',  desc:"Cappello estivo. Usato poche volte.",seller:0},
-  {id:12,photos:['https://images.unsplash.com/photo-1560343776-97da496a6c45?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'🥿',title:'Mocassini Gucci 39',      brand:'Gucci',        price:280,cat:'Schuhe',    cond:1,size:'39', city:'Zürich',   desc:'Loafer classici taglia 39. Pelle nera.',seller:1},
+  {id:11,photos:['https://images.unsplash.com/photo-1582791694770-cbdc9dda338f?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👒',title:'Cappello paglia Mango',   brand:'Mango',        price:18, cat:'Accessoires',cond:1,size:'uni',city:'Lugano',  desc:"Cappello estivo. Usato poche volte.",seller:0},
+  {id:12,photos:['https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'🥿',title:'Mocassini Gucci 39',      brand:'Gucci',        price:280,cat:'Schuhe',    cond:1,size:'39', city:'Zürich',   desc:'Loafer classici taglia 39. Pelle nera.',seller:1},
   {id:13,photos:['https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👘',title:'Kimono floreale vintage', brand:'Vintage',      price:55, cat:'Kleider',   cond:2,size:'M/L',city:'Basel',    desc:"Seta stampata anni '90. Fantasia floreale.",seller:2},
   {id:14,photos:['https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'💼',title:'Rimowa Essential 55cm',   brand:'Rimowa',       price:195,cat:'Accessoires',cond:2,size:'55cm',city:'Genève', desc:'Cabin 55cm silver. Qualche graffio.',seller:3},
 ];
@@ -1517,7 +1521,7 @@ function notificationText(n){
 function syncNavAvatar(){
   const btn=document.getElementById('profileNavBtn');
   if(!currentUser.dbId){
-    btn.innerHTML=`<span class="login-label">👤 Accedi</span>`;
+    btn.innerHTML=`<span class="login-label">Accedi o registrati</span>`;
   } else if(currentUser.photo){
     btn.innerHTML=`<img src="${currentUser.photo}" alt=""/>`;
   } else {
