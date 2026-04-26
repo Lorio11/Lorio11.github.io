@@ -36,7 +36,6 @@ nav{position:sticky;top:0;z-index:100;background:var(--pine-deep);border-bottom:
 .nav-center{display:flex;gap:2rem}
 .nav-link{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--silver-dim);cursor:pointer;border:none;background:none;font-family:'Jost',sans-serif;font-weight:400;transition:color .2s;padding:0}
 .nav-link:hover{color:var(--silver)}
-.nav-link.active{color:var(--silver);border-bottom:2px solid var(--accent);padding-bottom:2px}
 .nav-actions{display:flex;align-items:center;gap:.6rem}
 .lang-switcher{display:flex;align-items:center;border:1px solid var(--border-c);border-radius:2px;overflow:hidden}
 .lang-btn{background:transparent;border:none;padding:.32rem .65rem;font-family:'Jost',sans-serif;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--silver-dim);cursor:pointer;transition:all .18s;border-right:1px solid var(--border-c)}
@@ -47,17 +46,10 @@ nav{position:sticky;top:0;z-index:100;background:var(--pine-deep);border-bottom:
 .icon-btn:hover{border-color:var(--accent);color:var(--accent)}
 .icon-badge{position:absolute;top:-6px;right:-6px;background:var(--accent);color:var(--pine-deep);width:17px;height:17px;border-radius:50%;font-size:.6rem;font-weight:700;display:none;align-items:center;justify-content:center;font-family:'Jost',sans-serif}
 /* Profile nav button — può mostrare foto o iniziali */
-.profile-nav-btn{min-width:38px;height:38px;border-radius:20px;background:var(--pine-mid);border:1.5px solid var(--border-m);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .2s,background .2s;overflow:hidden;flex-shrink:0;padding:0 .5rem}
-.profile-nav-btn:hover{border-color:var(--accent);background:rgba(168,196,184,.08)}
-.profile-nav-btn img{width:32px;height:32px;object-fit:cover;border-radius:50%;margin:0 -.5rem}
+.profile-nav-btn{width:38px;height:38px;border-radius:50%;background:var(--pine-mid);border:1.5px solid var(--border-m);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .2s;overflow:hidden;flex-shrink:0}
+.profile-nav-btn:hover{border-color:var(--accent)}
+.profile-nav-btn img{width:100%;height:100%;object-fit:cover}
 .profile-nav-btn span{font-family:'Cormorant Garamond',serif;font-size:.9rem;font-weight:600;color:var(--silver)}
-.profile-nav-btn .login-label{font-family:'Jost',sans-serif;font-size:.6rem;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);white-space:nowrap;padding:0 .3rem}
-/* Cart icon — verde accent */
-.icon-btn.cart-icon-btn{background:rgba(168,196,184,.13);border-color:var(--accent) !important;color:var(--accent) !important}
-.icon-btn.cart-icon-btn:hover{background:rgba(168,196,184,.25)}
-/* Heart/favourites icon — rosso */
-.icon-btn.heart-icon-btn{color:#e07070 !important;border-color:rgba(224,112,112,.4) !important}
-.icon-btn.heart-icon-btn:hover{background:rgba(224,112,112,.08);border-color:#e07070 !important}
 
 .btn{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1.3rem;border-radius:2px;font-family:'Jost',sans-serif;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;cursor:pointer;border:none;transition:all .2s}
 .btn-ghost{background:transparent;border:1px solid var(--border-m);color:var(--silver-dim)}
@@ -544,38 +536,7 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
 .profile-mini-btn.sold-btn:hover{background:rgba(200,50,50,.1)}
 
 
-/* (cart/heart styles consolidated above with profile nav btn) */
-
-/* ── MOBILE NAV STRIP ── */
-.mobile-nav-strip{display:none;overflow-x:auto;white-space:nowrap;padding:.5rem 1rem;gap:.5rem;background:var(--pine-deep);border-bottom:1px solid var(--border-c);-webkit-overflow-scrolling:touch;scrollbar-width:none}
-.mobile-nav-strip::-webkit-scrollbar{display:none}
-.mobile-nav-strip button{display:inline-flex;flex-shrink:0;padding:.35rem .9rem;border-radius:2px;border:1px solid var(--border-c);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s;color:var(--silver-dim);font-family:'Jost',sans-serif;background:transparent}
-.mobile-nav-strip button.active{background:var(--accent);border-color:var(--accent);color:var(--pine-deep);font-weight:600}
-.mobile-nav-strip .mobile-sell-btn{background:var(--accent);border-color:var(--accent);color:var(--pine-deep);font-weight:600;flex-shrink:0}
-@media(max-width:768px){.mobile-nav-strip{display:flex}}
-
-/* ── AUTH MODAL ──────────────────────────────────────────────── */
-#authOverlay{z-index:500;background:rgba(10,25,16,.96);backdrop-filter:blur(8px)}
-.auth-modal{background:var(--pine-deep);border:1px solid var(--border-m);max-width:420px;width:100%;padding:0;position:relative;animation:fadeUp .35s ease}
-.auth-logo{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:600;letter-spacing:.06em;color:var(--silver);text-align:center;padding:2.2rem 2rem .5rem}
-.auth-logo span{color:var(--accent)}
-.auth-tabs{display:flex;border-bottom:1px solid var(--border-c)}
-.auth-tab{flex:1;padding:.75rem;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:.13em;text-transform:uppercase;background:transparent;border:none;color:var(--silver-dim);cursor:pointer;transition:all .2s;border-bottom:2px solid transparent}
-.auth-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
-.auth-body{padding:1.8rem 2rem 2rem}
-.auth-field{margin-bottom:1rem}
-.auth-field label{display:block;font-size:.63rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:.45rem}
-.auth-field input{width:100%;padding:.72rem 1rem;background:rgba(255,255,255,.04);border:1px solid var(--border-c);border-radius:2px;font-family:'Jost',sans-serif;font-size:.9rem;color:var(--silver);outline:none;transition:border-color .2s}
-.auth-field input:focus{border-color:var(--accent)}
-.auth-field input::placeholder{color:rgba(212,221,216,.25)}
-.auth-btn{width:100%;padding:.82rem;background:var(--accent);color:var(--pine-deep);border:none;border-radius:2px;font-family:'Jost',sans-serif;font-size:.78rem;letter-spacing:.13em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:opacity .2s;margin-top:.4rem}
-.auth-btn:hover{opacity:.87}
-.auth-btn:disabled{opacity:.4;cursor:not-allowed}
-.auth-error{font-size:.76rem;color:#e07070;letter-spacing:.03em;margin-top:.6rem;min-height:1.1em;text-align:center}
-.auth-footer-note{font-size:.7rem;color:var(--silver-dim);text-align:center;margin-top:1rem;letter-spacing:.04em;line-height:1.6}
-/* Auth gate: rimosso — il sito è pubblicamente navigabile */
-
-
+/* ── INBOX PANEL ────────────────────────────────────────────── */
 .inbox-panel{width:400px;max-width:100vw}
 .inbox-empty{text-align:center;padding:3rem 1rem;color:var(--silver-dim);font-size:.82rem;letter-spacing:.08em;text-transform:uppercase}
 .inbox-thread-item{display:flex;align-items:center;gap:.9rem;padding:.9rem 1.5rem;border-bottom:1px solid var(--border-c);cursor:pointer;transition:background .18s;position:relative}
@@ -624,9 +585,9 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
   <div class="nav-logo">Reduse<span class="dot">·</span></div>
   <div class="nav-center">
     <button class="nav-link" id="navAll"         onclick="setCat(T('all'))"></button>
-    <button class="nav-link" id="navKleider"     onclick="setCat(T('catKleider'))"></button>
-    <button class="nav-link" id="navSchuhe"      onclick="setCat(T('catSchuhe'))"></button>
-    <button class="nav-link" id="navAccessoires" onclick="setCat(T('catAccessoires'))"></button>
+    <button class="nav-link" id="navKleider"     onclick="setCat('Kleider')"></button>
+    <button class="nav-link" id="navSchuhe"      onclick="setCat('Schuhe')"></button>
+    <button class="nav-link" id="navAccessoires" onclick="setCat('Accessoires')"></button>
   </div>
   <div class="nav-actions">
     <div class="lang-switcher">
@@ -635,16 +596,13 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
       <button class="lang-btn" onclick="setLang('fr')">FR</button>
     </div>
     <button class="btn btn-ghost" id="btnSell" onclick="openSell()"></button>
-    <button class="icon-btn" id="notifBtn" aria-label="Notifiche" onclick="openNotifications()">🔔<span class="icon-badge" id="notifBadge"></span></button>
-    <button class="icon-btn" id="inboxNavBtn" aria-label="Messaggi" onclick="openInboxPanel()">💬<span class="icon-badge" id="inboxBadge"></span></button>
-    <button class="icon-btn heart-icon-btn" id="favBtn" aria-label="Preferiti" onclick="if(!currentUser.dbId){openAuthModal('login')}else{openFavPanel()}">♥<span class="icon-badge" id="favBadge"></span></button>
-    <button class="icon-btn cart-icon-btn" id="cartBtn" aria-label="Carrello" onclick="openCart()">🛍<span class="icon-badge" id="cartBadge"></span></button>
-    <button class="profile-nav-btn" id="profileNavBtn" aria-label="Profilo" onclick="openProfileOrAuth()"><span class="login-label" id="profileNavLabel">Accedi o registrati</span></button>
+    <button class="icon-btn" onclick="openNotifications()">🔔<span class="icon-badge" id="notifBadge"></span></button>
+    <button class="icon-btn" onclick="openInboxPanel()" id="inboxNavBtn">💬<span class="icon-badge" id="inboxBadge"></span></button>
+    <button class="icon-btn" onclick="openFavPanel()">♥<span class="icon-badge" id="favBadge"></span></button>
+    <button class="icon-btn" onclick="openCart()">🛍<span class="icon-badge" id="cartBadge"></span></button>
+    <button class="profile-nav-btn" id="profileNavBtn" onclick="openProfilePanel()"></button>
   </div>
 </nav>
-
-<!-- MOBILE NAV STRIP (categorie) -->
-<div class="mobile-nav-strip" id="mobileNavStrip"></div>
 
 <!-- HERO -->
 <section class="hero">
@@ -1078,12 +1036,12 @@ function sb(){
   if(!_sb) _sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
   return _sb;
 }
-const SUPABASE_READY = true;
+const SUPABASE_READY = true; // ← credenziali reali configurate
 
 /* ── CLOUDINARY ────────────────────────────────────────────────── */
 const CLOUDINARY_CLOUD  = 'dpft9hzxl';
 const CLOUDINARY_PRESET = 'reduse_upload';
-const CLOUDINARY_READY  = true; // cloud name e preset configurati correttamente
+const CLOUDINARY_READY  = true; // ← cloud name reale, upload abilitato
 
 /* ── Carica annunci da DB ──────────────────────────────────────── */
 async function loadListingsFromDB(){
@@ -1091,7 +1049,7 @@ async function loadListingsFromDB(){
   try{
     const {data,error}=await sb().from('listings').select('*').order('created_at',{ascending:false});
     if(error)throw error;
-    if(data){
+    if(data){ // ← rimosso &&data.length: sostituisce sempre, anche se vuoto
       listings=data.map(r=>({
         id:r.id,title:r.title,brand:r.brand,price:r.price,cat:r.category,
         cond:r.condition_idx,size:r.size,city:r.city,desc:r.description,
@@ -1102,7 +1060,7 @@ async function loadListingsFromDB(){
       }));
       renderListings();renderCats();
     }
-  }catch(e){console.warn('Supabase loadListings:',e.message);}
+  }catch(e){console.error('❌ Supabase loadListings:',e.message);}
 }
 
 /* ── Salva annuncio su DB ─────────────────────────────────────── */
@@ -1114,11 +1072,16 @@ async function saveListingToDB(l){
       condition_idx:l.cond,size:l.size,city:l.city,description:l.desc,
       emoji:l.emoji,photos:l.photos,video_url:l.video||null,
       seller_idx:l.seller,boosted:l.boosted,sold:l.sold,views:0,
-      user_id:currentUser.dbId||null,
+      user_id:currentUser.dbId||null, // ← necessario per RLS Supabase
     }]).select().single();
     if(error)throw error;
+    console.log('✅ Annuncio salvato su Supabase, id:',data.id);
     return data.id;
-  }catch(e){console.warn('Supabase saveListing:',e.message);return l.id;}
+  }catch(e){
+    console.error('❌ Supabase saveListing FAILED:',e.message);
+    showToast('⚠️ Salvataggio fallito: '+e.message);
+    return l.id;
+  }
 }
 
 
@@ -1179,31 +1142,28 @@ async function markSoldInDB(id){
 
 /* ── Salva profilo su DB ──────────────────────────────────────── */
 async function saveProfileToDB(user){
-  if(!SUPABASE_READY || !user.dbId) return;
+  if(!SUPABASE_READY) return;
   try{
     await sb().from('profiles').upsert([{
-      id: user.dbId, name:user.name, email:user.email,
-      city:user.city, bio:user.bio, photo_url:user.photo||null, verified:user.verified||false,
+      id:'marco-rossi',name:user.name,email:user.email,
+      city:user.city,bio:user.bio,photo_url:user.photo||null,verified:user.verified||false,
     }]);
   }catch(e){console.warn('Supabase saveProfile:',e.message);}
 }
 
 /* ── Carica profilo da DB ─────────────────────────────────────── */
 async function loadProfileFromDB(){
-  if(!SUPABASE_READY || !currentUser.dbId) return;
+  if(!SUPABASE_READY) return;
   try{
-    const {data}=await sb().from('profiles').select('*').eq('id', currentUser.dbId).single();
+    const {data}=await sb().from('profiles').select('*').eq('id','marco-rossi').single();
     if(data){
-      currentUser.name = data.name || currentUser.name;
-      currentUser.email = data.email || currentUser.email;
-      currentUser.city = data.city || currentUser.city;
-      currentUser.bio = data.bio || currentUser.bio;
-      currentUser.photo = data.photo_url || null;
-      currentUser.verified = data.verified || false;
-      syncNavAvatar(); renderProfilePanel();
-    } else {
-      // Primo accesso: crea profilo con dati base dall'auth
-      await saveProfileToDB(currentUser);
+      currentUser.name=data.name||currentUser.name;
+      currentUser.email=data.email||currentUser.email;
+      currentUser.city=data.city||currentUser.city;
+      currentUser.bio=data.bio||currentUser.bio;
+      currentUser.photo=data.photo_url||null;
+      currentUser.verified=data.verified||false;
+      syncNavAvatar();renderProfilePanel();
     }
   }catch(e){console.warn('Supabase loadProfile:',e.message);}
 }
@@ -1241,7 +1201,7 @@ const TR={
     heroEyebrow:'Second Hand · Svizzera',
     heroTitle:'Dai nuova <em>vita</em><br>alla moda che ami',
     heroSub:'Il marketplace svizzero per comprare e vendere moda di seconda mano. Stile senza sprechi.',
-    chBadge:'🇨🇭 100% Svizzera · CHF · Inserzioni gratis',
+    chBadge:'🇨🇭 100% Svizzera · CHF',
     searchPlaceholder:'Cerca Gucci, trench coat, Zara taglia S…',searchBtn:'Cerca',
     statItems:'Annunci',statCantoni:'Cantoni',
     secTitle:'Ultimi annunci',noResults:'Nessun risultato trovato',resultSuffix:'annunci',
@@ -1296,9 +1256,7 @@ const TR={
     notifFav:'ha messo il cuore al tuo annuncio',notifMsg:'ti ha inviato un messaggio',notifBoost:'Boost attivato con successo',notifPublish:'Il tuo annuncio è ora online',notifPrice:'ha abbassato il prezzo di un articolo salvato',
     boostSellTitle:'Boost annuncio',boostSellSub:'Metti l’annuncio in evidenza nel feed e nel profilo.',boostCta:'⚡ Boost',boostActive:'⚡ Boost attivo',boostToast:'⚡ Annuncio messo in evidenza',
     modalBoost:'⚡ Metti in boost',modalBoostActive:'⚡ Già in boost',shareLabel:'Link diretto:',
-    boostPaymentTitle:'Pagamento boost locale',boostPaymentSub:'Scegli la durata del boost e, se vuoi, metti in evidenza più articoli con il 10% di sconto sul totale.',boostItemsLabel:'Articoli da mettere in boost',boostPlanLabel:'Durata del boost',boostSummaryLabel:'Riepilogo',boostSummaryItemsText:'Articoli selezionati',boostSummaryPlanText:'Piano scelto',boostSummaryDiscountText:'Sconto multi-articolo',boostSummaryTotalText:'Totale',boostDiscountNote:'Lo sconto del 10% si applica automaticamente se selezioni almeno 2 articoli.',boostOpenHint:'Apri articolo o profilo',boostGoArticle:'Apri articolo',boostGoProfile:'Apri profilo',boostCancel:'Annulla',boostConfirm:'Conferma pagamento locale',boostPlan3:'Boost locale · 3 giorni',boostPlan7:'Boost locale · 7 giorni',boostPlan10:'Boost locale · 10 giorni',boostToastPaid:'Pagamento registrato · boost attivato',modalOffer:'💸 Fai un\'offerta',offerTitle:'Fai un\'offerta',offerSub:'Proponi un prezzo al venditore',offerAmountLabel:'Il tuo prezzo (CHF)',offerMsgLabel:'Messaggio (opzionale)',offerMsgPh:'es. Posso venire a ritirare domani…',offerNote:'Il venditore vedrà la tua offerta e potrà accettarla o controproporla.',offerCancel:'Annulla',offerSend:'Invia offerta',toastOfferSent:'✓ Offerta inviata!',shareLabel:'Condividi:',shareWhatsApp:'📱 Condividi su WhatsApp',shareInsta:'📸 Condividi su Instagram',shareCopy:'🔗 Copia link',toastLinkCopied:'✓ Link copiato!',markSold:'Segna come venduto',soldChip:'Venduto',soldBadge:'Venduto',toastSoldDone:'✓ Annuncio segnato come venduto',verifyTitle:'Verifica identità',verifySub:'Ottieni il badge ✓ Verificato',verifyEmailStep:'Conferma email',verifyEmailDesc:'Spunta per simulare la conferma email.',verifyIdStep:'Documento d\'identità',verifyIdDesc:'Spunta per simulare il caricamento del documento.',verifyNote:'Demo: spunta entrambi gli step e conferma.',verifyCancel:'Annulla',verifyConfirm:'Conferma verifica',toastVerified:'✓ Profilo verificato!',verifyBtn:'🛡 Verifica identità',verified:'✓ Verificato',
-    ariaNotif:'Notifiche',ariaInbox:'Messaggi',ariaFav:'Preferiti',ariaCart:'Carrello',ariaProfile:'Profilo',
-    loginLabel:'Accedi o registrati',
+    boostPaymentTitle:'Pagamento boost locale',boostPaymentSub:'Scegli la durata del boost e, se vuoi, metti in evidenza più articoli con il 10% di sconto sul totale.',boostItemsLabel:'Articoli da mettere in boost',boostPlanLabel:'Durata del boost',boostSummaryLabel:'Riepilogo',boostSummaryItemsText:'Articoli selezionati',boostSummaryPlanText:'Piano scelto',boostSummaryDiscountText:'Sconto multi-articolo',boostSummaryTotalText:'Totale',boostDiscountNote:'Lo sconto del 10% si applica automaticamente se selezioni almeno 2 articoli.',boostOpenHint:'Apri articolo o profilo',boostGoArticle:'Apri articolo',boostGoProfile:'Apri profilo',boostCancel:'Annulla',boostConfirm:'Conferma pagamento locale',boostPlan3:'Boost locale · 3 giorni',boostPlan7:'Boost locale · 7 giorni',boostPlan10:'Boost locale · 10 giorni',boostToastPaid:'Pagamento registrato · boost attivato',modalOffer:'💸 Fai un\'offerta',offerTitle:'Fai un\'offerta',offerSub:'Proponi un prezzo al venditore',offerAmountLabel:'Il tuo prezzo (CHF)',offerMsgLabel:'Messaggio (opzionale)',offerMsgPh:'es. Posso venire a ritirare domani…',offerNote:'Il venditore vedrà la tua offerta e potrà accettarla o controproporla.',offerCancel:'Annulla',offerSend:'Invia offerta',toastOfferSent:'✓ Offerta inviata!',shareLabel:'Condividi:',shareWhatsApp:'📱 WhatsApp',shareInsta:'📸 Instagram',shareCopy:'🔗 Copia link',toastLinkCopied:'✓ Link copiato!',markSold:'Segna come venduto',soldChip:'Venduto',soldBadge:'Venduto',toastSoldDone:'✓ Annuncio segnato come venduto',verifyTitle:'Verifica identità',verifySub:'Ottieni il badge ✓ Verificato',verifyEmailStep:'Conferma email',verifyEmailDesc:'Spunta per simulare la conferma email.',verifyIdStep:'Documento d\'identità',verifyIdDesc:'Spunta per simulare il caricamento del documento.',verifyNote:'Demo: spunta entrambi gli step e conferma.',verifyCancel:'Annulla',verifyConfirm:'Conferma verifica',toastVerified:'✓ Profilo verificato!',verifyBtn:'🛡 Verifica identità',verified:'✓ Verificato',
   },
   de:{
     all:'Alle',catKleider:'Kleider',catSchuhe:'Schuhe',catAccessoires:'Accessoires',
@@ -1356,9 +1314,7 @@ const TR={
     notifFav:'hat dein Inserat favorisiert',notifMsg:'hat dir eine Nachricht geschickt',notifBoost:'Boost erfolgreich aktiviert',notifPublish:'Dein Inserat ist jetzt online',notifPrice:'hat den Preis eines gemerkten Artikels gesenkt',
     boostSellTitle:'Inserat boosten',boostSellSub:'Hebt dein Inserat im Feed und Profil hervor.',boostCta:'⚡ Boost',boostActive:'⚡ Boost aktiv',boostToast:'⚡ Inserat hervorgehoben',
     modalBoost:'⚡ Boosten',modalBoostActive:'⚡ Bereits geboostet',shareLabel:'Direktlink:',
-    boostPaymentTitle:'Lokale Boost-Zahlung',boostPaymentSub:'Wähle die Boost-Dauer und hebe auf Wunsch mehrere Artikel mit 10% Rabatt auf den Gesamtbetrag hervor.',boostItemsLabel:'Zu boostende Artikel',boostPlanLabel:'Boost-Dauer',boostSummaryLabel:'Zusammenfassung',boostSummaryItemsText:'Ausgewählte Artikel',boostSummaryPlanText:'Gewählter Plan',boostSummaryDiscountText:'Rabatt für mehrere Artikel',boostSummaryTotalText:'Gesamt',boostDiscountNote:'Der 10%-Rabatt wird automatisch angewendet, wenn mindestens 2 Artikel ausgewählt werden.',boostOpenHint:'Artikel oder Profil öffnen',boostGoArticle:'Artikel öffnen',boostGoProfile:'Profil öffnen',boostCancel:'Abbrechen',boostConfirm:'Lokale Zahlung bestätigen',boostPlan3:'Lokaler Boost · 3 Tage',boostPlan7:'Lokaler Boost · 7 Tage',boostPlan10:'Lokaler Boost · 10 Tage',boostToastPaid:'Zahlung registriert · Boost aktiviert',modalOffer:'💸 Angebot machen',offerTitle:'Angebot machen',offerSub:'Schlage dem Verkäufer einen Preis vor',offerAmountLabel:'Dein Preis (CHF)',offerMsgLabel:'Nachricht (optional)',offerMsgPh:'z.B. Ich kann morgen abholen…',offerNote:'Der Verkäufer sieht dein Angebot und kann es annehmen oder kontern.',offerCancel:'Abbrechen',offerSend:'Angebot senden',toastOfferSent:'✓ Angebot gesendet!',shareLabel:'Teilen:',shareWhatsApp:'📱 Auf WhatsApp teilen',shareInsta:'📸 Auf Instagram teilen',shareCopy:'🔗 Link kopieren',toastLinkCopied:'✓ Link kopiert!',markSold:'Als verkauft markieren',soldChip:'Verkauft',soldBadge:'Verkauft',toastSoldDone:'✓ Inserat als verkauft markiert',verifyTitle:'Identität verifizieren',verifySub:'Erhalte das ✓ Verifiziert-Abzeichen',verifyEmailStep:'E-Mail bestätigen',verifyEmailDesc:'Haken setzen um E-Mail-Bestätigung zu simulieren.',verifyIdStep:'Ausweisdokument',verifyIdDesc:'Haken setzen um Ausweis-Upload zu simulieren.',verifyNote:'Demo: beide Schritte abhaken und bestätigen.',verifyCancel:'Abbrechen',verifyConfirm:'Verifizierung bestätigen',toastVerified:'✓ Profil verifiziert!',verifyBtn:'🛡 Identität verifizieren',verified:'✓ Verifiziert',
-    ariaNotif:'Benachrichtigungen',ariaInbox:'Nachrichten',ariaFav:'Favoriten',ariaCart:'Warenkorb',ariaProfile:'Profil',
-    loginLabel:'Anmelden oder registrieren',
+    boostPaymentTitle:'Lokale Boost-Zahlung',boostPaymentSub:'Wähle die Boost-Dauer und hebe auf Wunsch mehrere Artikel mit 10% Rabatt auf den Gesamtbetrag hervor.',boostItemsLabel:'Zu boostende Artikel',boostPlanLabel:'Boost-Dauer',boostSummaryLabel:'Zusammenfassung',boostSummaryItemsText:'Ausgewählte Artikel',boostSummaryPlanText:'Gewählter Plan',boostSummaryDiscountText:'Rabatt für mehrere Artikel',boostSummaryTotalText:'Gesamt',boostDiscountNote:'Der 10%-Rabatt wird automatisch angewendet, wenn mindestens 2 Artikel ausgewählt werden.',boostOpenHint:'Artikel oder Profil öffnen',boostGoArticle:'Artikel öffnen',boostGoProfile:'Profil öffnen',boostCancel:'Abbrechen',boostConfirm:'Lokale Zahlung bestätigen',boostPlan3:'Lokaler Boost · 3 Tage',boostPlan7:'Lokaler Boost · 7 Tage',boostPlan10:'Lokaler Boost · 10 Tage',boostToastPaid:'Zahlung registriert · Boost aktiviert',modalOffer:'💸 Angebot machen',offerTitle:'Angebot machen',offerSub:'Schlage dem Verkäufer einen Preis vor',offerAmountLabel:'Dein Preis (CHF)',offerMsgLabel:'Nachricht (optional)',offerMsgPh:'z.B. Ich kann morgen abholen…',offerNote:'Der Verkäufer sieht dein Angebot und kann es annehmen oder kontern.',offerCancel:'Abbrechen',offerSend:'Angebot senden',toastOfferSent:'✓ Angebot gesendet!',shareLabel:'Teilen:',shareWhatsApp:'📱 WhatsApp',shareInsta:'📸 Instagram',shareCopy:'🔗 Link kopieren',toastLinkCopied:'✓ Link kopiert!',markSold:'Als verkauft markieren',soldChip:'Verkauft',soldBadge:'Verkauft',toastSoldDone:'✓ Inserat als verkauft markiert',verifyTitle:'Identität verifizieren',verifySub:'Erhalte das ✓ Verifiziert-Abzeichen',verifyEmailStep:'E-Mail bestätigen',verifyEmailDesc:'Haken setzen um E-Mail-Bestätigung zu simulieren.',verifyIdStep:'Ausweisdokument',verifyIdDesc:'Haken setzen um Ausweis-Upload zu simulieren.',verifyNote:'Demo: beide Schritte abhaken und bestätigen.',verifyCancel:'Abbrechen',verifyConfirm:'Verifizierung bestätigen',toastVerified:'✓ Profil verifiziert!',verifyBtn:'🛡 Identität verifizieren',verified:'✓ Verifiziert',
   },
   fr:{
     all:'Tout',catKleider:'Vêtements',catSchuhe:'Chaussures',catAccessoires:'Accessoires',
@@ -1416,9 +1372,7 @@ const TR={
     notifFav:'a mis un cœur sur votre annonce',notifMsg:'vous a envoyé un message',notifBoost:'Boost activé avec succès',notifPublish:'Votre annonce est maintenant en ligne',notifPrice:'a baissé le prix d’un article sauvegardé',
     boostSellTitle:'Booster l’annonce',boostSellSub:'Met l’annonce en avant dans le feed et le profil.',boostCta:'⚡ Boost',boostActive:'⚡ Boost actif',boostToast:'⚡ Annonce mise en avant',
     modalBoost:'⚡ Mettre en boost',modalBoostActive:'⚡ Déjà boostée',shareLabel:'Lien direct :',
-    boostPaymentTitle:'Paiement boost local',boostPaymentSub:'Choisissez la durée du boost et mettez éventuellement plusieurs articles en avant avec 10% de réduction sur le total.',boostItemsLabel:'Articles à booster',boostPlanLabel:'Durée du boost',boostSummaryLabel:'Récapitulatif',boostSummaryItemsText:'Articles sélectionnés',boostSummaryPlanText:'Formule choisie',boostSummaryDiscountText:'Remise multi-articles',boostSummaryTotalText:'Total',boostDiscountNote:'La remise de 10% s’applique automatiquement si vous sélectionnez au moins 2 articles.',boostOpenHint:'Ouvrir l’article ou le profil',boostGoArticle:'Ouvrir l’article',boostGoProfile:'Ouvrir le profil',boostCancel:'Annuler',boostConfirm:'Confirmer le paiement local',boostPlan3:'Boost local · 3 jours',boostPlan7:'Boost local · 7 jours',boostPlan10:'Boost local · 10 jours',boostToastPaid:'Paiement enregistré · boost activé',modalOffer:'💸 Faire une offre',offerTitle:'Faire une offre',offerSub:'Proposez un prix au vendeur',offerAmountLabel:'Votre prix (CHF)',offerMsgLabel:'Message (optionnel)',offerMsgPh:'ex. Je peux venir récupérer demain…',offerNote:'Le vendeur verra votre offre et pourra l\'accepter ou faire une contre-offre.',offerCancel:'Annuler',offerSend:'Envoyer l\'offre',toastOfferSent:'✓ Offre envoyée !',shareLabel:'Partager :',shareWhatsApp:'📱 Partager sur WhatsApp',shareInsta:'📸 Partager sur Instagram',shareCopy:'🔗 Copier le lien',toastLinkCopied:'✓ Lien copié !',markSold:'Marquer comme vendu',soldChip:'Vendu',soldBadge:'Vendu',toastSoldDone:'✓ Annonce marquée comme vendue',verifyTitle:'Vérifier l\'identité',verifySub:'Obtenez le badge ✓ Vérifié',verifyEmailStep:'Confirmer l\'email',verifyEmailDesc:'Cochez pour simuler la confirmation email.',verifyIdStep:'Pièce d\'identité',verifyIdDesc:'Cochez pour simuler le téléchargement du document.',verifyNote:'Démo : cochez les deux étapes et confirmez.',verifyCancel:'Annuler',verifyConfirm:'Confirmer',toastVerified:'✓ Profil vérifié !',verifyBtn:'🛡 Vérifier l\'identité',verified:'✓ Vérifié',
-    ariaNotif:'Notifications',ariaInbox:'Messages',ariaFav:'Favoris',ariaCart:'Panier',ariaProfile:'Profil',
-    loginLabel:'Se connecter ou s\'inscrire',
+    boostPaymentTitle:'Paiement boost local',boostPaymentSub:'Choisissez la durée du boost et mettez éventuellement plusieurs articles en avant avec 10% de réduction sur le total.',boostItemsLabel:'Articles à booster',boostPlanLabel:'Durée du boost',boostSummaryLabel:'Récapitulatif',boostSummaryItemsText:'Articles sélectionnés',boostSummaryPlanText:'Formule choisie',boostSummaryDiscountText:'Remise multi-articles',boostSummaryTotalText:'Total',boostDiscountNote:'La remise de 10% s’applique automatiquement si vous sélectionnez au moins 2 articles.',boostOpenHint:'Ouvrir l’article ou le profil',boostGoArticle:'Ouvrir l’article',boostGoProfile:'Ouvrir le profil',boostCancel:'Annuler',boostConfirm:'Confirmer le paiement local',boostPlan3:'Boost local · 3 jours',boostPlan7:'Boost local · 7 jours',boostPlan10:'Boost local · 10 jours',boostToastPaid:'Paiement enregistré · boost activé',modalOffer:'💸 Faire une offre',offerTitle:'Faire une offre',offerSub:'Proposez un prix au vendeur',offerAmountLabel:'Votre prix (CHF)',offerMsgLabel:'Message (optionnel)',offerMsgPh:'ex. Je peux venir récupérer demain…',offerNote:'Le vendeur verra votre offre et pourra l\'accepter ou faire une contre-offre.',offerCancel:'Annuler',offerSend:'Envoyer l\'offre',toastOfferSent:'✓ Offre envoyée !',shareLabel:'Partager :',shareWhatsApp:'📱 WhatsApp',shareInsta:'📸 Instagram',shareCopy:'🔗 Copier le lien',toastLinkCopied:'✓ Lien copié !',markSold:'Marquer comme vendu',soldChip:'Vendu',soldBadge:'Vendu',toastSoldDone:'✓ Annonce marquée comme vendue',verifyTitle:'Vérifier l\'identité',verifySub:'Obtenez le badge ✓ Vérifié',verifyEmailStep:'Confirmer l\'email',verifyEmailDesc:'Cochez pour simuler la confirmation email.',verifyIdStep:'Pièce d\'identité',verifyIdDesc:'Cochez pour simuler le téléchargement du document.',verifyNote:'Démo : cochez les deux étapes et confirmez.',verifyCancel:'Annuler',verifyConfirm:'Confirmer',toastVerified:'✓ Profil vérifié !',verifyBtn:'🛡 Vérifier l\'identité',verified:'✓ Vérifié',
   }
 };
 
@@ -1430,18 +1384,16 @@ const SWISS_CITIES=['Aarau','Adliswil','Allschwil','Arbon','Arlesheim','Arosa','
 const MR_IDX = 5;
 
 let currentUser = {
-  name:   '',
+  name:   'Marco Rossi',
   verified: false,
-  email:  '',
+  email:  'marco.rossi@example.ch',
   city:   'Zürich',
-  bio:    '',
-  photo:  null,
-  dbId:   null,   // Supabase auth user UUID
+  bio:    'Appassionato di moda sostenibile. Vendo capi di qualità.',
+  photo:  null,   // data URL quando carica una foto
 };
 
 function userInitials(){
-  if(!currentUser.name) return '?';
-  return currentUser.name.split(' ').filter(p=>p).map(p=>p[0].toUpperCase()).join('').slice(0,2) || '?';
+  return currentUser.name.split(' ').map(p=>p[0].toUpperCase()).join('').slice(0,2);
 }
 
 /* ══ SELLERS (indici 0-4 = altri, 5 = MR) ══ */
@@ -1472,20 +1424,20 @@ function getSeller(idx){
 /* ══ DATA ══ */
 const BG=['#264d3b','#1f4535','#2a5a42','#1b4030','#2f6349'];
 let listings=[
-  {id:1, photos:['https://images.unsplash.com/photo-1544022613-e87ca75a784a?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'🧥',title:'Trench Burberry Classic',  brand:'Burberry',     price:320,cat:'Kleider',   cond:0,size:'M',  city:'Zürich',   desc:"Trench originale M, colore camel. Una stagione, perfette condizioni.",seller:0},
-  {id:2, photos:['https://images.unsplash.com/photo-1491553895911-0055eca6402d?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👟',title:'Nike Air Max 90 bianche',  brand:'Nike',         price:65, cat:'Schuhe',    cond:2,size:'40', city:'Genève',   desc:"Air Max 90 taglia 40. Qualche segno d'uso.",seller:1},
-  {id:3, photos:['https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👜',title:'Longchamp Le Pliage',      brand:'Longchamp',    price:89, cat:'Accessoires',cond:1,size:'M', city:'Lausanne', desc:'Le Pliage color navy. Pochissimi graffi.',seller:2},
-  {id:4, photos:['https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'🕶️',title:'Ray-Ban Wayfarer neri',   brand:'Ray-Ban',      price:75, cat:'Occhiali',  cond:1,size:'uni',city:'Basel',    desc:'Wayfarer neri con astuccio. Lenti perfette.',seller:3},
-  {id:5, photos:['https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👗',title:'Abito Massimo Dutti S',    brand:'Massimo Dutti',price:48, cat:'Kleider',   cond:0,size:'S', city:'Bern',     desc:'Abito midi crema. Indossato una volta.',seller:4},
-  {id:6, photos:['https://images.unsplash.com/photo-1596703263926-422f82e6c44c?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👠',title:'Décolleté Zara beige 38',  brand:'Zara',         price:35, cat:'Schuhe',    cond:2,size:'38', city:'Zürich',   desc:"Ecopelle beige taglia 38. Tacco 7cm.",seller:0},
-  {id:7, photos:['https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'💍',title:'Orecchini Agatha dorati',  brand:'Agatha Paris', price:28, cat:'Gioielli',  cond:0,size:'uni',city:'Genève',   desc:'Orecchini pendenti dorati. Mai indossati.',seller:1},
-  {id:8, photos:['https://images.unsplash.com/photo-1598808503745-f45379da5f80?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'🎗️',title:'Cravatta Hermès seta blu',brand:'Hermès',       price:95, cat:'Cravatte',  cond:1,size:'uni',city:'Zürich',   desc:'100% seta, fantasia geometrica blu e oro.',seller:2},
-  {id:9, photos:['https://images.unsplash.com/photo-1520903920243-00d872a2d1c9?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'🧣',title:'Sciarpa Acne Studios',     brand:'Acne Studios', price:110,cat:'Accessoires',cond:0,size:'uni',city:'Luzern',  desc:'Sciarpa frangiata in lana. Perfette condizioni.',seller:3},
-  {id:10,photos:['https://images.unsplash.com/photo-1602810316693-3667c854239a?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👔',title:'Camicia Ralph Lauren L',  brand:'Ralph Lauren', price:42, cat:'Kleider',   cond:2,size:'L', city:'Winterthur',desc:"Oxford button-down L. Lavata e stirata.",seller:4},
-  {id:11,photos:['https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👒',title:'Cappello paglia Mango',   brand:'Mango',        price:18, cat:'Accessoires',cond:1,size:'uni',city:'Lugano',  desc:"Cappello estivo. Usato poche volte.",seller:0},
-  {id:12,photos:['https://images.unsplash.com/photo-1603808033192-082d6919d3e1?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'🥿',title:'Mocassini Gucci 39',      brand:'Gucci',        price:280,cat:'Schuhe',    cond:1,size:'39', city:'Zürich',   desc:'Loafer classici taglia 39. Pelle nera.',seller:1},
-  {id:13,photos:['https://images.unsplash.com/photo-1571783465195-c197c2f4a7d0?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👘',title:'Kimono floreale vintage', brand:'Vintage',      price:55, cat:'Kleider',   cond:2,size:'M/L',city:'Basel',    desc:"Seta stampata anni '90. Fantasia floreale.",seller:2},
-  {id:14,photos:['https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'💼',title:'Rimowa Essential 55cm',   brand:'Rimowa',       price:195,cat:'Accessoires',cond:2,size:'55cm',city:'Genève', desc:'Cabin 55cm silver. Qualche graffio.',seller:3},
+  {id:1,photos:[],emoji:'🧥',title:'Trench Burberry Classic',  brand:'Burberry',     price:320,cat:'Kleider',   cond:0,size:'M',  city:'Zürich',   desc:"Trench originale M, colore camel. Una stagione, perfette condizioni.",seller:0},
+  {id:2,photos:[],emoji:'👟',title:'Nike Air Max 90 bianche',  brand:'Nike',         price:65, cat:'Schuhe',    cond:2,size:'40', city:'Genève',   desc:"Air Max 90 taglia 40. Qualche segno d'uso.",seller:1},
+  {id:3,photos:[],emoji:'👜',title:'Longchamp Le Pliage',      brand:'Longchamp',    price:89, cat:'Accessoires',cond:1,size:'M', city:'Lausanne', desc:'Le Pliage color navy. Pochissimi graffi.',seller:2},
+  {id:4,photos:[],emoji:'🕶️',title:'Ray-Ban Wayfarer neri',   brand:'Ray-Ban',      price:75, cat:'Occhiali',  cond:1,size:'uni',city:'Basel',    desc:'Wayfarer neri con astuccio. Lenti perfette.',seller:3},
+  {id:5,photos:[],emoji:'👗',title:'Abito Massimo Dutti S',    brand:'Massimo Dutti',price:48, cat:'Kleider',   cond:0,size:'S', city:'Bern',     desc:'Abito midi crema. Indossato una volta.',seller:4},
+  {id:6,photos:[],emoji:'👠',title:'Décolleté Zara beige 38',  brand:'Zara',         price:35, cat:'Schuhe',    cond:2,size:'38', city:'Zürich',   desc:"Ecopelle beige taglia 38. Tacco 7cm.",seller:0},
+  {id:7,photos:[],emoji:'💍',title:'Orecchini Agatha dorati',  brand:'Agatha Paris', price:28, cat:'Gioielli',  cond:0,size:'uni',city:'Genève',   desc:'Orecchini pendenti dorati. Mai indossati.',seller:1},
+  {id:8,photos:[],emoji:'🎗️',title:'Cravatta Hermès seta blu',brand:'Hermès',       price:95, cat:'Cravatte',  cond:1,size:'uni',city:'Zürich',   desc:'100% seta, fantasia geometrica blu e oro.',seller:2},
+  {id:9,photos:[],emoji:'🧣',title:'Sciarpa Acne Studios',     brand:'Acne Studios', price:110,cat:'Accessoires',cond:0,size:'uni',city:'Luzern',  desc:'Sciarpa frangiata in lana. Perfette condizioni.',seller:3},
+  {id:10,photos:[],emoji:'👔',title:'Camicia Ralph Lauren L',  brand:'Ralph Lauren', price:42, cat:'Kleider',   cond:2,size:'L', city:'Winterthur',desc:"Oxford button-down L. Lavata e stirata.",seller:4},
+  {id:11,photos:[],emoji:'👒',title:'Cappello paglia Mango',   brand:'Mango',        price:18, cat:'Accessoires',cond:1,size:'uni',city:'Lugano',  desc:"Cappello estivo. Usato poche volte.",seller:0},
+  {id:12,photos:[],emoji:'🥿',title:'Mocassini Gucci 39',      brand:'Gucci',        price:280,cat:'Schuhe',    cond:1,size:'39', city:'Zürich',   desc:'Loafer classici taglia 39. Pelle nera.',seller:1},
+  {id:13,photos:[],emoji:'👘',title:'Kimono floreale vintage', brand:'Vintage',      price:55, cat:'Kleider',   cond:2,size:'M/L',city:'Basel',    desc:"Seta stampata anni '90. Fantasia floreale.",seller:2},
+  {id:14,photos:[],emoji:'💼',title:'Rimowa Essential 55cm',   brand:'Rimowa',       price:195,cat:'Accessoires',cond:2,size:'55cm',city:'Genève', desc:'Cabin 55cm silver. Qualche graffio.',seller:3},
 ];
 
 /* ══ STATE ══ */
@@ -1530,18 +1482,10 @@ function notificationText(n){
 /* ══ NAV AVATAR SYNC ══ */
 function syncNavAvatar(){
   const btn=document.getElementById('profileNavBtn');
-  if(!btn) return;
-  if(!currentUser.dbId){
-    btn.innerHTML=`<span class="login-label">${T('loginLabel')}</span>`;
-    btn.style.cssText='';
-  } else if(currentUser.photo){
+  if(currentUser.photo){
     btn.innerHTML=`<img src="${currentUser.photo}" alt=""/>`;
   } else {
-    const initials=userInitials();
-    // Se per qualsiasi motivo le iniziali sono '?', usa icona persona
-    btn.innerHTML=initials==='?'
-      ? `<span style="font-size:1.1rem">👤</span>`
-      : `<span>${initials}</span>`;
+    btn.innerHTML=`<span>${userInitials()}</span>`;
     btn.style.fontFamily="'Cormorant Garamond',serif";
     btn.style.fontSize='.9rem';btn.style.fontWeight='600';btn.style.color='var(--silver)';
   }
@@ -1550,7 +1494,6 @@ function syncNavAvatar(){
 /* ══ LANGUAGE ══ */
 function setLang(l){
   lang=l;
-  localStorage.setItem('reduse_lang',l);
   document.documentElement.lang={it:'it',de:'de-CH',fr:'fr-CH'}[l];
   document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase()===l));
   activeCat=T('all');
@@ -1559,9 +1502,6 @@ function setLang(l){
 function applyTranslations(){
   const s=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
   const h=(id,v)=>{const e=document.getElementById(id);if(e)e.innerHTML=v;};
-  const al=(id,v)=>{const e=document.getElementById(id);if(e)e.setAttribute('aria-label',v);};
-  al('notifBtn',T('ariaNotif'));al('inboxNavBtn',T('ariaInbox'));al('favBtn',T('ariaFav'));al('cartBtn',T('ariaCart'));al('profileNavBtn',T('ariaProfile'));
-  syncNavAvatar();
   s('navAll',T('all'));s('navKleider',T('catKleider'));s('navSchuhe',T('catSchuhe'));s('navAccessoires',T('catAccessoires'));
   s('btnSell',T('btnSell'));
   s('heroEyebrow',T('heroEyebrow'));h('heroTitle',T('heroTitle'));s('heroSub',T('heroSub'));s('chBadge',T('chBadge'));
@@ -1612,23 +1552,9 @@ function applyTranslations(){
 /* ══ CATEGORIES ══ */
 function getAllCats(){return[T('all'),...[...new Set(listings.map(l=>l.cat))].map(k=>catLabel(k))];}
 function renderCats(){
-  const cats=getAllCats();
-  document.getElementById('catPills').innerHTML=cats.map(c=>
+  document.getElementById('catPills').innerHTML=getAllCats().map(c=>
     `<button class="cat-pill${activeCat===c?' active':''}" onclick="setCat('${c}')">${c}</button>`
   ).join('');
-  // Evidenzia il nav-link attivo
-  const navMap={[T('all')]:'navAll',[T('catKleider')]:'navKleider',[T('catSchuhe')]:'navSchuhe',[T('catAccessoires')]:'navAccessoires'};
-  document.querySelectorAll('.nav-link').forEach(b=>b.classList.remove('active'));
-  const activeId=navMap[activeCat];
-  if(activeId){const el=document.getElementById(activeId);if(el)el.classList.add('active');}
-  // Aggiorna anche la strip mobile con bottone Vendi in testa
-  const strip=document.getElementById('mobileNavStrip');
-  if(strip){
-    const sellBtn=`<button class="mobile-sell-btn" onclick="openSell()">＋ Vendi</button>`;
-    strip.innerHTML=sellBtn+cats.map(c=>
-      `<button class="${activeCat===c?'active':''}" onclick="setCat('${c}')">${c}</button>`
-    ).join('');
-  }
 }
 function setCat(c){activeCat=c;renderCats();renderListings();}
 
@@ -1718,7 +1644,6 @@ function renderListings(){
 
 /* ══ FAVOURITES ══ */
 function toggleFav(id,btn){
-  if(!currentUser.dbId){ openAuthModal('login'); return; }
   const item=listings.find(l=>l.id===id);
   if(favorites.has(id)){favorites.delete(id);btn.textContent='♡';btn.classList.remove('active');showToast(T('toastFavRemove'));}
   else{
@@ -1824,8 +1749,9 @@ function openItem(id,skipHistory=false){
   const soldBtn=document.getElementById('modalSoldBtn');
   if(soldBtn){soldBtn.textContent=T('markSold');soldBtn.style.display=(ownListing&&!l.sold)?'inline-flex':'none';}
   document.getElementById('modalBoostBtn').textContent=l.boosted?T('modalBoostActive'):T('modalBoost');
-  document.getElementById('modalBoostBtn').disabled=l.boosted;
-  document.getElementById('modalBoostBtn').style.display=ownListing?'inline-flex':'none';
+  document.getElementById('modalBoostBtn').disabled=l.boosted || !ownListing;
+  document.getElementById('modalBoostBtn').style.opacity=ownListing?'1':'.45';
+  document.getElementById('modalBoostBtn').title=ownListing?'':'Puoi mettere in boost solo i tuoi annunci';
   document.getElementById('modalBuyBtn').onclick=()=>addToCart(l);
   document.getElementById('modalBuyBtn').style.display=l.sold?'none':'inline-flex';
   // Share buttons
@@ -1887,7 +1813,7 @@ function closeSellerProfileModal(e){if(e.target.id==='sellerProfileOverlay')clos
 function closeSellerProfileDirect(){document.getElementById('sellerProfileOverlay').classList.remove('open');}
 
 /* ══ MESSAGING ══ */
-function openMsgFromItem(){if(!currentUser.dbId){openAuthModal('login');return;}if(currentSellerIdx===null)return;openMsgFromItemInbox();}
+function openMsgFromItem(){if(currentSellerIdx===null)return;openMsgFromItemInbox();}
 function openMsgFromSeller(){openMsgFromSellerInbox();}
 function openMsgModal(){
   document.getElementById('msgTitle').textContent=T('msgTitle');
@@ -1917,7 +1843,6 @@ function renderProfilePanel(){
       <div class="profile-panel-sub">${currentUser.email} · ${currentUser.city}</div>
       ${currentUser.bio?`<div class="profile-panel-bio">${currentUser.bio}</div>`:''}
       <button class="btn btn-ghost profile-edit-btn" onclick="openEditProfile()">${T('editProfileTitle')} ✏️</button>
-      <button class="btn btn-ghost profile-edit-btn" style="margin-left:.5rem;border-color:rgba(200,80,80,.35);color:#e07070;font-size:.65rem" onclick="doLogout()">⎋ Esci</button>
     </div>`;
   document.getElementById('ppStatItemsVal').textContent=myListings().length;
   const el=document.getElementById('profileListings');
@@ -2079,14 +2004,14 @@ function confirmBoostPayment(){
   const ids=[...boostSelection]; if(!ids.length) return;
   ids.forEach(id=>{ const item=listings.find(l=>l.id===id); if(item && item.seller===MR_IDX){ item.boosted=true; addNotification('boost',item.title,'item',item.id); } });
   closeBoostPaymentDirect();
-  if(currentItemId!==null){ const l=listings.find(x=>x.id===currentItemId); if(l){ const ownListing=l.seller===MR_IDX; document.getElementById('modalBoostBtn').textContent=l.boosted?T('modalBoostActive'):T('modalBoost'); document.getElementById('modalBoostBtn').disabled=!!l.boosted; document.getElementById('modalBoostBtn').style.display=ownListing?'inline-flex':'none'; } }
+  if(currentItemId!==null){ const l=listings.find(x=>x.id===currentItemId); if(l){ const ownListing=l.seller===MR_IDX; document.getElementById('modalBoostBtn').textContent=l.boosted?T('modalBoostActive'):T('modalBoost'); document.getElementById('modalBoostBtn').disabled=!!l.boosted || !ownListing; document.getElementById('modalBoostBtn').style.opacity=ownListing ? '1' : '.45'; } }
   renderListings(); renderProfilePanel(); showToast(T('boostToastPaid'));
 }
 function closeBoostPayment(e){ if(e.target.id==='boostOverlay') closeBoostPaymentDirect(); }
 function closeBoostPaymentDirect(){ document.getElementById('boostOverlay').classList.remove('open'); }
 
 /* ══ CART ══ */
-function addToCart(item){if(!currentUser.dbId){openAuthModal('login');return;}cart.push(item);updateCartUI();showToast(T('toastCart'));closeItemModal();}
+function addToCart(item){cart.push(item);updateCartUI();showToast(T('toastCart'));closeItemModal();}
 function removeCart(i){cart.splice(i,1);updateCartUI();}
 function updateCartUI(){
   const badge=document.getElementById('cartBadge');
@@ -2104,7 +2029,7 @@ function updateCartUI(){
   document.getElementById('btnCheckout').textContent=T('btnCheckout');
   document.getElementById('cartTotal').textContent='CHF '+cartTotal();
 }
-function openCart(){if(!currentUser.dbId){openAuthModal('login');return;}openPanel('cartPanel');}
+function openCart(){openPanel('cartPanel');}
 function closeCart(){closePanel('cartPanel');}
 
 /* ══ PANEL HELPERS ══ */
@@ -2160,24 +2085,21 @@ async function handlePhotos(e){
   const toUpload=files.slice(0,remaining);
   e.target.value='';
   if(!toUpload.length) return;
-  let ok=0,fail=0;
-  for(const file of toUpload){
+  let ok=0;
+  for(let i=0;i<toUpload.length;i++){
     try{
-      showToast(`⬆️ Caricamento ${ok+fail+1}/${toUpload.length}…`);
-      const url = await uploadToCloudinary(file);
-      if(!url || url.startsWith('data:')){ // base64 = Cloudinary non ha funzionato
-        throw new Error('Cloudinary non ha restituito un URL valido');
-      }
+      showToast(`⬆️ Caricamento foto ${i+1}/${toUpload.length}…`);
+      const url = await uploadToCloudinary(toUpload[i]);
+      if(!url || url.startsWith('data:')) throw new Error('URL non valido da Cloudinary');
       currentPhotos.push(url);
       renderPreviews();
       ok++;
     } catch(err){
-      console.error('Foto upload error:',err);
-      fail++;
-      showToast('⚠️ Errore foto '+(ok+fail)+': '+err.message);
+      console.error('❌ Foto upload error:',err);
+      showToast('⚠️ Errore foto '+(i+1)+': '+err.message);
     }
   }
-  if(ok>0) showToast('✓ '+ok+' foto caricate su Cloudinary');
+  if(ok>0) showToast(`✅ ${ok} foto caricate`);
 }
 function removePhoto(i){currentPhotos.splice(i,1);renderPreviews();}
 function renderPreviews(){
@@ -2269,7 +2191,6 @@ function cityKeyDown(e){
 
 /* ══ SELL ══ */
 function openSell(){
-  if(!currentUser.dbId){ openAuthModal('login'); return; }
   currentPhotos=[];currentVideo=null;renderPreviews();renderVideoPreview();
   document.getElementById('sellBoost').checked=false;
   document.getElementById('sellOverlay').classList.add('open');
@@ -2307,7 +2228,6 @@ function publishItem(){
 
 /* ══ OFFER ══ */
 function openOfferModal(){
-  if(!currentUser.dbId){openAuthModal('login');return;}
   const l=listings.find(x=>x.id===currentItemId);if(!l)return;
   const s=getSeller(l.seller);
   const setText=(id,k)=>{const e=document.getElementById(id);if(e)e.textContent=T(k);};
@@ -2423,10 +2343,10 @@ function updateInboxBadge(n){
 
 /* ── Apri / chiudi inbox panel ───────────────────────────── */
 function openInboxPanel(){
-  if(!currentUser.dbId){openAuthModal('login');return;}
   showInboxList();
   renderInboxList();
   openPanel('inboxPanel');
+  // Conta non letti da DB
   countUnreadMessagesFromDB();
 }
 function closeInboxPanel(){closePanel('inboxPanel');}
@@ -2618,120 +2538,19 @@ function initRealtime(){
 /* ══ TOAST ══ */
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);}
 
-/* ══ AUTH ══ */
-function openAuthModal(tab='login'){
-  switchAuthTab(tab);
-  document.getElementById('authOverlay').classList.add('open');
-}
-function closeAuthModal(){
-  document.getElementById('authOverlay').classList.remove('open');
-}
-function openProfileOrAuth(){
-  if(!currentUser.dbId) openAuthModal('login');
-  else openProfilePanel();
-}
-
-function switchAuthTab(tab){
-  document.getElementById('tabLogin').classList.toggle('active', tab==='login');
-  document.getElementById('tabRegister').classList.toggle('active', tab==='register');
-  document.getElementById('formLogin').style.display = tab==='login'?'':'none';
-  document.getElementById('formRegister').style.display = tab==='register'?'':'none';
-  document.getElementById('loginError').textContent='';
-  document.getElementById('registerError').textContent='';
-}
-
-async function doLogin(){
-  const email = document.getElementById('authLoginEmail').value.trim();
-  const pwd   = document.getElementById('authLoginPwd').value;
-  const errEl = document.getElementById('loginError');
-  const btn   = document.getElementById('btnDoLogin');
-  if(!email||!pwd){errEl.textContent='⚠️ Inserisci email e password';return;}
-  btn.disabled=true; btn.textContent='…';
-  const {data,error} = await sb().auth.signInWithPassword({email,password:pwd});
-  btn.disabled=false; btn.textContent='Entra →';
-  if(error){ errEl.textContent='✕ '+error.message; return; }
-}
-
-async function doRegister(){
-  const name  = document.getElementById('authRegName').value.trim();
-  const email = document.getElementById('authRegEmail').value.trim();
-  const pwd   = document.getElementById('authRegPwd').value;
-  const errEl = document.getElementById('registerError');
-  const btn   = document.getElementById('btnDoRegister');
-  if(!name){errEl.textContent='⚠️ Inserisci il tuo nome';return;}
-  if(!email||!pwd){errEl.textContent='⚠️ Email e password obbligatori';return;}
-  if(pwd.length<6){errEl.textContent='⚠️ Password min. 6 caratteri';return;}
-  btn.disabled=true; btn.textContent='…';
-  const {data,error} = await sb().auth.signUp({
-    email, password:pwd,
-    options:{ data:{ full_name: name } }
-  });
-  btn.disabled=false; btn.textContent='Crea account →';
-  if(error){ errEl.textContent='✕ '+error.message; return; }
-  if(!data.session){
-    errEl.style.color='var(--accent)';
-    errEl.textContent='✓ Controlla la tua email per confermare l\'account';
-  }
-}
-
-async function doLogout(){
-  closeAllPanels();
-  await sb().auth.signOut();
-  currentUser = {name:'',verified:false,email:'',city:'Zürich',bio:'',photo:null,dbId:null};
-  syncNavAvatar();
-  showToast('✓ Disconnesso');
-}
-
-function onUserLoggedIn(session){
-  const user = session.user;
-  if(user.is_anonymous) return;
-  currentUser.dbId   = user.id;
-  currentUser.email  = user.email || '';
-  // Fallback a cascata: full_name → parte email prima @ → prime 6 char ID
-  const meta = user.user_metadata || {};
-  currentUser.name = (meta.full_name || meta.name || '').trim()
-    || (user.email ? user.email.split('@')[0] : '')
-    || user.id.slice(0, 6);
-  closeAuthModal();
-  syncNavAvatar();
+/* ══ INIT ══ */
+setLang('it');
+syncNavAvatar();
+resetFilters();
+// Carica dati persistenti da Supabase (se configurato)
+if(SUPABASE_READY){
   loadListingsFromDB();
   loadProfileFromDB();
   initRealtime();
+  if(!SUPABASE_READY) console.info('Supabase non configurato — dati demo locali');
+} else {
+  console.info('ℹ️  Modalità demo: dati in memoria. Configura SUPABASE_URL e SUPABASE_ANON_KEY per persistere i dati.');
 }
-
-/* ══ INIT ══ */
-(function(){
-  const supported=['it','de','fr'];
-  const saved=localStorage.getItem('reduse_lang');
-  if(saved&&supported.includes(saved)){setLang(saved);return;}
-  const browser=(navigator.language||'it').split('-')[0].toLowerCase();
-  setLang(supported.includes(browser)?browser:'it');
-})();
-resetFilters();
-
-// Il div #authOverlay è definito più in basso nel DOM — aspettiamo che sia pronto
-document.addEventListener('DOMContentLoaded', () => {
-  // Ascolta cambi di stato auth
-  sb().auth.onAuthStateChange((event, session) => {
-    if(session && !session.user?.is_anonymous){
-      onUserLoggedIn(session);
-    } else if(!session || session.user?.is_anonymous){
-      if(session?.user?.is_anonymous) sb().auth.signOut();
-      syncNavAvatar();
-    }
-  });
-
-  // Controlla se c'è già una sessione attiva (non anonima)
-  sb().auth.getSession().then(({data:{session}}) => {
-    if(session && !session.user?.is_anonymous){
-      onUserLoggedIn(session);
-    } else {
-      syncNavAvatar();
-      loadListingsFromDB();
-    }
-  });
-});
-
 const initialItem=new URLSearchParams(location.search).get('item');
 if(initialItem) setTimeout(()=>openItem(Number(initialItem),true),0);
 window.addEventListener('popstate',()=>{
@@ -2740,37 +2559,6 @@ window.addEventListener('popstate',()=>{
   else document.getElementById('itemOverlay').classList.remove('open');
 });
 </script>
-
-<!-- ══ AUTH OVERLAY ══ -->
-<div class="overlay" id="authOverlay" onclick="if(event.target.id==='authOverlay')closeAuthModal()">
-  <div class="auth-modal">
-    <button class="modal-close" onclick="closeAuthModal()">✕</button>
-    <div class="auth-logo">Reduse<span>·</span></div>
-    <div class="auth-tabs">
-      <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Accedi</button>
-      <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Registrati</button>
-    </div>
-    <div class="auth-body">
-      <!-- Login form -->
-      <div id="formLogin">
-        <div class="auth-field"><label>Email</label><input type="email" id="authLoginEmail" placeholder="tua@email.ch" autocomplete="email"/></div>
-        <div class="auth-field"><label>Password</label><input type="password" id="authLoginPwd" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/></div>
-        <button class="auth-btn" id="btnDoLogin" onclick="doLogin()">Entra →</button>
-        <div class="auth-error" id="loginError"></div>
-        <div class="auth-footer-note">Non hai un account? <span style="color:var(--accent);cursor:pointer" onclick="switchAuthTab('register')">Registrati gratis</span></div>
-      </div>
-      <!-- Register form -->
-      <div id="formRegister" style="display:none">
-        <div class="auth-field"><label>Nome completo</label><input type="text" id="authRegName" placeholder="es. Sofia Müller" autocomplete="name"/></div>
-        <div class="auth-field"><label>Email</label><input type="email" id="authRegEmail" placeholder="tua@email.ch" autocomplete="email"/></div>
-        <div class="auth-field"><label>Password</label><input type="password" id="authRegPwd" placeholder="min. 6 caratteri" autocomplete="new-password" onkeydown="if(event.key==='Enter')doRegister()"/></div>
-        <button class="auth-btn" id="btnDoRegister" onclick="doRegister()">Crea account →</button>
-        <div class="auth-error" id="registerError"></div>
-        <div class="auth-footer-note">Hai già un account? <span style="color:var(--accent);cursor:pointer" onclick="switchAuthTab('login')">Accedi</span></div>
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- ══ OFFER MODAL ══ -->
 <div class="overlay" id="offerOverlay" onclick="if(event.target.id==='offerOverlay')closeOfferModal()">
