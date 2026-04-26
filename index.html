@@ -1094,11 +1094,13 @@ async function loadListingsFromDB(){
     if(data){
       listings=data.map(r=>({
         id:r.id,title:r.title,brand:r.brand,price:r.price,cat:r.category,
-        cond:r.condition_idx,size:r.size,city:r.city,desc:r.description,
+        cond:r.condition_idx??0,size:r.size,city:r.city,desc:r.description,
         emoji:r.emoji||'👗',photos:r.photos||[],video:r.video_url||null,
-        seller:r.seller_idx??MR_IDX,boosted:r.boosted||false,sold:r.sold||false,
+        // seller_id (uuid) → MR_IDX se è l'utente loggato, altrimenti 0
+        seller:(r.seller_id && r.seller_id===currentUser.dbId) ? MR_IDX : 0,
+        boosted:r.boosted||false,sold:r.sold||false,
         views:r.views||0,createdAt:new Date(r.created_at).getTime(),
-        userId:r.user_id||null,
+        userId:r.seller_id||null,
       }));
       renderListings();renderCats();
     }
@@ -1110,11 +1112,21 @@ async function saveListingToDB(l){
   if(!SUPABASE_READY) return l.id;
   try{
     const {data,error}=await sb().from('listings').insert([{
-      title:l.title,brand:l.brand,price:l.price,category:l.cat,
-      condition_idx:l.cond,size:l.size,city:l.city,description:l.desc,
-      emoji:l.emoji,photos:l.photos,video_url:l.video||null,
-      seller_idx:l.seller,boosted:l.boosted,sold:l.sold,views:0,
-      user_id:currentUser.dbId||null,
+      title:        l.title,
+      brand:        l.brand,
+      price:        l.price,
+      category:     l.cat,
+      condition_idx:l.cond,
+      size:         l.size,
+      city:         l.city,
+      description:  l.desc,
+      emoji:        l.emoji,
+      photos:       l.photos,
+      video_url:    l.video||null,
+      boosted:      l.boosted||false,
+      sold:         l.sold||false,
+      views:        0,
+      seller_id:    currentUser.dbId||null,  // colonna corretta nello schema
     }]).select().single();
     if(error)throw error;
     console.log('✅ Annuncio salvato su Supabase, id:',data.id);
