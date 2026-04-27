@@ -544,6 +544,34 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
 .profile-mini-btn.sold-btn:hover{background:rgba(200,50,50,.1)}
 
 
+/* ── ONBOARDING MODAL ── */
+#onboardingOverlay{z-index:510;background:rgba(10,25,16,.97);backdrop-filter:blur(12px)}
+.onboarding-modal{background:var(--pine-deep);border:1px solid var(--border-m);max-width:440px;width:100%;position:relative;animation:fadeUp .4s ease}
+.onb-header{padding:2rem 2rem 1.2rem;text-align:center;border-bottom:1px solid var(--border-c)}
+.onb-logo{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:600;color:var(--silver);margin-bottom:.6rem;letter-spacing:.06em}
+.onb-logo span{color:var(--accent)}
+.onb-step-indicator{display:flex;justify-content:center;gap:.4rem;margin-bottom:1rem}
+.onb-step-dot{width:6px;height:6px;border-radius:50%;background:var(--border-m)}
+.onb-step-dot.active{background:var(--accent);width:18px;border-radius:3px}
+.onb-title{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:600;color:var(--silver);margin-bottom:.4rem;line-height:1.25}
+.onb-sub{font-size:.78rem;color:var(--silver-dim);line-height:1.65;letter-spacing:.02em}
+.onb-body{padding:1.6rem 2rem 2rem}
+.onb-avatar-section{display:flex;flex-direction:column;align-items:center;margin-bottom:1.5rem;padding-bottom:1.4rem;border-bottom:1px solid var(--border-c)}
+.onb-avatar-outer{position:relative;cursor:pointer;margin-bottom:.6rem}
+.onb-avatar{width:82px;height:82px;border-radius:50%;background:var(--pine-mid);border:2px dashed rgba(168,196,184,.35);display:flex;align-items:center;justify-content:center;font-size:1.9rem;overflow:hidden;transition:border-color .2s,transform .18s}
+.onb-avatar:hover{border-color:var(--accent);transform:scale(1.04)}
+.onb-avatar img{width:100%;height:100%;object-fit:cover}
+.onb-avatar-edit{position:absolute;bottom:2px;right:2px;width:22px;height:22px;border-radius:50%;background:var(--accent);color:var(--pine-deep);display:flex;align-items:center;justify-content:center;font-size:.65rem;pointer-events:none}
+.onb-avatar-hint{font-size:.68rem;color:var(--silver-dim);text-align:center;letter-spacing:.04em}
+.onb-avatar-hint strong{color:var(--accent);font-weight:400}
+.onb-city-required{display:inline-flex;align-items:center;gap:.35rem;font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:.55rem;padding:.2rem .65rem;background:rgba(168,196,184,.08);border:1px solid rgba(168,196,184,.2);border-radius:2px}
+.onb-city-input{width:100%;padding:.78rem 1rem;background:rgba(255,255,255,.04);border:1px solid var(--border-c);border-radius:2px;font-family:'Jost',sans-serif;font-size:.92rem;color:var(--silver);outline:none;transition:border-color .2s}
+.onb-city-input:focus{border-color:var(--accent)}
+.onb-city-input::placeholder{color:rgba(212,221,216,.25)}
+.onb-skip{font-size:.7rem;color:rgba(212,221,216,.35);text-align:center;margin-top:.9rem;cursor:pointer;letter-spacing:.05em;transition:color .2s}
+.onb-skip:hover{color:var(--silver-dim)}
+@media(max-width:768px){.onboarding-modal{max-width:100%}}
+
 /* (cart/heart styles consolidated above with profile nav btn) */
 
 /* ── MOBILE NAV STRIP ── */
@@ -1218,11 +1246,16 @@ async function loadProfileFromDB(){
       currentUser.photo = data.photo_url || null;
       currentUser.verified = data.verified || false;
       syncNavAvatar(); renderProfilePanel();
+      // Mostra onboarding se la città non è stata ancora impostata
+      if(!data.city){ setTimeout(()=>openOnboarding(), 500); }
     } else {
       // Primo accesso: crea profilo con dati base dall'auth
       await saveProfileToDB(currentUser);
+      // Mostra sempre l'onboarding al primo accesso
+      setTimeout(()=>openOnboarding(), 500);
     }
   }catch(e){console.warn('Supabase loadProfile:',e.message);}
+}
 }
 
 /* ── Upload foto su Cloudinary ────────────────────────────────── */
@@ -1316,6 +1349,14 @@ const TR={
     boostPaymentTitle:'Pagamento boost locale',boostPaymentSub:'Scegli la durata del boost e, se vuoi, metti in evidenza più articoli con il 10% di sconto sul totale.',boostItemsLabel:'Articoli da mettere in boost',boostPlanLabel:'Durata del boost',boostSummaryLabel:'Riepilogo',boostSummaryItemsText:'Articoli selezionati',boostSummaryPlanText:'Piano scelto',boostSummaryDiscountText:'Sconto multi-articolo',boostSummaryTotalText:'Totale',boostDiscountNote:'Lo sconto del 10% si applica automaticamente se selezioni almeno 2 articoli.',boostOpenHint:'Apri articolo o profilo',boostGoArticle:'Apri articolo',boostGoProfile:'Apri profilo',boostCancel:'Annulla',boostConfirm:'Conferma pagamento locale',boostPlan3:'Boost locale · 3 giorni',boostPlan7:'Boost locale · 7 giorni',boostPlan10:'Boost locale · 10 giorni',boostToastPaid:'Pagamento registrato · boost attivato',modalOffer:'💸 Fai un\'offerta',offerTitle:'Fai un\'offerta',offerSub:'Proponi un prezzo al venditore',offerAmountLabel:'Il tuo prezzo (CHF)',offerMsgLabel:'Messaggio (opzionale)',offerMsgPh:'es. Posso venire a ritirare domani…',offerNote:'Il venditore vedrà la tua offerta e potrà accettarla o controproporla.',offerCancel:'Annulla',offerSend:'Invia offerta',toastOfferSent:'✓ Offerta inviata!',shareLabel:'Condividi:',shareWhatsApp:'📱 Condividi su WhatsApp',shareInsta:'📸 Condividi su Instagram',shareCopy:'🔗 Copia link',toastLinkCopied:'✓ Link copiato!',markSold:'Segna come venduto',soldChip:'Venduto',soldBadge:'Venduto',toastSoldDone:'✓ Annuncio segnato come venduto',verifyTitle:'Verifica identità',verifySub:'Ottieni il badge ✓ Verificato',verifyEmailStep:'Conferma email',verifyEmailDesc:'Spunta per simulare la conferma email.',verifyIdStep:'Documento d\'identità',verifyIdDesc:'Spunta per simulare il caricamento del documento.',verifyNote:'Demo: spunta entrambi gli step e conferma.',verifyCancel:'Annulla',verifyConfirm:'Conferma verifica',toastVerified:'✓ Profilo verificato!',verifyBtn:'🛡 Verifica identità',verified:'✓ Verificato',
     ariaNotif:'Notifiche',ariaInbox:'Messaggi',ariaFav:'Preferiti',ariaCart:'Carrello',ariaProfile:'Profilo',
     loginLabel:'Accedi o registrati',
+    onbTitle:'Benvenuto su Reduse ✦',
+    onbSub:'Per acquistare o vendere hai bisogno di impostare la tua città. La foto profilo è opzionale, ma rende il tuo profilo più autentico.',
+    onbAvatarHint:'Foto profilo · <strong>opzionale</strong>',
+    onbCityLabel:'La tua città',
+    onbCityRequired:'📍 Obbligatoria per acquistare e vendere',
+    onbContinue:'Inizia a comprare e vendere →',
+    onbSkip:'Salta per ora (la città è richiesta prima di ogni acquisto o vendita)',
+    onbCityMissing:'⚠️ Inserisci la tua città per continuare',
   },
   de:{
     all:'Alle',catKleider:'Kleider',catSchuhe:'Schuhe',catAccessoires:'Accessoires',
@@ -1376,6 +1417,14 @@ const TR={
     boostPaymentTitle:'Lokale Boost-Zahlung',boostPaymentSub:'Wähle die Boost-Dauer und hebe auf Wunsch mehrere Artikel mit 10% Rabatt auf den Gesamtbetrag hervor.',boostItemsLabel:'Zu boostende Artikel',boostPlanLabel:'Boost-Dauer',boostSummaryLabel:'Zusammenfassung',boostSummaryItemsText:'Ausgewählte Artikel',boostSummaryPlanText:'Gewählter Plan',boostSummaryDiscountText:'Rabatt für mehrere Artikel',boostSummaryTotalText:'Gesamt',boostDiscountNote:'Der 10%-Rabatt wird automatisch angewendet, wenn mindestens 2 Artikel ausgewählt werden.',boostOpenHint:'Artikel oder Profil öffnen',boostGoArticle:'Artikel öffnen',boostGoProfile:'Profil öffnen',boostCancel:'Abbrechen',boostConfirm:'Lokale Zahlung bestätigen',boostPlan3:'Lokaler Boost · 3 Tage',boostPlan7:'Lokaler Boost · 7 Tage',boostPlan10:'Lokaler Boost · 10 Tage',boostToastPaid:'Zahlung registriert · Boost aktiviert',modalOffer:'💸 Angebot machen',offerTitle:'Angebot machen',offerSub:'Schlage dem Verkäufer einen Preis vor',offerAmountLabel:'Dein Preis (CHF)',offerMsgLabel:'Nachricht (optional)',offerMsgPh:'z.B. Ich kann morgen abholen…',offerNote:'Der Verkäufer sieht dein Angebot und kann es annehmen oder kontern.',offerCancel:'Abbrechen',offerSend:'Angebot senden',toastOfferSent:'✓ Angebot gesendet!',shareLabel:'Teilen:',shareWhatsApp:'📱 Auf WhatsApp teilen',shareInsta:'📸 Auf Instagram teilen',shareCopy:'🔗 Link kopieren',toastLinkCopied:'✓ Link kopiert!',markSold:'Als verkauft markieren',soldChip:'Verkauft',soldBadge:'Verkauft',toastSoldDone:'✓ Inserat als verkauft markiert',verifyTitle:'Identität verifizieren',verifySub:'Erhalte das ✓ Verifiziert-Abzeichen',verifyEmailStep:'E-Mail bestätigen',verifyEmailDesc:'Haken setzen um E-Mail-Bestätigung zu simulieren.',verifyIdStep:'Ausweisdokument',verifyIdDesc:'Haken setzen um Ausweis-Upload zu simulieren.',verifyNote:'Demo: beide Schritte abhaken und bestätigen.',verifyCancel:'Abbrechen',verifyConfirm:'Verifizierung bestätigen',toastVerified:'✓ Profil verifiziert!',verifyBtn:'🛡 Identität verifizieren',verified:'✓ Verifiziert',
     ariaNotif:'Benachrichtigungen',ariaInbox:'Nachrichten',ariaFav:'Favoriten',ariaCart:'Warenkorb',ariaProfile:'Profil',
     loginLabel:'Anmelden oder registrieren',
+    onbTitle:'Willkommen bei Reduse ✦',
+    onbSub:'Um kaufen oder verkaufen zu können, musst du deinen Ort angeben. Ein Profilfoto ist optional, macht dein Profil aber authentischer.',
+    onbAvatarHint:'Profilfoto · <strong>optional</strong>',
+    onbCityLabel:'Dein Ort',
+    onbCityRequired:'📍 Erforderlich zum Kaufen und Verkaufen',
+    onbContinue:'Kaufen und verkaufen →',
+    onbSkip:'Überspringen (Ort wird vor jedem Kauf oder Verkauf benötigt)',
+    onbCityMissing:'⚠️ Bitte gib deinen Ort an',
   },
   fr:{
     all:'Tout',catKleider:'Vêtements',catSchuhe:'Chaussures',catAccessoires:'Accessoires',
@@ -1436,6 +1485,14 @@ const TR={
     boostPaymentTitle:'Paiement boost local',boostPaymentSub:'Choisissez la durée du boost et mettez éventuellement plusieurs articles en avant avec 10% de réduction sur le total.',boostItemsLabel:'Articles à booster',boostPlanLabel:'Durée du boost',boostSummaryLabel:'Récapitulatif',boostSummaryItemsText:'Articles sélectionnés',boostSummaryPlanText:'Formule choisie',boostSummaryDiscountText:'Remise multi-articles',boostSummaryTotalText:'Total',boostDiscountNote:'La remise de 10% s’applique automatiquement si vous sélectionnez au moins 2 articles.',boostOpenHint:'Ouvrir l’article ou le profil',boostGoArticle:'Ouvrir l’article',boostGoProfile:'Ouvrir le profil',boostCancel:'Annuler',boostConfirm:'Confirmer le paiement local',boostPlan3:'Boost local · 3 jours',boostPlan7:'Boost local · 7 jours',boostPlan10:'Boost local · 10 jours',boostToastPaid:'Paiement enregistré · boost activé',modalOffer:'💸 Faire une offre',offerTitle:'Faire une offre',offerSub:'Proposez un prix au vendeur',offerAmountLabel:'Votre prix (CHF)',offerMsgLabel:'Message (optionnel)',offerMsgPh:'ex. Je peux venir récupérer demain…',offerNote:'Le vendeur verra votre offre et pourra l\'accepter ou faire une contre-offre.',offerCancel:'Annuler',offerSend:'Envoyer l\'offre',toastOfferSent:'✓ Offre envoyée !',shareLabel:'Partager :',shareWhatsApp:'📱 Partager sur WhatsApp',shareInsta:'📸 Partager sur Instagram',shareCopy:'🔗 Copier le lien',toastLinkCopied:'✓ Lien copié !',markSold:'Marquer comme vendu',soldChip:'Vendu',soldBadge:'Vendu',toastSoldDone:'✓ Annonce marquée comme vendue',verifyTitle:'Vérifier l\'identité',verifySub:'Obtenez le badge ✓ Vérifié',verifyEmailStep:'Confirmer l\'email',verifyEmailDesc:'Cochez pour simuler la confirmation email.',verifyIdStep:'Pièce d\'identité',verifyIdDesc:'Cochez pour simuler le téléchargement du document.',verifyNote:'Démo : cochez les deux étapes et confirmez.',verifyCancel:'Annuler',verifyConfirm:'Confirmer',toastVerified:'✓ Profil vérifié !',verifyBtn:'🛡 Vérifier l\'identité',verified:'✓ Vérifié',
     ariaNotif:'Notifications',ariaInbox:'Messages',ariaFav:'Favoris',ariaCart:'Panier',ariaProfile:'Profil',
     loginLabel:'Se connecter ou s\'inscrire',
+    onbTitle:'Bienvenue sur Reduse ✦',
+    onbSub:'Pour acheter ou vendre, vous devez indiquer votre ville. La photo de profil est optionnelle, mais rend votre profil plus authentique.',
+    onbAvatarHint:'Photo de profil · <strong>optionnelle</strong>',
+    onbCityLabel:'Votre ville',
+    onbCityRequired:'📍 Obligatoire pour acheter et vendre',
+    onbContinue:'Commencer à acheter et vendre →',
+    onbSkip:'Passer (la ville sera requise avant tout achat ou vente)',
+    onbCityMissing:'⚠️ Veuillez indiquer votre ville',
   }
 };
 
@@ -2103,7 +2160,7 @@ function closeBoostPayment(e){ if(e.target.id==='boostOverlay') closeBoostPaymen
 function closeBoostPaymentDirect(){ document.getElementById('boostOverlay').classList.remove('open'); }
 
 /* ══ CART ══ */
-function addToCart(item){if(!currentUser.dbId){openAuthModal('login');return;}cart.push(item);updateCartUI();showToast(T('toastCart'));closeItemModal();}
+function addToCart(item){if(!currentUser.dbId){openAuthModal('login');return;}if(!currentUser.city){openOnboarding(()=>addToCart(item));return;}cart.push(item);updateCartUI();showToast(T('toastCart'));closeItemModal();}
 function removeCart(i){cart.splice(i,1);updateCartUI();}
 function updateCartUI(){
   const badge=document.getElementById('cartBadge');
@@ -2287,6 +2344,7 @@ function cityKeyDown(e){
 /* ══ SELL ══ */
 function openSell(){
   if(!currentUser.dbId){ openAuthModal('login'); return; }
+  if(!currentUser.city){ openOnboarding(()=>openSell()); return; }
   currentPhotos=[];currentVideo=null;renderPreviews();renderVideoPreview();
   document.getElementById('sellBoost').checked=false;
   document.getElementById('sellOverlay').classList.add('open');
@@ -2632,6 +2690,93 @@ function initRealtime(){
 }
 
 
+/* ══ ONBOARDING ══ */
+let _onboardingPendingFn = null;
+let _onbCityOptions = [], _onbCityFocusIdx = -1;
+
+function openOnboarding(pendingFn = null){
+  _onboardingPendingFn = pendingFn;
+  // populate fields
+  document.getElementById('onbCityInput').value = currentUser.city && currentUser.city !== 'Zürich' ? currentUser.city : '';
+  _renderOnbAvatarPreview();
+  // apply translations
+  document.getElementById('onbTitle').textContent = T('onbTitle');
+  document.getElementById('onbSub').textContent = T('onbSub');
+  document.getElementById('onbAvatarHint').innerHTML = T('onbAvatarHint');
+  document.getElementById('onbCityLabel').textContent = T('onbCityLabel');
+  document.getElementById('onbCityRequired').textContent = T('onbCityRequired');
+  document.getElementById('onbContinueBtn').textContent = T('onbContinue');
+  document.getElementById('onbSkipBtn').textContent = T('onbSkip');
+  document.getElementById('onbCityInput').placeholder = T('cityPlaceholder');
+  document.getElementById('onboardingOverlay').classList.add('open');
+}
+
+function closeOnboarding(){
+  document.getElementById('onboardingOverlay').classList.remove('open');
+  _onbCityOptions=[];_onbCityFocusIdx=-1;
+  closeOnbCityDD();
+}
+
+function skipOnboarding(){
+  closeOnboarding();
+  _onboardingPendingFn = null;
+}
+
+async function submitOnboarding(){
+  const city = document.getElementById('onbCityInput').value.trim();
+  if(!city){ showToast(T('onbCityMissing')); document.getElementById('onbCityInput').focus(); return; }
+  currentUser.city = city;
+  await saveProfileToDB(currentUser);
+  syncNavAvatar();
+  renderProfilePanel();
+  closeOnboarding();
+  showToast('✓ Profilo completato!');
+  if(_onboardingPendingFn){ const fn=_onboardingPendingFn; _onboardingPendingFn=null; setTimeout(fn,120); }
+}
+
+function _renderOnbAvatarPreview(){
+  const el = document.getElementById('onbAvatarPreview');
+  if(!el) return;
+  if(currentUser.photo){ el.innerHTML=`<img src="${currentUser.photo}" alt=""/>`; }
+  else { el.innerHTML='📷'; }
+}
+
+async function handleOnbAvatar(e){
+  const f=(e.target.files||[])[0]; if(!f) return;
+  e.target.value='';
+  try{
+    showToast('⬆️ Caricamento foto…');
+    const url = await uploadAvatarToCloudinary(f);
+    currentUser.photo = url;
+    _renderOnbAvatarPreview();
+    showToast('✓ Foto aggiornata');
+  }catch(err){ showToast('⚠️ Errore caricamento foto'); }
+}
+
+/* City autocomplete for onboarding */
+function onbCityInput(){
+  const val=document.getElementById('onbCityInput').value.trim(); _onbCityFocusIdx=-1;
+  if(val.length<1){ closeOnbCityDD(); return; }
+  _onbCityOptions=SWISS_CITIES.filter(c=>c.toLowerCase().startsWith(val.toLowerCase())).slice(0,8);
+  if(!_onbCityOptions.length){ closeOnbCityDD(); return; }
+  const hl=v=>v.replace(new RegExp(`^(${escRe(val)})`,'i'),m=>`<span class="city-match">${m}</span>`);
+  const dd=document.getElementById('onbCityDropdown');
+  dd.innerHTML=_onbCityOptions.map(c=>`<div class="city-option" onmousedown="selectOnbCity('${c}')">${hl(c)}</div>`).join('');
+  dd.classList.add('open');
+}
+function selectOnbCity(c){ document.getElementById('onbCityInput').value=c; closeOnbCityDD(); }
+function closeOnbCityDD(){ const d=document.getElementById('onbCityDropdown'); if(d) d.classList.remove('open'); _onbCityFocusIdx=-1; }
+function onbCityBlur(){ setTimeout(closeOnbCityDD,150); }
+function onbCityKeyDown(e){
+  const items=document.getElementById('onbCityDropdown').querySelectorAll('.city-option'); if(!items.length) return;
+  if(e.key==='ArrowDown'){ e.preventDefault(); _onbCityFocusIdx=Math.min(_onbCityFocusIdx+1,items.length-1); }
+  else if(e.key==='ArrowUp'){ e.preventDefault(); _onbCityFocusIdx=Math.max(_onbCityFocusIdx-1,0); }
+  else if(e.key==='Enter'){ if(_onbCityFocusIdx>=0){ e.preventDefault(); selectOnbCity(_onbCityOptions[_onbCityFocusIdx]); return; } else { e.preventDefault(); submitOnboarding(); return; } }
+  else if(e.key==='Escape'){ closeOnbCityDD(); return; }
+  items.forEach((it,i)=>it.classList.toggle('focused',i===_onbCityFocusIdx));
+  if(_onbCityFocusIdx>=0) items[_onbCityFocusIdx].scrollIntoView({block:'nearest'});
+}
+
 /* ══ TOAST ══ */
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);}
 
@@ -2785,6 +2930,42 @@ window.addEventListener('popstate',()=>{
         <div class="auth-error" id="registerError"></div>
         <div class="auth-footer-note">Hai già un account? <span style="color:var(--accent);cursor:pointer" onclick="switchAuthTab('login')">Accedi</span></div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ONBOARDING MODAL ══ -->
+<div class="overlay" id="onboardingOverlay">
+  <div class="modal onboarding-modal">
+    <div class="onb-header">
+      <div class="onb-logo">Reduse<span>·</span></div>
+      <div class="onb-step-indicator">
+        <div class="onb-step-dot active"></div>
+        <div class="onb-step-dot active"></div>
+      </div>
+      <div class="onb-title" id="onbTitle"></div>
+      <div class="onb-sub" id="onbSub"></div>
+    </div>
+    <div class="onb-body">
+      <!-- Foto profilo (opzionale) -->
+      <div class="onb-avatar-section">
+        <div class="onb-avatar-outer" onclick="document.getElementById('onbAvatarInput').click()">
+          <div class="onb-avatar" id="onbAvatarPreview">📷</div>
+          <div class="onb-avatar-edit">✎</div>
+        </div>
+        <div class="onb-avatar-hint" id="onbAvatarHint"></div>
+        <input type="file" id="onbAvatarInput" accept="image/*" style="display:none" onchange="handleOnbAvatar(event)"/>
+      </div>
+      <!-- Città (obbligatoria) -->
+      <div class="form-group city-autocomplete" style="position:relative">
+        <label style="display:block;font-size:.63rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:.45rem" id="onbCityLabel"></label>
+        <div class="onb-city-required" id="onbCityRequired"></div>
+        <input class="onb-city-input" type="text" id="onbCityInput" autocomplete="off"
+          oninput="onbCityInput()" onkeydown="onbCityKeyDown(event)" onblur="onbCityBlur()"/>
+        <div class="city-dropdown" id="onbCityDropdown"></div>
+      </div>
+      <button class="auth-btn" id="onbContinueBtn" onclick="submitOnboarding()" style="margin-top:1.2rem"></button>
+      <div class="onb-skip" id="onbSkipBtn" onclick="skipOnboarding()"></div>
     </div>
   </div>
 </div>
