@@ -572,6 +572,52 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
 .onb-skip:hover{color:var(--silver-dim)}
 @media(max-width:768px){.onboarding-modal{max-width:100%}}
 
+/* ── NUOVO ARRIVO BADGE ── */
+.new-arrival-badge{position:absolute;top:.55rem;left:.55rem;background:var(--accent);color:var(--pine-deep);font-size:.58rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:.22rem .55rem;border-radius:2px;z-index:3;pointer-events:none;animation:pulseNew 2s ease-in-out infinite}
+@keyframes pulseNew{0%,100%{opacity:1}50%{opacity:.7}}
+
+/* ── COLOR CHIP ── */
+.color-chip{display:inline-block;width:10px;height:10px;border-radius:50%;border:1px solid rgba(255,255,255,.25);flex-shrink:0}
+:root{
+  --color-nero:#111;--color-bianco:#f5f5f0;--color-grigio:#888;--color-beige:#c8b89a;
+  --color-marrone:#7b5533;--color-rosso:#c0392b;--color-rosa:#e88fa0;--color-arancio:#e67e22;
+  --color-giallo:#f1c40f;--color-verde:#27ae60;--color-blu:#2980b9;--color-lilla:#8e44ad;
+  --color-oro:#d4af37;--color-argento:#a8a9ad;--color-multicolor:linear-gradient(90deg,#e74c3c,#f39c12,#2ecc71,#3498db,#9b59b6);
+}
+
+/* ── HOVER PHOTO PREVIEW ── */
+.listing-img .photo-hover{position:absolute;inset:0;object-fit:cover;opacity:0;transition:opacity .35s ease;z-index:1}
+.listing-img .photo-main{transition:opacity .35s ease;z-index:0}
+.listing-card:hover .photo-hover{opacity:1}
+.listing-card:hover .photo-main{opacity:0}
+
+/* ── SELLER CHIP ON CARD ── */
+.card-seller-chip{display:inline-flex;align-items:center;gap:.28rem;font-size:.63rem;letter-spacing:.06em;color:var(--silver-dim);cursor:pointer;transition:color .15s;margin-top:.2rem;width:fit-content}
+.card-seller-chip:hover{color:var(--accent)}
+
+/* ── PRICE EDIT INLINE ── */
+.price-edit-row{display:flex;align-items:center;gap:.35rem;margin-top:.15rem}
+.price-edit-input{width:80px;padding:.22rem .4rem;background:rgba(255,255,255,.05);border:1px solid var(--border-c);border-radius:2px;font-family:'Jost',sans-serif;font-size:.78rem;color:var(--silver);outline:none;transition:border-color .2s}
+.price-edit-input:focus{border-color:var(--accent)}
+.price-edit-save{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;background:var(--accent);color:var(--pine-deep);border:none;padding:.22rem .55rem;cursor:pointer;border-radius:2px;font-family:'Jost',sans-serif;transition:opacity .15s}
+.price-edit-save:hover{opacity:.82}
+.price-edit-cancel{font-size:.62rem;color:var(--silver-dim);background:none;border:none;cursor:pointer;padding:.22rem .3rem;transition:color .15s}
+.price-edit-cancel:hover{color:var(--silver)}
+
+/* ── CUSTOM COLOR SELECT ── */
+.color-select-wrap{position:relative;width:100%}
+.color-select-trigger{display:flex;align-items:center;gap:.55rem;padding:.68rem .85rem;background:rgba(255,255,255,.04);border:1px solid var(--border-c);border-radius:2px;cursor:pointer;transition:border-color .2s;user-select:none}
+.color-select-trigger:hover,.color-select-wrap.open .color-select-trigger{border-color:var(--accent)}
+.color-dot-preview{width:13px;height:13px;border-radius:50%;flex-shrink:0;display:inline-block}
+.color-select-trigger span:nth-child(2){flex:1;font-size:.88rem;color:var(--silver);font-family:'Jost',sans-serif}
+.color-select-arrow{font-size:.7rem;color:var(--silver-dim);transition:transform .2s}
+.color-select-wrap.open .color-select-arrow{transform:rotate(180deg)}
+.color-select-dd{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--pine-mid);border:1px solid var(--border-m);border-radius:2px;z-index:200;max-height:220px;overflow-y:auto;display:none}
+.color-select-wrap.open .color-select-dd{display:block}
+.color-select-option{display:flex;align-items:center;gap:.55rem;padding:.52rem .85rem;cursor:pointer;transition:background .15s;font-size:.84rem;color:var(--silver-dim);font-family:'Jost',sans-serif}
+.color-select-option:hover,.color-select-option.selected{background:rgba(168,196,184,.1);color:var(--silver)}
+.color-select-option .color-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;border:1px solid rgba(255,255,255,.15)}
+
 /* (cart/heart styles consolidated above with profile nav btn) */
 
 /* ── MOBILE NAV STRIP ── */
@@ -718,6 +764,17 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
         <div class="filter-group">
           <label id="condFilterLabel"></label>
           <select id="condFilter" onchange="filterListings()"></select>
+        </div>
+        <div class="filter-group">
+          <label id="colorFilterLabel"></label>
+          <div class="color-select-wrap" id="colorFilterWrap">
+            <div class="color-select-trigger" id="colorFilterTrigger" onclick="toggleColorDD('filter')">
+              <span class="color-dot-preview" id="colorFilterDot" style="background:transparent;border:1px dashed var(--border-m)"></span>
+              <span id="colorFilterLabel2"></span>
+              <span class="color-select-arrow">▾</span>
+            </div>
+            <div class="color-select-dd" id="colorFilterDD"></div>
+          </div>
         </div>
         <div class="filter-group city-autocomplete">
           <label id="cityFilterLabel"></label>
@@ -895,11 +952,21 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
       </div>
       <div class="form-row">
         <div class="form-group"><label id="lblPrice"></label><input type="number" id="sellPrice" placeholder="0"/></div>
-        <div class="form-group"><label id="lblSize"></label><input type="text" id="sellSize"/></div>
+        <div class="form-group"><label id="lblSize"></label><select id="sellSize"></select></div>
       </div>
       <div class="form-row">
         <div class="form-group"><label id="lblCat"></label><select id="sellCat"></select></div>
         <div class="form-group"><label id="lblCond"></label><select id="sellCond"></select></div>
+        <div class="form-group"><label id="lblColor"></label>
+          <div class="color-select-wrap" id="sellColorWrap">
+            <div class="color-select-trigger" id="sellColorTrigger" onclick="toggleColorDD('sell')">
+              <span class="color-dot-preview" id="sellColorDot" style="background:var(--color-nero,#111)"></span>
+              <span id="sellColorLabel">● Nero</span>
+              <span class="color-select-arrow">▾</span>
+            </div>
+            <div class="color-select-dd" id="sellColorDD"></div>
+          </div>
+        </div>
       </div>
       <div class="form-group"><label id="lblDesc"></label><textarea id="sellDesc"></textarea></div>
       <div class="form-group city-autocomplete">
@@ -1239,19 +1306,30 @@ async function loadProfileFromDB(){
   try{
     const {data}=await sb().from('profiles').select('*').eq('id', currentUser.dbId).single();
     if(data){
-      currentUser.name = data.name || currentUser.name;
+      // Il nome nel DB potrebbe essere il prefisso email (salvato per errore in passato).
+      // Se abbiamo un nome vero dall'auth metadata (quello inserito alla registrazione),
+      // e il DB ha solo un prefisso email (nessuno spazio, uguale alla parte prima della @),
+      // preferiamo il nome dall'auth e aggiorniamo il DB.
+      const emailPrefix = (currentUser.email||'').split('@')[0].toLowerCase();
+      const dbNameIsEmailPrefix = data.name && !data.name.includes(' ')
+        && data.name.toLowerCase() === emailPrefix;
+      if(currentUser._authName && (dbNameIsEmailPrefix || !data.name)){
+        currentUser.name = currentUser._authName;
+        // Salva il nome corretto nel DB subito
+        await sb().from('profiles').upsert([{id:currentUser.dbId, name:currentUser._authName}]);
+      } else {
+        currentUser.name = data.name || currentUser._authName || currentUser.name;
+      }
       currentUser.email = data.email || currentUser.email;
       currentUser.city = data.city || currentUser.city;
       currentUser.bio = data.bio || currentUser.bio;
       currentUser.photo = data.photo_url || null;
       currentUser.verified = data.verified || false;
       syncNavAvatar(); renderProfilePanel();
-      // Mostra onboarding se la città non è stata ancora impostata
       if(!data.city){ setTimeout(()=>openOnboarding(), 500); }
     } else {
-      // Primo accesso: crea profilo con dati base dall'auth
+      // Primo accesso: il nome è già corretto (da _authName o fallback)
       await saveProfileToDB(currentUser);
-      // Mostra sempre l'onboarding al primo accesso
       setTimeout(()=>openOnboarding(), 500);
     }
   }catch(e){console.warn('Supabase loadProfile:',e.message);}
@@ -1302,14 +1380,14 @@ const TR={
     sellModalTitle:'Pubblica un annuncio',
     lblPhotos:'Foto (fino a 10)',photoHint:'Trascina le foto qui o <span>clicca per sceglierle</span>',
     lblTitle:'Titolo',lblBrand:'Brand',lblPrice:'Prezzo CHF',lblSize:'Taglia',
-    lblCat:'Categoria',lblCond:'Condizioni',lblDesc:'Descrizione',lblCity:'Città (CH)',
+    lblCat:'Categoria',lblCond:'Condizioni',lblDesc:'Descrizione',lblCity:'Città (CH)',lblColor:'Colore',colorAll:'Tutti i colori',colorFilterLabel:'Colore',sortRelevance:'Più rilevanti',
     cityPlaceholder:'Digita la città…',
     sellTitlePh:'es. Trench Burberry M',sellBrandPh:'es. Zara, H&M, Gucci…',
     sellSizePh:'es. M, 42, 38',sellDescPh:'Descrivi il capo, materiale, eventuali difetti…',
     btnPublish:'Pubblica ora →',toastPublish:'✓ Annuncio pubblicato!',
     toastRequired:'⚠️ Titolo, prezzo e città obbligatori',defaultDesc:'Nessuna descrizione.',
     toastPhotos:'⚠️ Aggiungi almeno una foto',
-    cond:['Come nuovo','Ottimo','Buono','Discreto'],
+    cond:['Nuovo','Come nuovo','Ottimo','Buono','Discreto'],
     cats:[{v:'Kleider',l:'Abbigliamento'},{v:'Schuhe',l:'Scarpe'},{v:'Accessoires',l:'Accessori'},{v:'Occhiali',l:'Occhiali'},{v:'Gioielli',l:'Gioielli'},{v:'Cravatte',l:'Cravatte'}],
     catsForm:[{v:'Kleider',l:'👗 Abbigliamento'},{v:'Schuhe',l:'👟 Scarpe'},{v:'Accessoires',l:'👜 Accessori'},{v:'Occhiali',l:'🕶️ Occhiali'},{v:'Gioielli',l:'💍 Gioielli'},{v:'Cravatte',l:'🎗️ Cravatte'}],
     howLabel:'Come funziona',howTitle:'Semplice come indossarlo',
@@ -1339,10 +1417,10 @@ const TR={
     editLblCity:'Città',editLblBio:'Descrizione (bio)',editBioPlaceholder:'Racconta qualcosa di te…',
     editAvatarHint:'Clicca sulla foto per cambiarla.<br><span>Carica una nuova immagine</span> (JPG, PNG, max 5 MB)',
     editCancel:'Annulla',editSave:'Salva modifiche',toastProfileSaved:'✓ Profilo aggiornato!',
-    filtersTitle:'Ricerca avanzata',filtersReset:'Reset',priceFilterLabel:'Prezzo',sizeFilterLabel:'Taglia',condFilterLabel:'Condizione',cityFilterLabel:'Città',
+    sizeGroupLetter:'Lettera',sizeGroupClothing:'Abbigliamento (EU)',sizeGroupShoes:'Scarpe (EU)',sizeGroupOther:'Altro',filtersTitle:'Ricerca avanzata',filtersReset:'Reset',priceFilterLabel:'Prezzo',condFilterLabel:'Condizione',cityFilterLabel:'Città',
     sortTitle:'Ordina annunci',sortSub:'Ordina per prezzo, freschezza o visibilità.',sortNewest:'Più recenti',sortPriceAsc:'Prezzo crescente',sortPriceDesc:'Prezzo decrescente',sortViews:'Più visti',
     sizeAll:'Tutte',condAll:'Tutte',cityAll:'Tutte',notifTitle:'Notifiche',notifEmpty:'Nessuna notifica',
-    notifFav:'ha messo il cuore al tuo annuncio',notifMsg:'ti ha inviato un messaggio',notifBoost:'Boost attivato con successo',notifPublish:'Il tuo annuncio è ora online',notifPrice:'ha abbassato il prezzo di un articolo salvato',
+    notifFav:'ha messo il cuore al tuo annuncio',notifMsg:'ti ha inviato un messaggio',notifBoost:'Boost attivato con successo',notifPublish:'Il tuo annuncio è ora online',notifPrice:'ha abbassato il prezzo di un articolo salvato',notifPriceLower:'Il prezzo è sceso a CHF',
     boostSellTitle:'Boost annuncio',boostSellSub:'Metti l’annuncio in evidenza nel feed e nel profilo.',boostCta:'⚡ Boost',boostActive:'⚡ Boost attivo',boostToast:'⚡ Annuncio messo in evidenza',
     modalBoost:'⚡ Metti in boost',modalBoostActive:'⚡ Già in boost',shareLabel:'Link diretto:',
     boostPaymentTitle:'Pagamento boost locale',boostPaymentSub:'Scegli la durata del boost e, se vuoi, metti in evidenza più articoli con il 10% di sconto sul totale.',boostItemsLabel:'Articoli da mettere in boost',boostPlanLabel:'Durata del boost',boostSummaryLabel:'Riepilogo',boostSummaryItemsText:'Articoli selezionati',boostSummaryPlanText:'Piano scelto',boostSummaryDiscountText:'Sconto multi-articolo',boostSummaryTotalText:'Totale',boostDiscountNote:'Lo sconto del 10% si applica automaticamente se selezioni almeno 2 articoli.',boostOpenHint:'Apri articolo o profilo',boostGoArticle:'Apri articolo',boostGoProfile:'Apri profilo',boostCancel:'Annulla',boostConfirm:'Conferma pagamento locale',boostPlan3:'Boost locale · 3 giorni',boostPlan7:'Boost locale · 7 giorni',boostPlan10:'Boost locale · 10 giorni',boostToastPaid:'Pagamento registrato · boost attivato',modalOffer:'💸 Fai un\'offerta',offerTitle:'Fai un\'offerta',offerSub:'Proponi un prezzo al venditore',offerAmountLabel:'Il tuo prezzo (CHF)',offerMsgLabel:'Messaggio (opzionale)',offerMsgPh:'es. Posso venire a ritirare domani…',offerNote:'Il venditore vedrà la tua offerta e potrà accettarla o controproporla.',offerCancel:'Annulla',offerSend:'Invia offerta',toastOfferSent:'✓ Offerta inviata!',shareLabel:'Condividi:',shareWhatsApp:'📱 Condividi su WhatsApp',shareInsta:'📸 Condividi su Instagram',shareCopy:'🔗 Copia link',toastLinkCopied:'✓ Link copiato!',markSold:'Segna come venduto',soldChip:'Venduto',soldBadge:'Venduto',toastSoldDone:'✓ Annuncio segnato come venduto',verifyTitle:'Verifica identità',verifySub:'Ottieni il badge ✓ Verificato',verifyEmailStep:'Conferma email',verifyEmailDesc:'Spunta per simulare la conferma email.',verifyIdStep:'Documento d\'identità',verifyIdDesc:'Spunta per simulare il caricamento del documento.',verifyNote:'Demo: spunta entrambi gli step e conferma.',verifyCancel:'Annulla',verifyConfirm:'Conferma verifica',toastVerified:'✓ Profilo verificato!',verifyBtn:'🛡 Verifica identità',verified:'✓ Verificato',
@@ -1375,14 +1453,14 @@ const TR={
     sellModalTitle:'Inserat aufgeben',
     lblPhotos:'Fotos (bis zu 10)',photoHint:'Bis zu 10 Fotos hierher ziehen oder <span>klicken</span>',
     lblTitle:'Titel',lblBrand:'Marke',lblPrice:'Preis CHF',lblSize:'Grösse',
-    lblCat:'Kategorie',lblCond:'Zustand',lblDesc:'Beschreibung',lblCity:'Ort (CH)',
+    lblCat:'Kategorie',lblCond:'Zustand',lblDesc:'Beschreibung',lblCity:'Ort (CH)',lblColor:'Farbe',colorAll:'Alle Farben',colorFilterLabel:'Farbe',sortRelevance:'Relevanteste',
     cityPlaceholder:'Stadt eingeben…',
     sellTitlePh:'z.B. Trenchcoat Burberry M',sellBrandPh:'z.B. Zara, H&M, Gucci…',
     sellSizePh:'z.B. M, 42, 38',sellDescPh:'Beschreibe das Kleidungsstück…',
     btnPublish:'Inserat veröffentlichen →',toastPublish:'✓ Inserat veröffentlicht!',
     toastRequired:'⚠️ Titel, Preis und Ort erforderlich',defaultDesc:'Keine Beschreibung.',
     toastPhotos:'⚠️ Bitte mindestens ein Foto hinzufügen',
-    cond:['Wie neu','Sehr gut','Gut','Akzeptabel'],
+    cond:['Neu','Wie neu','Sehr gut','Gut','Akzeptabel'],
     cats:[{v:'Kleider',l:'Kleider'},{v:'Schuhe',l:'Schuhe'},{v:'Accessoires',l:'Accessoires'},{v:'Occhiali',l:'Brillen'},{v:'Gioielli',l:'Schmuck'},{v:'Cravatte',l:'Krawatten'}],
     catsForm:[{v:'Kleider',l:'👗 Kleider'},{v:'Schuhe',l:'👟 Schuhe'},{v:'Accessoires',l:'👜 Accessoires'},{v:'Occhiali',l:'🕶️ Brillen'},{v:'Gioielli',l:'💍 Schmuck'},{v:'Cravatte',l:'🎗️ Krawatten'}],
     howLabel:'Wie es funktioniert',howTitle:'Einfach wie das Anziehen',
@@ -1407,10 +1485,10 @@ const TR={
     editLblCity:'Ort',editLblBio:'Beschreibung',editBioPlaceholder:'Erzähl etwas über dich…',
     editAvatarHint:'Klicke auf das Foto zum Ändern.<br><span>Neues Bild hochladen</span> (JPG, PNG)',
     editCancel:'Abbrechen',editSave:'Änderungen speichern',toastProfileSaved:'✓ Profil aktualisiert!',
-    filtersTitle:'Erweiterte Suche',filtersReset:'Zurücksetzen',priceFilterLabel:'Preis',sizeFilterLabel:'Grösse',condFilterLabel:'Zustand',cityFilterLabel:'Ort',
+    sizeGroupLetter:'Buchstabe',sizeGroupClothing:'Kleidung (EU)',sizeGroupShoes:'Schuhe (EU)',sizeGroupOther:'Andere',filtersTitle:'Erweiterte Suche',filtersReset:'Zurücksetzen',priceFilterLabel:'Preis',sizeFilterLabel:'Grösse',condFilterLabel:'Zustand',cityFilterLabel:'Ort',
     sortTitle:'Inserate sortieren',sortSub:'Nach Preis, Aktualität oder Aufrufen sortieren.',sortNewest:'Neueste zuerst',sortPriceAsc:'Preis aufsteigend',sortPriceDesc:'Preis absteigend',sortViews:'Meist angesehen',
     sizeAll:'Alle',condAll:'Alle',cityAll:'Alle',notifTitle:'Benachrichtigungen',notifEmpty:'Keine Benachrichtigungen',
-    notifFav:'hat dein Inserat favorisiert',notifMsg:'hat dir eine Nachricht geschickt',notifBoost:'Boost erfolgreich aktiviert',notifPublish:'Dein Inserat ist jetzt online',notifPrice:'hat den Preis eines gemerkten Artikels gesenkt',
+    notifFav:'hat dein Inserat favorisiert',notifMsg:'hat dir eine Nachricht geschickt',notifBoost:'Boost erfolgreich aktiviert',notifPublish:'Dein Inserat ist jetzt online',notifPrice:'hat den Preis eines gemerkten Artikels gesenkt',notifPriceLower:'Preis gesunken auf CHF',
     boostSellTitle:'Inserat boosten',boostSellSub:'Hebt dein Inserat im Feed und Profil hervor.',boostCta:'⚡ Boost',boostActive:'⚡ Boost aktiv',boostToast:'⚡ Inserat hervorgehoben',
     modalBoost:'⚡ Boosten',modalBoostActive:'⚡ Bereits geboostet',shareLabel:'Direktlink:',
     boostPaymentTitle:'Lokale Boost-Zahlung',boostPaymentSub:'Wähle die Boost-Dauer und hebe auf Wunsch mehrere Artikel mit 10% Rabatt auf den Gesamtbetrag hervor.',boostItemsLabel:'Zu boostende Artikel',boostPlanLabel:'Boost-Dauer',boostSummaryLabel:'Zusammenfassung',boostSummaryItemsText:'Ausgewählte Artikel',boostSummaryPlanText:'Gewählter Plan',boostSummaryDiscountText:'Rabatt für mehrere Artikel',boostSummaryTotalText:'Gesamt',boostDiscountNote:'Der 10%-Rabatt wird automatisch angewendet, wenn mindestens 2 Artikel ausgewählt werden.',boostOpenHint:'Artikel oder Profil öffnen',boostGoArticle:'Artikel öffnen',boostGoProfile:'Profil öffnen',boostCancel:'Abbrechen',boostConfirm:'Lokale Zahlung bestätigen',boostPlan3:'Lokaler Boost · 3 Tage',boostPlan7:'Lokaler Boost · 7 Tage',boostPlan10:'Lokaler Boost · 10 Tage',boostToastPaid:'Zahlung registriert · Boost aktiviert',modalOffer:'💸 Angebot machen',offerTitle:'Angebot machen',offerSub:'Schlage dem Verkäufer einen Preis vor',offerAmountLabel:'Dein Preis (CHF)',offerMsgLabel:'Nachricht (optional)',offerMsgPh:'z.B. Ich kann morgen abholen…',offerNote:'Der Verkäufer sieht dein Angebot und kann es annehmen oder kontern.',offerCancel:'Abbrechen',offerSend:'Angebot senden',toastOfferSent:'✓ Angebot gesendet!',shareLabel:'Teilen:',shareWhatsApp:'📱 Auf WhatsApp teilen',shareInsta:'📸 Auf Instagram teilen',shareCopy:'🔗 Link kopieren',toastLinkCopied:'✓ Link kopiert!',markSold:'Als verkauft markieren',soldChip:'Verkauft',soldBadge:'Verkauft',toastSoldDone:'✓ Inserat als verkauft markiert',verifyTitle:'Identität verifizieren',verifySub:'Erhalte das ✓ Verifiziert-Abzeichen',verifyEmailStep:'E-Mail bestätigen',verifyEmailDesc:'Haken setzen um E-Mail-Bestätigung zu simulieren.',verifyIdStep:'Ausweisdokument',verifyIdDesc:'Haken setzen um Ausweis-Upload zu simulieren.',verifyNote:'Demo: beide Schritte abhaken und bestätigen.',verifyCancel:'Abbrechen',verifyConfirm:'Verifizierung bestätigen',toastVerified:'✓ Profil verifiziert!',verifyBtn:'🛡 Identität verifizieren',verified:'✓ Verifiziert',
@@ -1443,14 +1521,14 @@ const TR={
     sellModalTitle:'Publier une annonce',
     lblPhotos:"Photos (jusqu'à 10)",photoHint:'Glissez jusqu’à 10 photos ou <span>cliquez</span>',
     lblTitle:'Titre',lblBrand:'Marque',lblPrice:'Prix CHF',lblSize:'Taille',
-    lblCat:'Catégorie',lblCond:'État',lblDesc:'Description',lblCity:'Ville (CH)',
+    lblCat:'Catégorie',lblCond:'État',lblDesc:'Description',lblCity:'Ville (CH)',lblColor:'Couleur',colorAll:'Toutes les couleurs',colorFilterLabel:'Couleur',sortRelevance:'Plus pertinents',
     cityPlaceholder:'Tapez la ville…',
     sellTitlePh:'ex. Trench Burberry M',sellBrandPh:'ex. Zara, H&M, Gucci…',
     sellSizePh:'ex. M, 42, 38',sellDescPh:'Décrivez le vêtement…',
     btnPublish:"Publier l'annonce →",toastPublish:'✓ Annonce publiée !',
     toastRequired:'⚠️ Titre, prix et ville obligatoires',defaultDesc:'Aucune description.',
     toastPhotos:'⚠️ Ajoutez au moins une photo',
-    cond:['Comme neuf','Très bon','Bon','Acceptable'],
+    cond:['Neuf','Comme neuf','Très bon','Bon','Acceptable'],
     cats:[{v:'Kleider',l:'Vêtements'},{v:'Schuhe',l:'Chaussures'},{v:'Accessoires',l:'Accessoires'},{v:'Occhiali',l:'Lunettes'},{v:'Gioielli',l:'Bijoux'},{v:'Cravatte',l:'Cravates'}],
     catsForm:[{v:'Kleider',l:'👗 Vêtements'},{v:'Schuhe',l:'👟 Chaussures'},{v:'Accessoires',l:'👜 Accessoires'},{v:'Occhiali',l:'🕶️ Lunettes'},{v:'Gioielli',l:'💍 Bijoux'},{v:'Cravatte',l:'🎗️ Cravates'}],
     howLabel:'Comment ça marche',howTitle:"Simple comme s'habiller",
@@ -1475,7 +1553,7 @@ const TR={
     editLblCity:'Ville',editLblBio:'Description (bio)',editBioPlaceholder:'Parlez de vous…',
     editAvatarHint:"Cliquez sur la photo pour la changer.<br><span>Télécharger une image</span> (JPG, PNG)",
     editCancel:'Annuler',editSave:'Enregistrer',toastProfileSaved:'✓ Profil mis à jour !',
-    filtersTitle:'Recherche avancée',filtersReset:'Réinitialiser',priceFilterLabel:'Prix',sizeFilterLabel:'Taille',condFilterLabel:'État',cityFilterLabel:'Ville',
+    sizeGroupLetter:'Lettre',sizeGroupClothing:'Vêtements (EU)',sizeGroupShoes:'Chaussures (EU)',sizeGroupOther:'Autre',filtersTitle:'Recherche avancée',filtersReset:'Réinitialiser',priceFilterLabel:'Prix',sizeFilterLabel:'Taille',condFilterLabel:'État',cityFilterLabel:'Ville',
     sortTitle:'Trier les annonces',sortSub:'Triez par prix, récence ou popularité.',sortNewest:'Plus récentes',sortPriceAsc:'Prix croissant',sortPriceDesc:'Prix décroissant',sortViews:'Plus vues',
     sizeAll:'Toutes',condAll:'Tous',cityAll:'Toutes',notifTitle:'Notifications',notifEmpty:'Aucune notification',
     notifFav:'a mis un cœur sur votre annonce',notifMsg:'vous a envoyé un message',notifBoost:'Boost activé avec succès',notifPublish:'Votre annonce est maintenant en ligne',notifPrice:'a baissé le prix d’un article sauvegardé',
@@ -1497,6 +1575,33 @@ const TR={
 
 /* ══ SWISS CITIES ══ */
 const SWISS_CITIES=['Aarau','Adliswil','Allschwil','Arbon','Arlesheim','Arosa','Ascona','Baar','Baden','Basel','Bassersdorf','Bellinzona','Bern','Bettlach','Biel/Bienne','Binningen','Birsfelden','Brig','Brugg','Buchs','Bulle','Burgdorf','Carouge','Chiasso','Chur','Crans-Montana','Davos','Dietikon','Dübendorf','Emmen','Flawil','Frauenfeld','Fribourg','Genève','Grenchen','Grindelwald','Herisau','Horgen','Horw','Kloten','Kreuzlingen','Kriens','Küsnacht ZH','Küssnacht am Rigi','Langenthal','Lancy','Lausanne','Lengnau','Liestal','Locarno','Luzern','Männedorf','Martigny','Meyrin','Monthey','Morges','Muttenz','Nyon','Oberwil','Olten','Onex','Opfikon','Ostermundigen','Pfäffikon','Pontresina','Pratteln','Rapperswil-Jona','Regensdorf','Reinach','Renens','Rheinfelden','Riehen','Romanshorn','Rorschach','Rüti','Sarnen','Schaffhausen','Schlieren','Sierre','Sion','Solothurn','Spiez','Spreitenbach','Steffisburg','St. Gallen','St. Moritz','Thalwil','Thun','Thônex','Urdorf','Uster','Vernier','Visp','Wädenswil','Wettingen','Wil','Winterthur','Wohlen','Wollerau','Worb','Yverdon-les-Bains','Zollikon','Zug','Zürich'].sort();
+
+/* ══ SIZES ══ */
+const SIZES_LETTER  = ['XS','S','M','L','XL','XXL','XXXL'];
+const SIZES_CLOTH   = ['32','34','36','38','40','42','44','46','48','50','52'];
+const SIZES_SHOES   = ['35','36','37','38','39','40','41','42','43','44','45','46'];
+const SIZES_OTHER   = ['Uni'];
+// Flat list for filter (deduplicated, ordered)
+const SIZES_ALL_FLAT = [...SIZES_LETTER,...['32','34'],...SIZES_SHOES,...['48','50','52'],...SIZES_OTHER];
+
+const COLORS=[
+  {v:'nero',    it:'● Nero',      de:'● Schwarz',    fr:'● Noir'},
+  {v:'bianco',  it:'● Bianco',    de:'● Weiss',      fr:'● Blanc'},
+  {v:'grigio',  it:'● Grigio',    de:'● Grau',       fr:'● Gris'},
+  {v:'beige',   it:'● Beige',     de:'● Beige',      fr:'● Beige'},
+  {v:'marrone', it:'● Marrone',   de:'● Braun',      fr:'● Marron'},
+  {v:'rosso',   it:'● Rosso',     de:'● Rot',        fr:'● Rouge'},
+  {v:'rosa',    it:'● Rosa',      de:'● Rosa',       fr:'● Rose'},
+  {v:'arancio', it:'● Arancio',   de:'● Orange',     fr:'● Orange'},
+  {v:'giallo',  it:'● Giallo',    de:'● Gelb',       fr:'● Jaune'},
+  {v:'verde',   it:'● Verde',     de:'● Grün',       fr:'● Vert'},
+  {v:'blu',     it:'● Blu',       de:'● Blau',       fr:'● Bleu'},
+  {v:'lilla',   it:'● Lilla',     de:'● Lila',       fr:'● Violet'},
+  {v:'oro',     it:'● Oro',       de:'● Gold',       fr:'● Or'},
+  {v:'argento', it:'● Argento',   de:'● Silber',     fr:'● Argent'},
+  {v:'multicolor',it:'● Multicolor',de:'● Mehrfarbig',fr:'● Multicolore'},
+];
+function colorLabel(v,lng){const l=lng||lang;const c=COLORS.find(x=>x.v===v);return c?c[l]||c.it:v||'–';}
 
 /* ══ CURRENT USER ══ */
 /* MR_IDX = 5 — l'utente loggato ha il proprio indice in SELLERS */
@@ -1545,25 +1650,25 @@ function getSeller(idx){
 /* ══ DATA ══ */
 const BG=['#264d3b','#1f4535','#2a5a42','#1b4030','#2f6349'];
 let listings=[
-  {id:1, photos:['https://images.unsplash.com/photo-1544022613-e87ca75a784a?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'🧥',title:'Trench Burberry Classic',  brand:'Burberry',     price:320,cat:'Kleider',   cond:0,size:'M',  city:'Zürich',   desc:"Trench originale M, colore camel. Una stagione, perfette condizioni.",seller:0},
-  {id:2, photos:['https://images.unsplash.com/photo-1491553895911-0055eca6402d?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👟',title:'Nike Air Max 90 bianche',  brand:'Nike',         price:65, cat:'Schuhe',    cond:2,size:'40', city:'Genève',   desc:"Air Max 90 taglia 40. Qualche segno d'uso.",seller:1},
-  {id:3, photos:['https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👜',title:'Longchamp Le Pliage',      brand:'Longchamp',    price:89, cat:'Accessoires',cond:1,size:'M', city:'Lausanne', desc:'Le Pliage color navy. Pochissimi graffi.',seller:2},
-  {id:4, photos:['https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'🕶️',title:'Ray-Ban Wayfarer neri',   brand:'Ray-Ban',      price:75, cat:'Occhiali',  cond:1,size:'uni',city:'Basel',    desc:'Wayfarer neri con astuccio. Lenti perfette.',seller:3},
-  {id:5, photos:['https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👗',title:'Abito Massimo Dutti S',    brand:'Massimo Dutti',price:48, cat:'Kleider',   cond:0,size:'S', city:'Bern',     desc:'Abito midi crema. Indossato una volta.',seller:4},
-  {id:6, photos:['https://images.unsplash.com/photo-1596703263926-422f82e6c44c?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👠',title:'Décolleté Zara beige 38',  brand:'Zara',         price:35, cat:'Schuhe',    cond:2,size:'38', city:'Zürich',   desc:"Ecopelle beige taglia 38. Tacco 7cm.",seller:0},
-  {id:7, photos:['https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'💍',title:'Orecchini Agatha dorati',  brand:'Agatha Paris', price:28, cat:'Gioielli',  cond:0,size:'uni',city:'Genève',   desc:'Orecchini pendenti dorati. Mai indossati.',seller:1},
-  {id:8, photos:['https://images.unsplash.com/photo-1598808503745-f45379da5f80?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'🎗️',title:'Cravatta Hermès seta blu',brand:'Hermès',       price:95, cat:'Cravatte',  cond:1,size:'uni',city:'Zürich',   desc:'100% seta, fantasia geometrica blu e oro.',seller:2},
-  {id:9, photos:['https://images.unsplash.com/photo-1520903920243-00d872a2d1c9?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'🧣',title:'Sciarpa Acne Studios',     brand:'Acne Studios', price:110,cat:'Accessoires',cond:0,size:'uni',city:'Luzern',  desc:'Sciarpa frangiata in lana. Perfette condizioni.',seller:3},
-  {id:10,photos:['https://images.unsplash.com/photo-1602810316693-3667c854239a?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👔',title:'Camicia Ralph Lauren L',  brand:'Ralph Lauren', price:42, cat:'Kleider',   cond:2,size:'L', city:'Winterthur',desc:"Oxford button-down L. Lavata e stirata.",seller:4},
-  {id:11,photos:['https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👒',title:'Cappello paglia Mango',   brand:'Mango',        price:18, cat:'Accessoires',cond:1,size:'uni',city:'Lugano',  desc:"Cappello estivo. Usato poche volte.",seller:0},
-  {id:12,photos:['https://images.unsplash.com/photo-1603808033192-082d6919d3e1?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'🥿',title:'Mocassini Gucci 39',      brand:'Gucci',        price:280,cat:'Schuhe',    cond:1,size:'39', city:'Zürich',   desc:'Loafer classici taglia 39. Pelle nera.',seller:1},
-  {id:13,photos:['https://images.unsplash.com/photo-1571783465195-c197c2f4a7d0?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👘',title:'Kimono floreale vintage', brand:'Vintage',      price:55, cat:'Kleider',   cond:2,size:'M/L',city:'Basel',    desc:"Seta stampata anni '90. Fantasia floreale.",seller:2},
-  {id:14,photos:['https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'💼',title:'Rimowa Essential 55cm',   brand:'Rimowa',       price:195,cat:'Accessoires',cond:2,size:'55cm',city:'Genève', desc:'Cabin 55cm silver. Qualche graffio.',seller:3},
+  {id:1, photos:['https://images.unsplash.com/photo-1544022613-e87ca75a784a?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'🧥',title:'Trench Burberry Classic',  brand:'Burberry',     price:320,cat:'Kleider',   cond:1,size:'M',  color:'beige',  city:'Zürich',   desc:"Trench originale M, colore camel. Una stagione, perfette condizioni.",seller:0},
+  {id:2, photos:['https://images.unsplash.com/photo-1491553895911-0055eca6402d?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👟',title:'Nike Air Max 90 bianche',  brand:'Nike',         price:65, cat:'Schuhe',    cond:3,size:'40', color:'bianco', city:'Genève',   desc:"Air Max 90 taglia 40. Qualche segno d'uso.",seller:1},
+  {id:3, photos:['https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👜',title:'Longchamp Le Pliage',      brand:'Longchamp',    price:89, cat:'Accessoires',cond:2,size:'M',  color:'blu',    city:'Lausanne', desc:'Le Pliage color navy. Pochissimi graffi.',seller:2},
+  {id:4, photos:['https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'🕶️',title:'Ray-Ban Wayfarer neri',   brand:'Ray-Ban',      price:75, cat:'Occhiali',  cond:2,size:'Uni',color:'nero',   city:'Basel',    desc:'Wayfarer neri con astuccio. Lenti perfette.',seller:3},
+  {id:5, photos:['https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👗',title:'Abito Massimo Dutti S',    brand:'Massimo Dutti',price:48, cat:'Kleider',   cond:1,size:'S',  color:'bianco', city:'Bern',     desc:'Abito midi crema. Indossato una volta.',seller:4},
+  {id:6, photos:['https://images.unsplash.com/photo-1596703263926-422f82e6c44c?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👠',title:'Décolleté Zara beige 38',  brand:'Zara',         price:35, cat:'Schuhe',    cond:3,size:'38', color:'beige',  city:'Zürich',   desc:"Ecopelle beige taglia 38. Tacco 7cm.",seller:0},
+  {id:7, photos:['https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'💍',title:'Orecchini Agatha dorati',  brand:'Agatha Paris', price:28, cat:'Gioielli',  cond:0,size:'Uni',color:'oro',    city:'Genève',   desc:'Orecchini pendenti dorati. Mai indossati.',seller:1},
+  {id:8, photos:['https://images.unsplash.com/photo-1598808503745-f45379da5f80?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'🎗️',title:'Cravatta Hermès seta blu',brand:'Hermès',       price:95, cat:'Cravatte',  cond:2,size:'Uni',color:'blu',    city:'Zürich',   desc:'100% seta, fantasia geometrica blu e oro.',seller:2},
+  {id:9, photos:['https://images.unsplash.com/photo-1520903920243-00d872a2d1c9?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'🧣',title:'Sciarpa Acne Studios',     brand:'Acne Studios', price:110,cat:'Accessoires',cond:1,size:'Uni',color:'grigio', city:'Luzern',   desc:'Sciarpa frangiata in lana. Perfette condizioni.',seller:3},
+  {id:10,photos:['https://images.unsplash.com/photo-1602810316693-3667c854239a?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👔',title:'Camicia Ralph Lauren L',  brand:'Ralph Lauren', price:42, cat:'Kleider',   cond:3,size:'L',  color:'bianco', city:'Winterthur',desc:"Oxford button-down L. Lavata e stirata.",seller:4},
+  {id:11,photos:['https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👒',title:'Cappello paglia Mango',   brand:'Mango',        price:18, cat:'Accessoires',cond:2,size:'Uni',color:'beige',  city:'Lugano',   desc:"Cappello estivo. Usato poche volte.",seller:0},
+  {id:12,photos:['https://images.unsplash.com/photo-1603808033192-082d6919d3e1?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'🥿',title:'Mocassini Gucci 39',      brand:'Gucci',        price:280,cat:'Schuhe',    cond:2,size:'39', color:'nero',   city:'Zürich',   desc:'Loafer classici taglia 39. Pelle nera.',seller:1},
+  {id:13,photos:['https://images.unsplash.com/photo-1571783465195-c197c2f4a7d0?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👘',title:'Kimono floreale vintage', brand:'Vintage',      price:55, cat:'Kleider',   cond:3,size:'M',  color:'multicolor',city:'Basel', desc:"Seta stampata anni '90. Fantasia floreale.",seller:2},
+  {id:14,photos:['https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'💼',title:'Rimowa Essential 55cm',   brand:'Rimowa',       price:195,cat:'Accessoires',cond:3,size:'Uni',color:'argento',city:'Genève',  desc:'Cabin 55cm silver. Qualche graffio.',seller:3},
 ];
 
 /* ══ STATE ══ */
 const MAX_PRICE=10000;
-listings=listings.map((l,idx)=>({...l,boosted:!!l.boosted,views:l.views||Math.floor(Math.random()*80)+12,createdAt:l.createdAt||Date.now()-idx*3600_000}));
+listings=listings.map((l,idx)=>({...l,boosted:!!l.boosted,views:l.views||Math.floor(Math.random()*80)+12,createdAt:l.createdAt||(idx<2?Date.now()-idx*3600_000:Date.now()-idx*72*3600_000)}));
 let cart=[],favorites=new Set(),notifications=[
   {id:1,type:'price',text:'Massimo Dutti',targetType:'item',targetId:3,time:Date.now()-1000*60*45,unread:true},
   {id:2,type:'msg',text:'Lea M.',targetType:'seller',targetId:2,time:Date.now()-1000*60*120,unread:true},
@@ -1646,9 +1751,13 @@ function applyTranslations(){
   s('lblPhotos',T('lblPhotos'));h('photoHint',T('photoHint'));
   s('lblTitle',T('lblTitle'));s('lblBrand',T('lblBrand'));s('lblPrice',T('lblPrice'));s('lblSize',T('lblSize'));
   s('lblCat',T('lblCat'));s('lblCond',T('lblCond'));s('lblDesc',T('lblDesc'));s('lblCity',T('lblCity'));
+  s('lblColor',T('lblColor'));
+  // Color dropdowns (custom) — update labels on lang change
+  if(document.getElementById('colorFilterLabel')) document.getElementById('colorFilterLabel').textContent=T('colorFilterLabel');
+  if(document.getElementById('colorFilterLabel2')) document.getElementById('colorFilterLabel2').textContent=_filterColorVal==='all'?T('colorAll'):colorLabel(_filterColorVal);
+  if(document.getElementById('sellColorLabel')){ const c=COLORS.find(x=>x.v===_sellColorVal); if(c) document.getElementById('sellColorLabel').textContent=(c[lang]||c.it).replace('● ',''); }
   document.getElementById('sellTitle').placeholder=T('sellTitlePh');
   document.getElementById('sellBrand').placeholder=T('sellBrandPh');
-  document.getElementById('sellSize').placeholder=T('sellSizePh');
   document.getElementById('sellDesc').placeholder=T('sellDescPh');
   document.getElementById('sellCity').placeholder=T('cityPlaceholder');
   s('btnPublish',T('btnPublish'));
@@ -1668,22 +1777,30 @@ function applyTranslations(){
   s('sizeFilterLabel',T('sizeFilterLabel'));s('condFilterLabel',T('condFilterLabel'));s('cityFilterLabel',T('cityFilterLabel'));
   s('sortTitle',T('sortTitle'));s('sortSub',T('sortSub'));
   s('boostSellTitle',T('boostSellTitle'));s('boostSellSub',T('boostSellSub'));
-  const sizeValues=['all',...new Set(listings.map(l=>l.size))];
-  document.getElementById('sizeFilter').innerHTML=sizeValues.map(v=>`<option value="${v}">${v==='all'?T('sizeAll'):v}</option>`).join('');
+  const sizeValues=SIZES_ALL_FLAT;
+  document.getElementById('sizeFilter').innerHTML=`<option value="all">${T('sizeAll')}</option>`
+    +sizeValues.map(v=>`<option value="${v}">${v}</option>`).join('');
+  // Sell form size select with optgroups
+  document.getElementById('sellSize').innerHTML=
+    `<optgroup label="${T('sizeGroupLetter')}">${SIZES_LETTER.map(v=>`<option>${v}</option>`).join('')}</optgroup>`+
+    `<optgroup label="${T('sizeGroupClothing')}">${SIZES_CLOTH.map(v=>`<option>${v}</option>`).join('')}</optgroup>`+
+    `<optgroup label="${T('sizeGroupShoes')}">${SIZES_SHOES.map(v=>`<option>${v}</option>`).join('')}</optgroup>`+
+    `<optgroup label="${T('sizeGroupOther')}">${SIZES_OTHER.map(v=>`<option>${v}</option>`).join('')}</optgroup>`;
   document.getElementById('condFilter').innerHTML=['all',...T('cond').map((c,i)=>i)].map(v=>`<option value="${v}">${v==='all'?T('condAll'):condLabel(+v)}</option>`).join('');
   document.getElementById('cityFilter').placeholder=T('cityPlaceholder');
   document.getElementById('sortSelect').innerHTML=`
     <option value="newest">${T('sortNewest')}</option>
     <option value="priceAsc">${T('sortPriceAsc')}</option>
     <option value="priceDesc">${T('sortPriceDesc')}</option>
-    <option value="views">${T('sortViews')}</option>`;
+    <option value="views">${T('sortViews')}</option>
+    <option value="relevance">${T('sortRelevance')}</option>`;
   updatePriceLabels();
   renderNotifPanel();
   updateNotifBadge();
 }
 
 /* ══ CATEGORIES ══ */
-function getAllCats(){return[T('all'),...[...new Set(listings.map(l=>l.cat))].map(k=>catLabel(k))];}
+function getAllCats(){return[T('all'),...T('cats').map(c=>c.l)];}
 function renderCats(){
   const cats=getAllCats();
   document.getElementById('catPills').innerHTML=cats.map(c=>
@@ -1707,26 +1824,36 @@ function setCat(c){activeCat=c;renderCats();renderListings();}
 
 /* ══ LISTINGS ══ */
 function getFiltered(){
-  const q=document.getElementById('searchInput').value.toLowerCase();
+  const q=document.getElementById('searchInput').value.toLowerCase().trim();
   const isAll=activeCat===T('all'),ak=isAll?null:catKeyFromLabel(activeCat);
   const minPrice=+document.getElementById('minPriceRange').value;
   const maxPrice=+document.getElementById('maxPriceRange').value;
   const size=document.getElementById('sizeFilter').value;
   const cond=document.getElementById('condFilter').value;
+  const color=_filterColorVal;
   const city=document.getElementById('cityFilter').value.trim().toLowerCase();
+  const NOW=Date.now();
   let filtered=listings.filter(l=>!l.sold&&(isAll||l.cat===ak)&&
-    (l.title.toLowerCase().includes(q)||l.brand.toLowerCase().includes(q)||catLabel(l.cat).toLowerCase().includes(q)||l.city.toLowerCase().includes(q))&&
+    (!q||(l.title.toLowerCase().includes(q)||l.brand.toLowerCase().includes(q)||catLabel(l.cat).toLowerCase().includes(q)||l.city.toLowerCase().includes(q)||(l.color&&colorLabel(l.color).toLowerCase().includes(q))))&&
     l.price>=minPrice&&l.price<=maxPrice&&
     (size==='all'||l.size===size)&&
     (cond==='all'||String(l.cond)===cond)&&
+    (color==='all'||l.color===color)&&
     (!city||l.city.toLowerCase().includes(city))
   );
+  // Add isNew flag (published in last 24h)
+  filtered=filtered.map(l=>({...l,isNew:(NOW-l.createdAt)<86400_000}));
   const sort=document.getElementById('sortSelect').value;
   filtered=filtered.sort((a,b)=>{
     if(a.boosted!==b.boosted) return a.boosted?-1:1;
     if(sort==='priceAsc') return a.price-b.price;
     if(sort==='priceDesc') return b.price-a.price;
     if(sort==='views') return b.views-a.views;
+    if(sort==='relevance'&&q){
+      // Title match → score 2, brand match → score 1, else 0
+      const score=l=>(l.title.toLowerCase().includes(q)?2:0)+(l.brand.toLowerCase().includes(q)?1:0);
+      const diff=score(b)-score(a); if(diff!==0) return diff;
+    }
     return b.createdAt-a.createdAt;
   });
   return filtered;
@@ -1758,6 +1885,10 @@ function resetFilters(){
   document.getElementById('sizeFilter').value='all';
   document.getElementById('condFilter').value='all';
   document.getElementById('cityFilter').value='';
+  _filterColorVal='all';
+  const dot=document.getElementById('colorFilterDot');
+  if(dot){dot.style.background='transparent';dot.style.border='1px dashed var(--border-m)';}
+  if(document.getElementById('colorFilterLabel2')) document.getElementById('colorFilterLabel2').textContent=T('colorAll');
   document.getElementById('sortSelect').value='newest';
   updatePriceLabels();
   renderListings();
@@ -1770,10 +1901,16 @@ function renderListings(){
   const el=document.getElementById('listingsGrid');
   if(!f.length){el.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--silver-dim);font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;">${T('noResults')}</div>`;return;}
   el.innerHTML=f.map((l,i)=>{
-    const img=l.photos.length?`<img src="${l.photos[0]}" alt=""/>`:`<span style="position:relative;z-index:1">${l.emoji}</span>`;
+    const mainImg=l.photos.length?`<img class="photo-main" src="${l.photos[0]}" alt=""/>` :`<span style="position:relative;z-index:1">${l.emoji}</span>`;
+    const hoverImg=l.photos.length>1?`<img class="photo-hover" src="${l.photos[1]}" alt=""/>`:'';
     const isFav=favorites.has(l.id);
+    const newBadge=l.isNew?`<span class="new-arrival-badge">✦ Nuovo</span>`:'';
+    const colorChip=l.color?`<span class="color-chip" title="${colorLabel(l.color)}" style="background:var(--color-${l.color},#ccc)"></span>`:'';
+    const seller=getSeller(l.seller);
+    const sellerName=seller?seller.name:'';
     return `<div class="listing-card" onclick="openItem(${l.id})">
-      <div class="listing-img" style="background:${BG[i%BG.length]}">${img}
+      <div class="listing-img" style="background:${BG[i%BG.length]}">${mainImg}${hoverImg}
+        ${newBadge}
         <span class="listing-badge${l.boosted?' boosted':''}">${l.boosted?T('boostCta'):condLabel(l.cond)}</span>
         <button class="fav-btn${isFav?' active':''}" id="favBtn_${l.id}" onclick="event.stopPropagation();toggleFav(${l.id},this)">${isFav?'♥':'♡'}</button>
       </div>
@@ -1782,8 +1919,9 @@ function renderListings(){
         <div class="listing-title">${l.title}</div>
         <div class="listing-meta">
           <div class="listing-price">CHF ${l.price}</div>
-          <div class="listing-location">📍 ${l.city}</div>
+          <div style="display:flex;align-items:center;gap:.4rem"><div class="listing-location">📍 ${l.city}</div>${colorChip}</div>
         </div>
+        ${sellerName?`<div class="card-seller-chip" onclick="event.stopPropagation();openSellerFromCard(${l.seller})">👤 ${sellerName}</div>`:''}
       </div>
     </div>`;
   }).join('');
@@ -1959,6 +2097,50 @@ function openItemFromSeller(id){closeSellerProfileDirect();closeItemModal();setT
 function closeSellerProfileModal(e){if(e.target.id==='sellerProfileOverlay')closeSellerProfileDirect();}
 function closeSellerProfileDirect(){document.getElementById('sellerProfileOverlay').classList.remove('open');}
 
+/* ── Apri profilo venditore dalla card ── */
+function openSellerFromCard(sellerIdx){
+  currentSellerIdx=sellerIdx;
+  openSellerProfileByIdx(sellerIdx);
+}
+
+/* ── Price lower notification ── */
+function lowerPrice(listingId, newPrice){
+  const l=listings.find(x=>x.id===listingId);
+  if(!l) return;
+  const oldPrice=l.price;
+  if(newPrice>=oldPrice){ showToast('⚠️ Il nuovo prezzo deve essere inferiore al precedente'); return; }
+  l.price=newPrice;
+  // Se l'articolo è nei preferiti dell'utente (in demo, favorites set), notifica
+  if(favorites.has(listingId)){
+    addNotification('price', `${T('notifPriceLower')} ${newPrice} (${l.title})`, 'item', listingId);
+    showToast(`🔔 Notifica prezzo: ${l.title} → CHF ${newPrice}`);
+  } else {
+    showToast(`✓ Prezzo aggiornato: CHF ${newPrice}`);
+  }
+  renderProfilePanel();
+  renderListings();
+  if(currentItemId===listingId) openItem(listingId);
+}
+
+function showPriceEdit(listingId){
+  const l=listings.find(x=>x.id===listingId); if(!l) return;
+  // Replace the price row with an inline edit form
+  const row=document.getElementById('priceEditRow_'+listingId);
+  if(!row) return;
+  row.innerHTML=`<input class="price-edit-input" type="number" id="priceInput_${listingId}" value="${l.price}" min="1"/>
+    <button class="price-edit-save" onclick="confirmPriceEdit(${listingId})">✓ Salva</button>
+    <button class="price-edit-cancel" onclick="renderProfilePanel()">✕</button>`;
+  document.getElementById('priceInput_'+listingId).focus();
+}
+
+function confirmPriceEdit(listingId){
+  const input=document.getElementById('priceInput_'+listingId);
+  if(!input) return;
+  const val=parseFloat(input.value);
+  if(!val||val<1){ showToast('⚠️ Prezzo non valido'); return; }
+  lowerPrice(listingId, val);
+}
+
 /* ══ MESSAGING ══ */
 function openMsgFromItem(){if(!currentUser.dbId){openAuthModal('login');return;}if(currentSellerIdx===null)return;openMsgFromItemInbox();}
 function openMsgFromSeller(){openMsgFromSellerInbox();}
@@ -2004,7 +2186,10 @@ function renderProfilePanel(){
       ${imgEl}
       <div class="profile-listing-info">
         <div class="profile-listing-title">${l.title}${l.sold?` <span style="font-size:.62rem;color:#888;letter-spacing:.1em;text-transform:uppercase">${T('soldBadge')}</span>`:''}</div>
-        <div class="profile-listing-price">CHF ${l.price} · ${catLabel(l.cat)} ${l.boosted&&!l.sold?`<span class="boost-chip">${T('boostActive')}</span>`:''}</div>
+        <div id="priceEditRow_${l.id}" class="price-edit-row">
+          <span class="profile-listing-price">CHF ${l.price} · ${catLabel(l.cat)} ${l.boosted&&!l.sold?`<span class="boost-chip">${T('boostActive')}</span>`:''}</span>
+          ${!l.sold?`<button class="price-edit-cancel" style="font-size:.6rem;padding:.1rem .35rem;border:1px solid var(--border-c);border-radius:2px;color:var(--silver-dim)" onclick="event.stopPropagation();showPriceEdit(${l.id})" title="Modifica prezzo">✎ prezzo</button>`:''}
+        </div>
       </div>
       <div class="profile-listing-actions">
         ${l.sold?`<span style="font-size:.65rem;color:var(--silver-dim);letter-spacing:.08em;text-transform:uppercase">${T('soldChip')}</span>`
@@ -2354,7 +2539,8 @@ function publishItem(){
   const title=document.getElementById('sellTitle').value.trim();
   const brand=document.getElementById('sellBrand').value.trim()||'No brand';
   const price=parseFloat(document.getElementById('sellPrice').value);
-  const size=document.getElementById('sellSize').value.trim()||'uni';
+  const size=document.getElementById('sellSize').value||'Uni';
+  const color=_sellColorVal||'nero';
   const cat=document.getElementById('sellCat').value;
   const cond=document.getElementById('sellCond').selectedIndex;
   const desc=document.getElementById('sellDesc').value.trim()||T('defaultDesc');
@@ -2363,7 +2549,7 @@ function publishItem(){
   if(!title||isNaN(price)||price<0||!city){showToast(T('toastRequired'));return;}
   const wantsBoost=document.getElementById('sellBoost').checked;
   const newId=Date.now();
-  const newListing={id:newId,photos:[...currentPhotos],video:currentVideo,emoji:'👗',title,brand,price,cat,cond,size,city,desc,seller:MR_IDX,boosted:false,sold:false,views:0,createdAt:Date.now()};
+  const newListing={id:newId,photos:[...currentPhotos],video:currentVideo,emoji:'👗',title,brand,price,cat,cond,size,color,city,desc,seller:MR_IDX,boosted:false,sold:false,views:0,createdAt:Date.now()};
   listings.unshift(newListing);
   closeSellModal();activeCat=T('all');renderCats();applyTranslations();renderListings();renderProfilePanel();
   addNotification('publish',title,'item',newId);
@@ -2372,7 +2558,7 @@ function publishItem(){
   saveListingToDB(newListing).then(dbId=>{
     if(dbId !== newId){ newListing.id=dbId; } // aggiorna id con quello del DB
   });
-  ['sellTitle','sellBrand','sellPrice','sellSize','sellDesc','sellCity'].forEach(id=>document.getElementById(id).value='');
+  ['sellTitle','sellBrand','sellPrice','sellDesc','sellCity'].forEach(id=>document.getElementById(id).value='');
   currentPhotos=[];currentVideo=null;renderPreviews();renderVideoPreview();
   document.getElementById('sellBoost').checked=false;
   if(wantsBoost){ setTimeout(()=>openBoostPayment(newId),180); }
@@ -2776,6 +2962,59 @@ function onbCityKeyDown(e){
   if(_onbCityFocusIdx>=0) items[_onbCityFocusIdx].scrollIntoView({block:'nearest'});
 }
 
+/* ══ COLOR SELECT DROPDOWNS ══ */
+const COLOR_BG={nero:'#111',bianco:'#f0ede6',grigio:'#888',beige:'#c8b89a',marrone:'#7b5533',rosso:'#c0392b',rosa:'#e88fa0',arancio:'#e67e22',giallo:'#f1c40f',verde:'#27ae60',blu:'#2980b9',lilla:'#8e44ad',oro:'#d4af37',argento:'#a8a9ad',multicolor:'conic-gradient(#e74c3c,#f39c12,#2ecc71,#3498db,#9b59b6,#e74c3c)'};
+let _sellColorVal='nero', _filterColorVal='all';
+
+function _buildColorOptions(mode){
+  const isFilter=(mode==='filter');
+  const allOpt=isFilter?`<div class="color-select-option${_filterColorVal==='all'?' selected':''}" onclick="selectColor('filter','all','${T('colorAll')}',null)"><span class="color-dot" style="background:transparent;border:1px dashed var(--border-m)"></span>${T('colorAll')}</div>`:'';
+  const opts=COLORS.map(c=>{
+    const label=c[lang]||c.it;
+    const name=label.replace('● ','');
+    const bg=COLOR_BG[c.v]||'#ccc';
+    const sel=isFilter?(_filterColorVal===c.v):(_sellColorVal===c.v);
+    return `<div class="color-select-option${sel?' selected':''}" onclick="selectColor('${mode}','${c.v}','${name}','${bg}')">
+      <span class="color-dot" style="background:${bg}"></span>${name}</div>`;
+  }).join('');
+  return allOpt+opts;
+}
+
+function toggleColorDD(mode){
+  const wrap=document.getElementById(mode==='filter'?'colorFilterWrap':'sellColorWrap');
+  const other=document.getElementById(mode==='filter'?'sellColorWrap':'colorFilterWrap');
+  if(other) other.classList.remove('open');
+  wrap.classList.toggle('open');
+  if(wrap.classList.contains('open')){
+    document.getElementById(mode==='filter'?'colorFilterDD':'sellColorDD').innerHTML=_buildColorOptions(mode);
+  }
+}
+
+function selectColor(mode,val,name,bg){
+  if(mode==='filter'){
+    _filterColorVal=val;
+    document.getElementById('colorFilterLabel2').textContent=name;
+    const dot=document.getElementById('colorFilterDot');
+    if(val==='all'){dot.style.background='transparent';dot.style.border='1px dashed var(--border-m)';}
+    else{dot.style.background=bg;dot.style.border='none';}
+    document.getElementById('colorFilterWrap').classList.remove('open');
+    filterListings();
+  } else {
+    _sellColorVal=val;
+    document.getElementById('sellColorLabel').textContent=name;
+    const dot=document.getElementById('sellColorDot');
+    dot.style.background=bg;dot.style.border='none';
+    document.getElementById('sellColorWrap').classList.remove('open');
+  }
+}
+
+// Close dropdowns on outside click
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.color-select-wrap')){
+    document.querySelectorAll('.color-select-wrap.open').forEach(w=>w.classList.remove('open'));
+  }
+});
+
 /* ══ TOAST ══ */
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);}
 
@@ -2848,9 +3087,11 @@ function onUserLoggedIn(session){
   if(user.is_anonymous) return;
   currentUser.dbId   = user.id;
   currentUser.email  = user.email || '';
-  // Fallback a cascata: full_name → parte email prima @ → prime 6 char ID
+  // Salva il nome vero dall'auth metadata (quello inserito in fase di registrazione)
   const meta = user.user_metadata || {};
-  currentUser.name = (meta.full_name || meta.name || '').trim()
+  const authFullName = (meta.full_name || meta.name || '').trim();
+  currentUser._authName = authFullName; // conservato per confronto in loadProfileFromDB
+  currentUser.name = authFullName
     || (user.email ? user.email.split('@')[0] : '')
     || user.id.slice(0, 6);
   closeAuthModal();
