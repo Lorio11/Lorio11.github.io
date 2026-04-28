@@ -732,8 +732,8 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
 <nav>
   <div class="nav-logo">Reduse<span class="dot">·</span></div>
   <div class="nav-search-wrap">
-    <input type="text" id="searchInput" oninput="filterListings()" class="nav-search-input"/>
-    <button onclick="filterListings()" id="searchBtn" class="nav-search-btn">🔍</button>
+    <input type="text" id="searchInput" oninput="filterListings()" onkeydown="if(event.key==='Enter'){filterListings();if(this.value.trim())document.querySelector('.main')?.scrollIntoView({behavior:'smooth',block:'start'});}" class="nav-search-input"/>
+    <button onclick="filterListings();if(document.getElementById('searchInput').value.trim()) document.querySelector('.main')?.scrollIntoView({behavior:'smooth',block:'start'});" id="searchBtn" class="nav-search-btn">🔍</button>
   </div>
   <div class="nav-actions">
     <div class="lang-switcher">
