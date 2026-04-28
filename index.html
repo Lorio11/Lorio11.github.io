@@ -1200,7 +1200,7 @@ async function loadListingsFromDB(){
     const {data,error}=await sb().from('listings').select('*').order('created_at',{ascending:false});
     if(error)throw error;
     if(data){
-      listings=data.map(r=>({
+      const dbListings=data.map(r=>({
         id:r.id,title:r.title,brand:r.brand,price:r.price,cat:r.category,
         cond:r.condition_idx??0,size:r.size,city:r.city,desc:r.description,
         emoji:r.emoji||'👗',photos:r.photos||[],video:r.video_url||null,
@@ -1210,6 +1210,9 @@ async function loadListingsFromDB(){
         boosted:r.boosted||false,sold:r.sold||false,
         views:r.views||0,createdAt:new Date(r.created_at).getTime(),
       }));
+      // Fondi DB + demo (i demo non vengono rimossi dal feed)
+      const dbIds=new Set(dbListings.map(l=>String(l.id)));
+      listings=[...dbListings, ...DEMO_LISTINGS.filter(l=>!dbIds.has(String(l.id)))];
       // Raccogli tutti gli UUID venditori non-correnti e carica i loro profili
       const uuids=[...new Set(listings.filter(l=>l.seller===-1&&l.sellerUuid).map(l=>l.sellerUuid))];
       if(uuids.length){
@@ -1693,7 +1696,9 @@ let listings=[
 
 /* ══ STATE ══ */
 const MAX_PRICE=10000;
-listings=listings.map((l,idx)=>({...l,boosted:!!l.boosted,views:l.views||Math.floor(Math.random()*80)+12,createdAt:l.createdAt||(idx<2?Date.now()-idx*3600_000:Date.now()-idx*72*3600_000)}));
+// Salva i listing demo separatamente — vengono sempre mostrati insieme ai listing DB
+const DEMO_LISTINGS=listings.map((l,idx)=>({...l,boosted:!!l.boosted,views:l.views||Math.floor(Math.random()*80)+12,createdAt:l.createdAt||(idx<2?Date.now()-idx*3600_000:Date.now()-idx*72*3600_000),isDemo:true}));
+listings=[...DEMO_LISTINGS];
 let cart=[],favorites=new Set(),notifications=[
   {id:1,type:'price',text:'Massimo Dutti',targetType:'item',targetId:3,time:Date.now()-1000*60*45,unread:true},
   {id:2,type:'msg',text:'Lea M.',targetType:'seller',targetId:2,time:Date.now()-1000*60*120,unread:true},
