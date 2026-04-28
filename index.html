@@ -884,7 +884,7 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
         <div class="seller-profile-bio" id="spBio"></div>
         <div class="seller-profile-stats">
           <div class="seller-profile-stat"><div class="sv" id="spSales"></div><div class="sl" id="spSalesLbl"></div></div>
-          <div class="seller-profile-stat"><div class="sv" id="spRating"></div><div class="sl" id="spRatingLbl"></div></div>
+          <div class="seller-profile-stat" id="spRatingBlock"><div class="sv" id="spRating"></div><div class="sl" id="spRatingLbl"></div></div>
           <div class="seller-profile-stat"><div class="sv" id="spItems"></div><div class="sl" id="spItemsLbl"></div></div>
         </div>
       </div>
@@ -1623,8 +1623,8 @@ const COLORS=[
 function colorLabel(v,lng){const l=lng||lang;const c=COLORS.find(x=>x.v===v);return c?c[l]||c.it:v||'–';}
 
 /* ══ CURRENT USER ══ */
-/* MR_IDX = 5 — l'utente loggato ha il proprio indice in SELLERS */
-const MR_IDX = 5;
+/* MR_IDX = 6 — l'utente loggato ha il proprio indice in SELLERS */
+const MR_IDX = 6;
 
 let currentUser = {
   name:   '',
@@ -1641,14 +1641,15 @@ function userInitials(){
   return currentUser.name.split(' ').filter(p=>p).map(p=>p[0].toUpperCase()).join('').slice(0,2) || '?';
 }
 
-/* ══ SELLERS (indici 0-4 = altri, 5 = MR) ══ */
+/* ══ SELLERS (indici 0-5 = demo, 6 = utente loggato) ══ */
 const SELLERS=[
-  {name:'Lea M.',    verified:true,    rating:'⭐ 5.0',sales:41,city:'Zürich', init:'LM',joined:'2022',bio:''},
+  {name:'Lea M.',    verified:true,  rating:'⭐ 5.0',sales:41,city:'Zürich', init:'LM',joined:'2022',bio:''},
   {name:'Sophie B.', verified:true, rating:'⭐ 4.8',sales:22,city:'Genève', init:'SB',joined:'2023',bio:''},
-  {name:'Nadia R.',  verified:false,  rating:'⭐ 4.9',sales:17,city:'Basel',  init:'NR',joined:'2023',bio:''},
-  {name:'Anna K.',   verified:true,   rating:'⭐ 4.7',sales:9, city:'Bern',   init:'AK',joined:'2024',bio:''},
+  {name:'Nadia R.',  verified:false, rating:'⭐ 4.9',sales:17,city:'Basel',  init:'NR',joined:'2023',bio:''},
+  {name:'Anna K.',   verified:true,  rating:'⭐ 4.7',sales:9, city:'Bern',   init:'AK',joined:'2024',bio:''},
   {name:'Chiara F.', verified:true, rating:'⭐ 5.0',sales:34,city:'Lugano', init:'CF',joined:'2022',bio:''},
-  /* index 5 = utente loggato, dati presi da currentUser */
+  {name:'Marco Rossi',verified:true,rating:'⭐ 4.9',sales:6, city:'Lugano', init:'MR',joined:'2024',bio:'Appassionato di moda e sneakers. Vendo solo capi autentici.'},
+  /* index 6 = utente loggato, dati presi da currentUser */
   null,
 ];
 /* Ritorna l'oggetto seller: MR_IDX → currentUser, -1 → sellerCache via listing.sellerUuid, 0-4 → SELLERS demo */
@@ -1687,6 +1688,7 @@ let listings=[
   {id:12,photos:['https://images.unsplash.com/photo-1603808033192-082d6919d3e1?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'🥿',title:'Mocassini Gucci 39',      brand:'Gucci',        price:280,cat:'Schuhe',    cond:2,size:'39', color:'nero',   city:'Zürich',   desc:'Loafer classici taglia 39. Pelle nera.',seller:1},
   {id:13,photos:['https://images.unsplash.com/photo-1571783465195-c197c2f4a7d0?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👘',title:'Kimono floreale vintage', brand:'Vintage',      price:55, cat:'Kleider',   cond:3,size:'M',  color:'multicolor',city:'Basel', desc:"Seta stampata anni '90. Fantasia floreale.",seller:2},
   {id:14,photos:['https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'💼',title:'Rimowa Essential 55cm',   brand:'Rimowa',       price:195,cat:'Accessoires',cond:3,size:'Uni',color:'argento',city:'Genève',  desc:'Cabin 55cm silver. Qualche graffio.',seller:3},
+  {id:15,photos:['https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&w=480&h=640&fit=crop&q=80','https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?auto=format&w=480&h=640&fit=crop&q=80'],emoji:'👟',title:'Nike Air Force 1 Low bianche',brand:'Nike',price:90,cat:'Schuhe',cond:1,size:'42',color:'bianco',city:'Lugano',desc:'Nike Air Force 1 Low taglia 42, indossate pochissime volte. Tomaia in pelle, suola perfetta. Con scatola originale.',seller:5},
 ];
 
 /* ══ STATE ══ */
@@ -1856,7 +1858,9 @@ function getFiltered(){
   const color=_filterColorVal;
   const city=document.getElementById('cityFilter').value.trim().toLowerCase();
   const NOW=Date.now();
-  let filtered=listings.filter(l=>!l.sold&&(isAll||l.cat===ak)&&
+  // Escludi i tuoi annunci dal feed principale
+  const isOwnListing=l=>l.seller===MR_IDX||(currentUser.dbId&&l.sellerUuid&&l.sellerUuid===currentUser.dbId);
+  let filtered=listings.filter(l=>!l.sold && !isOwnListing(l) &&(isAll||l.cat===ak)&&
     (!q||(l.title.toLowerCase().includes(q)||l.brand.toLowerCase().includes(q)||catLabel(l.cat).toLowerCase().includes(q)||l.city.toLowerCase().includes(q)||(l.color&&colorLabel(l.color).toLowerCase().includes(q))))&&
     l.price>=minPrice&&l.price<=maxPrice&&
     (size==='all'||l.size===size)&&
@@ -1944,7 +1948,7 @@ function renderListings(){
           <div class="listing-price">CHF ${l.price}</div>
           <div style="display:flex;align-items:center;gap:.4rem"><div class="listing-location">📍 ${l.city}</div>${colorChip}</div>
         </div>
-        ${sellerName?`<div class="card-seller-chip" onclick="event.stopPropagation();openSellerFromCard(${l.seller})">👤 ${sellerName}</div>`:''}
+        ${sellerName?`<div class="card-seller-chip" onclick="event.stopPropagation();openSellerFromCard(${l.seller},${l.sellerUuid?`'${l.sellerUuid}'`:'null'})">👤 ${sellerName}</div>`:''}
       </div>
     </div>`;
   }).join('');
@@ -2026,7 +2030,7 @@ function buildSellerAvatar(s,el){
 }
 function openItem(id,skipHistory=false){
   const l=listings.find(x=>x.id===id);if(!l)return;
-  currentItemId=id;currentSellerIdx=l.seller;l.views=(l.views||0)+1;
+  currentItemId=id;currentSellerIdx=l.seller;currentSellerUuid=l.sellerUuid||null;l.views=(l.views||0)+1;
   const s=getSeller(l.seller, l.sellerUuid),idx=listings.indexOf(l);
   modalPhotoIdx=0;
   const mp=document.getElementById('modalPhotos'),pn=document.getElementById('photoNav');
@@ -2067,7 +2071,10 @@ function openItem(id,skipHistory=false){
   // Seller name + verified badge
   document.getElementById('sellerName').innerHTML=s2.name+verifiedBadgeHtml(s2);
   document.getElementById('modalContactBtn').textContent=T('modalContact');
+  document.getElementById('modalContactBtn').style.display=ownListing?'none':'inline-flex';
   document.getElementById('modalBuyBtn').textContent=T('modalBuy');
+  document.getElementById('modalBuyBtn').onclick=()=>addToCart(l);
+  document.getElementById('modalBuyBtn').style.display=(l.sold||ownListing)?'none':'inline-flex';
   // Offer button — hide for own listings
   const offerBtn=document.getElementById('modalOfferBtn');
   if(offerBtn){offerBtn.textContent=T('modalOffer')||'💸 Fai un\'offerta';offerBtn.style.display=ownListing?'none':'inline-flex';}
@@ -2077,8 +2084,6 @@ function openItem(id,skipHistory=false){
   document.getElementById('modalBoostBtn').textContent=l.boosted?T('modalBoostActive'):T('modalBoost');
   document.getElementById('modalBoostBtn').disabled=l.boosted;
   document.getElementById('modalBoostBtn').style.display=ownListing?'inline-flex':'none';
-  document.getElementById('modalBuyBtn').onclick=()=>addToCart(l);
-  document.getElementById('modalBuyBtn').style.display=l.sold?'none':'inline-flex';
   // Share buttons
   const swb=document.getElementById('shareWhatsBtn'); if(swb)swb.textContent=T('shareWhatsApp');
   const sib=document.getElementById('shareInstaBtn'); if(sib)sib.textContent=T('shareInsta');
@@ -2102,47 +2107,64 @@ function closeItemModal(resetHistory=true){
 }
 
 /* ══ SELLER PROFILE ══ */
-function openSellerProfile(){
-  if(currentSellerIdx===null)return;
-  const s=getSeller(currentSellerIdx);
-  const sellerListings=listings.filter(l=>l.seller===currentSellerIdx);
-  // avatar
+let currentSellerUuid = null; // UUID per seller da DB reale
+
+function _getSellerListings(idx, uuid){
+  if(uuid) return listings.filter(l=>l.sellerUuid===uuid && !l.sold);
+  if(idx===MR_IDX) return listings.filter(l=>(l.seller===MR_IDX||(l.sellerUuid&&l.sellerUuid===currentUser.dbId)) && !l.sold);
+  return listings.filter(l=>l.seller===idx && !l.sold);
+}
+
+function _renderSellerProfilePanel(s, sellerListings){
   const spAv=document.getElementById('spAvatar');
-  if(s.photo){spAv.innerHTML=`<img src="${s.photo}" alt=""/>`;}else{spAv.textContent=s.init;}
-  document.getElementById('spName').textContent=s.name;
-  document.getElementById('spMeta').textContent=`📍 ${s.city} · Membro dal ${s.joined}`;
+  if(s.photo){spAv.innerHTML=`<img src="${s.photo}" alt=""/>`;}
+  else{spAv.textContent=(s.init||'?');}
+  document.getElementById('spName').innerHTML=s.name+(s.verified?verifiedBadgeHtml(s):'');
+  document.getElementById('spMeta').textContent=`${s.city?'📍 '+s.city+' · ':''}${s.joined?'Membro dal '+s.joined:''}`;
   document.getElementById('spBio').textContent=s.bio||'';
-  document.getElementById('spSales').textContent=s.sales;document.getElementById('spSalesLbl').textContent=T('spSalesLbl');
-  document.getElementById('spRating').textContent=s.rating.replace('⭐ ','');document.getElementById('spRatingLbl').textContent=T('spRatingLbl');
-  document.getElementById('spItems').textContent=sellerListings.length;document.getElementById('spItemsLbl').textContent=T('spItemsLbl');
+  document.getElementById('spSales').textContent=s.sales||0;
+  document.getElementById('spSalesLbl').textContent=T('spSalesLbl');
+  // Valutazione: nascosta se vendite = 0
+  const ratingBlock=document.getElementById('spRatingBlock');
+  if(ratingBlock){
+    if((s.sales||0)===0){ratingBlock.style.display='none';}
+    else{ratingBlock.style.display='';document.getElementById('spRating').textContent=(s.rating||'').replace('⭐ ','').replace('★','');document.getElementById('spRatingLbl').textContent=T('spRatingLbl');}
+  }
+  document.getElementById('spItems').textContent=sellerListings.length;
+  document.getElementById('spItemsLbl').textContent=T('spItemsLbl');
   document.getElementById('spListingsTitle').textContent=T('spListingsTitle');
   document.getElementById('spMsgBtn').textContent=T('spMsgBtn');
   document.getElementById('spListingsGrid').innerHTML=sellerListings.map(l=>{
     const thumb=l.photos.length?`<img src="${l.photos[0]}" alt=""/>` : `<div class="thumb-emoji">${l.emoji}</div>`;
-    return `<div class="seller-listing-thumb" onclick="openItemFromSeller(${l.id})">${thumb}<div class="slabel">${l.title}<br><span class="sprice">CHF ${l.price}</span></div></div>`;
-  }).join('');
+    return `<div class="seller-listing-thumb" onclick="openItemFromSeller(${JSON.stringify(l.id)})">${thumb}<div class="slabel">${l.title}<br><span class="sprice">CHF ${l.price}</span></div></div>`;
+  }).join('') || `<div style="color:var(--silver-dim);font-size:.82rem;padding:.5rem 0">${T('emptyResults')||'Nessun annuncio attivo'}</div>`;
   msgTargetName=s.name;
   document.getElementById('sellerProfileOverlay').classList.add('open');
 }
-function openSellerProfileByIdx(idx){currentSellerIdx=idx;const s=getSeller(idx);const sellerListings=listings.filter(l=>l.seller===idx);
-  document.getElementById('spAvatar').innerHTML=s.photo?`<img src="${s.photo}" alt=""/>`:`${s.name.split(' ').map(p=>p[0]).join('').slice(0,2)}`;
-  document.getElementById('spName').textContent=s.name;
-  document.getElementById('spMeta').textContent=`${s.city} · ${s.sales} ${T('spSalesLbl').toLowerCase()} · ${s.rating}★`;
-  document.getElementById('spBio').textContent=s.bio;
-  document.getElementById('spSales').textContent=s.sales; document.getElementById('spRating').textContent=s.rating; document.getElementById('spItems').textContent=sellerListings.length;
-  document.getElementById('spSalesLbl').textContent=T('spSalesLbl'); document.getElementById('spRatingLbl').textContent=T('spRatingLbl'); document.getElementById('spItemsLbl').textContent=T('spItemsLbl');
-  document.getElementById('spListingsTitle').textContent=T('spListingsTitle'); document.getElementById('spMsgBtn').textContent=T('spMsgBtn');
-  document.getElementById('spListingsGrid').innerHTML=sellerListings.map(l=>{ const thumb=l.photos.length?`<img src="${l.photos[0]}" alt=""/>` : `<div class="thumb-emoji">${l.emoji}</div>`; return `<div class="seller-listing-thumb" onclick="openItemFromSeller(${l.id})">${thumb}<div class="slabel">${l.title}<br><span class="sprice">CHF ${l.price}</span></div></div>`; }).join('');
-  msgTargetName=s.name; document.getElementById('sellerProfileOverlay').classList.add('open');}
+
+function openSellerProfile(){
+  if(currentSellerIdx===null) return;
+  const s=getSeller(currentSellerIdx, currentSellerUuid);
+  const sl=_getSellerListings(currentSellerIdx, currentSellerUuid);
+  _renderSellerProfilePanel(s, sl);
+}
+
+function openSellerProfileByIdx(idx, uuid){
+  currentSellerIdx=idx;
+  currentSellerUuid=uuid||null;
+  const s=getSeller(idx, uuid);
+  const sl=_getSellerListings(idx, uuid);
+  _renderSellerProfilePanel(s, sl);
+}
+
+function openSellerFromCard(sellerIdx, sellerUuid){
+  currentSellerIdx=sellerIdx;
+  currentSellerUuid=sellerUuid||null;
+  openSellerProfileByIdx(sellerIdx, sellerUuid);
+}
 function openItemFromSeller(id){closeSellerProfileDirect();closeItemModal();setTimeout(()=>openItem(id),200);}
 function closeSellerProfileModal(e){if(e.target.id==='sellerProfileOverlay')closeSellerProfileDirect();}
 function closeSellerProfileDirect(){document.getElementById('sellerProfileOverlay').classList.remove('open');}
-
-/* ── Apri profilo venditore dalla card ── */
-function openSellerFromCard(sellerIdx){
-  currentSellerIdx=sellerIdx;
-  openSellerProfileByIdx(sellerIdx);
-}
 
 /* ── Price lower notification ── */
 function lowerPrice(listingId, newPrice){
@@ -2748,13 +2770,16 @@ function renderInboxList(){
     el.innerHTML='<div class="inbox-empty">Nessun messaggio ancora</div>';
     updateInboxBadge(0);return;
   }
-  el.innerHTML=entries.map(([idxStr,thread])=>{
-    const idx=+idxStr;
-    const s=getSeller(idx);
+  el.innerHTML=entries.map(([key,thread])=>{
+    // key può essere un UUID (utente reale) o un numero (demo)
+    const isUuid=typeof key==='string'&&key.includes('-');
+    const s=isUuid
+      ? (sellerCache[key]?{...sellerCache[key],dbId:key}:{name:'Utente',init:'?'})
+      : getSeller(+key);
     const last=thread[thread.length-1];
     const hasUnread=thread.some(m=>m.from==='them'&&!m.read);
-    const avatarInner=s.photo?`<img src="${s.photo}" alt=""/>`:s.init;
-    return `<div class="inbox-thread-item" onclick="openThread(${idx})">
+    const avatarInner=s.photo?`<img src="${s.photo}" alt=""/>`:s.init||'?';
+    return `<div class="inbox-thread-item" onclick="openThread(${isUuid?'null':''+key},${isUuid?`'${key}'`:'null'})">
       <div class="inbox-thread-avatar">${avatarInner}</div>
       <div class="inbox-thread-info">
         <div class="inbox-thread-name">
@@ -2770,13 +2795,18 @@ function renderInboxList(){
 }
 
 /* ── Apri thread specifico ───────────────────────────────── */
-async function openThread(sellerIdx){
-  _activeThreadId=sellerIdx;
-  if(!_threads[sellerIdx]) _threads[sellerIdx]=[];
+async function openThread(sellerIdx, sellerUuid){
+  // Per utenti reali da DB usiamo l'UUID come chiave thread; per demo usiamo l'indice numerico
+  const threadKey = sellerUuid || sellerIdx;
+  _activeThreadId = threadKey;
+  // Determina il seller object
+  const s = sellerUuid
+    ? (sellerCache[sellerUuid] ? {...sellerCache[sellerUuid], dbId: sellerUuid} : {name:'Utente',init:'?',dbId:sellerUuid})
+    : getSeller(sellerIdx);
+  if(!_threads[threadKey]) _threads[threadKey]=[];
   // Marca come letti
-  _threads[sellerIdx].forEach(m=>{if(m.from==='them')m.read=true;});
+  _threads[threadKey].forEach(m=>{if(m.from==='them')m.read=true;});
   updateInboxBadge();
-  const s=getSeller(sellerIdx);
   document.getElementById('threadPanelName').textContent=s.name;
   // Mostra thread view
   document.getElementById('inboxListView').style.display='none';
@@ -2786,7 +2816,7 @@ async function openThread(sellerIdx){
   if(SUPABASE_READY && s.dbId){
     const dbMsgs=await loadMessagesFromDB(s.dbId);
     if(dbMsgs){
-      _threads[sellerIdx]=dbMsgs.map(m=>({
+      _threads[threadKey]=dbMsgs.map(m=>({
         id:m.id,
         from: m.sender_id===currentUser.dbId?'me':'them',
         text:m.text,
@@ -2795,11 +2825,9 @@ async function openThread(sellerIdx){
       }));
     }
     markMessagesReadInDB(s.dbId);
-    // Abilita Realtime
-    subscribeRealtime(sellerIdx, s.dbId);
+    subscribeRealtime(threadKey, s.dbId);
   }
   renderThread();
-  // input focus
   setTimeout(()=>document.getElementById('threadInput')?.focus(),150);
 }
 
@@ -2833,40 +2861,43 @@ async function sendThreadMsg(){
   _threads[_activeThreadId].push(msg);
   renderThread();
   renderInboxList();
-  // Salva su Supabase
-  const s=getSeller(_activeThreadId);
-  if(SUPABASE_READY && s?.dbId){
-    const saved=await saveMessageToDB(s.dbId, txt);
+  // Determina il dbId del destinatario:
+  // se la chiave thread è un UUID (stringa con trattini) → è direttamente il dbId
+  const isUuid = typeof _activeThreadId==='string' && _activeThreadId.includes('-');
+  const recipientDbId = isUuid ? _activeThreadId : getSeller(_activeThreadId)?.dbId;
+  if(SUPABASE_READY && recipientDbId){
+    const saved=await saveMessageToDB(recipientDbId, txt);
     if(saved) msg.id=saved.id;
   }
-  // Aggiorna anche il vecchio sistema di notifiche
-  addNotification('msg', s?.name||'Venditore');
+  const sName = isUuid
+    ? (sellerCache[_activeThreadId]?.name || 'Venditore')
+    : getSeller(_activeThreadId)?.name || 'Venditore';
+  addNotification('msg', sName);
 }
 function threadInputKeyDown(e){
   if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendThreadMsg();}
 }
 
 /* ── Realtime subscription ───────────────────────────────── */
-function subscribeRealtime(sellerIdx, senderDbId){
+function subscribeRealtime(threadKey, senderDbId){
   if(!SUPABASE_READY) return;
   unsubscribeRealtime();
   const el=document.getElementById('threadRealtimeStatus');
   if(el) el.innerHTML='<span class="realtime-dot"></span> Live';
-  _realtimeChannel=sb().channel('msgs_'+sellerIdx)
+  _realtimeChannel=sb().channel('msgs_'+threadKey)
     .on('postgres_changes',{
       event:'INSERT',schema:'public',table:'messages',
       filter:`receiver_id=eq.${currentUser.dbId}`,
     }, payload=>{
       const m=payload.new;
-      if(String(m.sender_id)!==String(senderDbId)) return; // ignora altri mittenti
-      if(_threads[sellerIdx]?.some(x=>x.id===m.id)) return; // evita duplicati
+      if(String(m.sender_id)!==String(senderDbId)) return;
+      if(_threads[threadKey]?.some(x=>x.id===m.id)) return;
       const newMsg={id:m.id,from:'them',text:m.text,time:new Date(m.created_at).getTime(),read:true};
-      if(!_threads[sellerIdx]) _threads[sellerIdx]=[];
-      _threads[sellerIdx].push(newMsg);
+      if(!_threads[threadKey]) _threads[threadKey]=[];
+      _threads[threadKey].push(newMsg);
       renderThread();
       renderInboxList();
       markMessagesReadInDB(senderDbId);
-      // Rimuovi "sta scrivendo…"
       clearTypingIndicator();
     })
     .subscribe();
@@ -2883,15 +2914,14 @@ function clearTypingIndicator(){
 }
 
 /* ── Collega openThread anche dal vecchio sendMsg ─────────── */
-// Override: quando si clicca "Scrivi al venditore" apre direttamente il thread
 function openMsgFromItemInbox(){
-  if(currentSellerIdx===null)return;
+  if(currentSellerIdx===null && !currentSellerUuid) return;
   closeItemModal(false);
-  setTimeout(()=>{ openInboxPanel(); openThread(currentSellerIdx); },120);
+  setTimeout(()=>{ openInboxPanel(); openThread(currentSellerIdx, currentSellerUuid); },120);
 }
 function openMsgFromSellerInbox(){
   closeSellerProfileDirect();
-  setTimeout(()=>{ openInboxPanel(); openThread(currentSellerIdx); },120);
+  setTimeout(()=>{ openInboxPanel(); openThread(currentSellerIdx, currentSellerUuid); },120);
 }
 
 /* ── Aggiorna closeAllPanels per includere inboxPanel ─────── */
