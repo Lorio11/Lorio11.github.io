@@ -567,6 +567,7 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
 
 
 /* ── ONBOARDING MODAL ── */
+#boostOverlay{z-index:520}
 #onboardingOverlay{z-index:510;background:rgba(10,25,16,.97);backdrop-filter:blur(12px)}
 .onboarding-modal{background:var(--pine-deep);border:1px solid var(--border-m);max-width:440px;width:100%;position:relative;animation:fadeUp .4s ease}
 .onb-header{padding:2rem 2rem 1.2rem;text-align:center;border-bottom:1px solid var(--border-c)}
@@ -738,6 +739,7 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
       <button class="lang-btn" onclick="setLang('it')">IT</button>
       <button class="lang-btn" onclick="setLang('de')">DE</button>
       <button class="lang-btn" onclick="setLang('fr')">FR</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
     </div>
     <button class="btn btn-ghost" id="btnSell" onclick="openSell()"></button>
     <button class="icon-btn" id="notifBtn" aria-label="Notifiche" onclick="openNotifications()">🔔<span class="icon-badge" id="notifBadge"></span></button>
@@ -755,13 +757,7 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
     <button class="gender-tab" data-gender="uomo" onclick="setGender('uomo')" id="gTabUomo"></button>
     <button class="gender-tab" data-gender="bambino" onclick="setGender('bambino')" id="gTabBambino"></button>
     <span class="gender-sep">|</span>
-    <button class="gender-tab" id="navAll"         onclick="setCat(T('all'))"></button>
-    <button class="gender-tab" id="navKleider"     onclick="setCat(T('catKleider'))"></button>
-    <button class="gender-tab" id="navSchuhe"      onclick="setCat(T('catSchuhe'))"></button>
-    <button class="gender-tab" id="navAccessoires" onclick="setCat(T('catAccessoires'))"></button>
-    <button class="gender-tab" id="navOcchiali"    onclick="setCat(T('catOcchiali'))"></button>
-    <button class="gender-tab" id="navGioielli"    onclick="setCat(T('catGioielli'))"></button>
-    <button class="gender-tab" id="navCravatte"    onclick="setCat(T('catCravatte'))"></button>
+    <button class="gender-tab" id="navGriffati" onclick="setCat(T('catGriffati'))"></button>
   </div>
 </div>
 
@@ -1435,7 +1431,8 @@ function uploadAvatarToCloudinary(file){ return uploadToCloudinary(file); }
 const TR={
   it:{
     gAll:'Tutto',gDonna:'Donna',gUomo:'Uomo',gBambino:'Bambini',
-    catOcchiali:'Occhiali',catGioielli:'Gioielli',catCravatte:'Cravatte',
+    all:'Tutti',catKleider:'Abbigliamento',catSchuhe:'Scarpe',catAccessoires:'Accessori',
+    catOcchiali:'Occhiali',catGioielli:'Gioielli',catCravatte:'Cravatte',catGriffati:'Articoli Griffati',
     btnSell:'+ Vendi',
     heroEyebrow:'Second Hand · Svizzera',
     heroTitle:'Dai nuova <em>vita</em><br>alla moda che ami',
@@ -1507,9 +1504,84 @@ const TR={
     onbSkip:'Salta per ora (la città è richiesta prima di ogni acquisto o vendita)',
     onbCityMissing:'⚠️ Inserisci la tua città per continuare',
   },
+  en:{
+    gAll:'All',gDonna:'Women',gUomo:'Men',gBambino:'Kids',
+    all:'All',catKleider:'Clothing',catSchuhe:'Shoes',catAccessoires:'Accessories',
+    catOcchiali:'Eyewear',catGioielli:'Jewellery',catCravatte:'Ties',catGriffati:'Designer',
+    btnSell:'+ Sell',heroEyebrow:'Second Hand · Switzerland',
+    heroTitle:'Give your wardrobe a<br>new <em>life</em>',
+    heroSub:'Switzerland\'s marketplace to buy and sell second-hand fashion. Style without waste.',
+    chBadge:'100% Switzerland · CHF',
+    searchPlaceholder:'Search Gucci, trench coat, Zara size S…',searchBtn:'Search',
+    statItems:'Listings',statCantoni:'Cantons',
+    secTitle:'Latest listings',noResults:'No results found',resultSuffix:'listings',
+    modalContact:'💬 Message seller',modalBuy:'🛒 Add to cart',
+    sellerViewHint:'View profile →',
+    toastContact:'💬 Message sent to ',toastCart:'✓ Added to cart',
+    cartTitle:'Your cart',cartEmpty:'Your cart is empty',
+    cartTotalLabel:'Total',btnCheckout:'💳 Pay with Stripe',
+    sellModalTitle:'Post a listing',
+    lblPhotos:'Photos (up to 10)',photoHint:'Drag photos here or <span>click to choose</span>',
+    lblTitle:'Title',lblBrand:'Brand',lblPrice:'Price CHF',lblSize:'Size',
+    lblCat:'Category',lblCond:'Condition',lblDesc:'Description',lblCity:'City (CH)',lblColor:'Colour',colorAll:'All colours',colorFilterLabel:'Colour',sortRelevance:'Most relevant',
+    cityPlaceholder:'Type city…',
+    sellTitlePh:'e.g. Burberry Trench M',sellBrandPh:'e.g. Zara, H&M, Gucci…',
+    sellSizePh:'e.g. M, 42, 38',sellDescPh:'Describe the item, material, any flaws…',
+    btnPublish:'Publish now →',toastPublish:'✓ Listing published!',
+    toastRequired:'⚠️ Title, price and city are required',defaultDesc:'No description.',
+    toastPhotos:'⚠️ Add at least one photo',
+    cond:['New','Like new','Excellent','Good','Fair'],
+    cats:[{v:'Kleider',l:'Clothing'},{v:'Schuhe',l:'Shoes'},{v:'Accessoires',l:'Accessories'},{v:'Occhiali',l:'Eyewear'},{v:'Gioielli',l:'Jewellery'},{v:'Cravatte',l:'Ties'}],
+    catsForm:[{v:'Kleider',l:'👗 Clothing'},{v:'Schuhe',l:'👟 Shoes'},{v:'Accessoires',l:'👜 Accessories'},{v:'Occhiali',l:'🕶️ Eyewear'},{v:'Gioielli',l:'💍 Jewellery'},{v:'Cravatte',l:'🎗️ Ties'}],
+    howLabel:'How it works',howTitle:'As easy as getting dressed',
+    steps:[
+      {n:'01',t:'Photograph',d:'Take great photos of your item and upload them directly.'},
+      {n:'02',t:'List',d:'Set your price in CHF and list for free.'},
+      {n:'03',t:'Negotiate',d:'Receive offers and agree on a price.'},
+      {n:'04',t:'Ship',d:'Deliver with Swiss Post. Payment via Stripe.'},
+    ],
+    footerCopy:'© 2025 Reduse · Second Hand Fashion Switzerland',
+    stripeTitle:'Complete your purchase',stripeEmailLabel:'Confirmation email',stripeCardLabel:'Card details',
+    stripeSecureLabel:'Secure SSL payment · Stripe',
+    stripeTestNote:'🧪 Demo — test card: <code>4242 4242 4242 4242</code>, future date, any CVC.',
+    stripeSubmitLabel:a=>`Pay CHF ${a}`,stripePoweredBy:'Powered by',
+    successTitle:'Payment confirmed!',successSub:'Thank you for your purchase on Reduse.',
+    successRef:r=>`Order reference: ${r}`,toastEmailRequired:'⚠️ Please enter a valid email',
+    msgTitle:'Write a message',msgTo:'To: ',msgPlaceholder:'Write your message here…',
+    msgSend:'Send',msgCancel:'Cancel',toastMsgSent:'✓ Message sent!',
+    toastMsgEmpty:'⚠️ Write a message before sending',
+    spSalesLbl:'Sales',spRatingLbl:'Rating',spItemsLbl:'Listings',
+    spListingsTitle:'Seller listings',spMsgBtn:'💬 Send a message',
+    favTitle:'My favourites',favEmpty:'No items in favourites',
+    toastFavAdd:'♥ Added to favourites',toastFavRemove:'♡ Removed from favourites',
+    profileTitle:'My profile',ppStatSales:'Sales',ppStatRating:'Rating',
+    ppStatItems:'Active listings',ppSectionLabel:'My listings',profileNoListings:'No listings published',
+    editProfileTitle:'Edit profile',editLblName:'Full name',editLblEmail:'Email',
+    editLblCity:'City',editLblBio:'Bio',editBioPlaceholder:'Tell us about yourself…',
+    editAvatarHint:'Click the photo to change it.<br><span>Upload a new image</span> (JPG, PNG, max 5 MB)',
+    editCancel:'Cancel',editSave:'Save changes',toastProfileSaved:'✓ Profile updated!',
+    sizeGroupLetter:'Letter',sizeGroupClothing:'Clothing (EU)',sizeGroupShoes:'Shoes (EU)',sizeGroupOther:'Other',filtersTitle:'Advanced search',filtersReset:'Reset',priceFilterLabel:'Price',condFilterLabel:'Condition',cityFilterLabel:'City',
+    sortTitle:'Sort listings',sortSub:'Sort by price, recency or popularity.',sortNewest:'Newest',sortPriceAsc:'Price: low to high',sortPriceDesc:'Price: high to low',sortViews:'Most viewed',
+    sizeAll:'All',condAll:'All',cityAll:'All',notifTitle:'Notifications',notifEmpty:'No notifications',
+    notifFav:'liked your listing',notifMsg:'sent you a message',notifBoost:'Boost activated successfully',notifPublish:'Your listing is now live',notifPrice:'lowered the price of a saved item',notifPriceLower:'Price dropped to CHF',
+    boostSellTitle:'Boost listing',boostSellSub:'Feature your listing in the feed and profile.',boostCta:'⚡ Boost',boostActive:'⚡ Boosted',boostToast:'⚡ Listing featured',
+    modalBoost:'⚡ Boost listing',modalBoostActive:'⚡ Already boosted',shareLabel:'Direct link:',
+    boostPaymentTitle:'Local boost payment',boostPaymentSub:'Choose duration and optionally boost multiple items at 10% discount.',boostItemsLabel:'Items to boost',boostPlanLabel:'Boost duration',boostSummaryLabel:'Summary',boostSummaryItemsText:'Selected items',boostSummaryPlanText:'Selected plan',boostSummaryDiscountText:'Multi-item discount',boostSummaryTotalText:'Total',boostDiscountNote:'10% discount applies automatically when you select 2 or more items.',boostOpenHint:'Open item or profile',boostGoArticle:'Open item',boostGoProfile:'Open profile',boostCancel:'Cancel',boostConfirm:'Confirm local payment',boostPlan3:'Local boost · 3 days',boostPlan7:'Local boost · 7 days',boostPlan10:'Local boost · 10 days',boostToastPaid:'Payment recorded · boost activated',modalOffer:'💸 Make an offer',offerTitle:'Make an offer',offerSub:'Propose a price to the seller',offerAmountLabel:'Your price (CHF)',offerMsgLabel:'Message (optional)',offerMsgPh:'e.g. I can pick up tomorrow…',offerNote:'The seller will see your offer and can accept or counter it.',offerCancel:'Cancel',offerSend:'Send offer',toastOfferSent:'✓ Offer sent!',shareLabel:'Share:',shareWhatsApp:'📱 Share on WhatsApp',shareInsta:'📸 Share on Instagram',shareCopy:'🔗 Copy link',toastLinkCopied:'✓ Link copied!',markSold:'Mark as sold',soldChip:'Sold',soldBadge:'Sold',toastSoldDone:'✓ Listing marked as sold',verifyTitle:'Verify identity',verifySub:'Get the ✓ Verified badge',verifyEmailStep:'Confirm email',verifyEmailDesc:'Tick to simulate email confirmation.',verifyIdStep:'ID document',verifyIdDesc:'Tick to simulate document upload.',verifyNote:'Demo: tick both steps and confirm.',verifyCancel:'Cancel',verifyConfirm:'Confirm verification',toastVerified:'✓ Profile verified!',verifyBtn:'🛡 Verify identity',verified:'✓ Verified',
+    ariaNotif:'Notifications',ariaInbox:'Messages',ariaFav:'Favourites',ariaCart:'Cart',ariaProfile:'Profile',
+    loginLabel:'Sign in or register',
+    onbTitle:'Welcome to Reduse ✦',
+    onbSub:'To buy or sell you need to set your city. Profile photo is optional but makes your profile more trustworthy.',
+    onbAvatarHint:'Profile photo · <strong>optional</strong>',
+    onbCityLabel:'Your city',
+    onbCityRequired:'📍 Required to buy and sell',
+    onbContinue:'Start buying and selling →',
+    onbSkip:'Skip for now (city will be required before any purchase or sale)',
+    onbCityMissing:'⚠️ Please enter your city to continue',
+  },
   de:{
     gAll:'Alle',gDonna:'Damen',gUomo:'Herren',gBambino:'Kinder',
-    catOcchiali:'Brillen',catGioielli:'Schmuck',catCravatte:'Krawatten',
+    all:'Alle',catKleider:'Kleider',catSchuhe:'Schuhe',catAccessoires:'Accessoires',
+    catOcchiali:'Brillen',catGioielli:'Schmuck',catCravatte:'Krawatten',catGriffati:'Luxusmarken',
     btnSell:'+ Inserieren',
     heroEyebrow:'Second Hand · Schweiz',
     heroTitle:'Mode <em>wiederentdecken</em><br>neu zu schätzen wissen',
@@ -1578,7 +1650,8 @@ const TR={
   },
   fr:{
     gAll:'Tout',gDonna:'Femme',gUomo:'Homme',gBambino:'Enfants',
-    catOcchiali:'Lunettes',catGioielli:'Bijoux',catCravatte:'Cravates',
+    all:'Tout',catKleider:'Vêtements',catSchuhe:'Chaussures',catAccessoires:'Accessoires',
+    catOcchiali:'Lunettes',catGioielli:'Bijoux',catCravatte:'Cravates',catGriffati:'Articles de luxe',
     btnSell:'+ Vendre',
     heroEyebrow:'Seconde Main · Suisse',
     heroTitle:"Redonnez vie à la mode<br>que vous <em>aimez</em>",
@@ -1856,6 +1929,7 @@ function applyTranslations(){
   syncNavAvatar();
   s('navAll',T('all'));s('navKleider',T('catKleider'));s('navSchuhe',T('catSchuhe'));s('navAccessoires',T('catAccessoires'));
   s('navOcchiali',T('catOcchiali'));s('navGioielli',T('catGioielli'));s('navCravatte',T('catCravatte'));
+  if(document.getElementById('navGriffati')) s('navGriffati',T('catGriffati'));
   s('gTabAll',T('gAll'));s('gTabDonna',T('gDonna'));s('gTabUomo',T('gUomo'));s('gTabBambino',T('gBambino'));
   s('btnSell',T('btnSell'));
   s('heroEyebrow',T('heroEyebrow'));h('heroTitle',T('heroTitle'));s('heroSub',T('heroSub'));s('chBadge',T('chBadge'));
@@ -1958,7 +2032,7 @@ function getFiltered(){
   // Escludi i tuoi annunci dal feed principale
   const isOwnListing=l=>l.seller===MR_IDX||(currentUser.dbId&&l.sellerUuid&&l.sellerUuid===currentUser.dbId);
   let filtered=listings.filter(l=>!l.sold && !isOwnListing(l) &&
-    (activeGender==='all'||!l.gender||l.gender===activeGender)&&
+    (activeGender==='all'||!l.gender||l.gender===activeGender||l.isDemo)&&
     (isAll||l.cat===ak)&&
     (!q||(l.title.toLowerCase().includes(q)||l.brand.toLowerCase().includes(q)||catLabel(l.cat).toLowerCase().includes(q)||l.city.toLowerCase().includes(q)||(l.color&&colorLabel(l.color).toLowerCase().includes(q))))&&
     l.price>=minPrice&&l.price<=maxPrice&&
@@ -3275,7 +3349,7 @@ function onUserLoggedIn(session){
 
 /* ══ INIT ══ */
 (function(){
-  const supported=['it','de','fr'];
+  const supported=['it','de','fr','en'];
   const saved=localStorage.getItem('reduse_lang');
   if(saved&&supported.includes(saved)){setLang(saved);return;}
   const browser=(navigator.language||'it').split('-')[0].toLowerCase();
