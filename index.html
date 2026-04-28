@@ -619,6 +619,12 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
 .color-select-option:hover,.color-select-option.selected{background:rgba(168,196,184,.1);color:var(--silver)}
 .color-select-option .color-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;border:1px solid rgba(255,255,255,.15)}
 
+/* ── PHOTO ARROWS ── */
+.photo-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:5;background:rgba(10,25,16,.62);border:1px solid rgba(168,196,184,.25);color:var(--silver);font-size:1.7rem;line-height:1;width:2.4rem;height:2.4rem;display:flex;align-items:center;justify-content:center;border-radius:50%;cursor:pointer;transition:background .18s,opacity .18s;backdrop-filter:blur(4px)}
+.photo-arrow:hover{background:rgba(10,25,16,.88)}
+.photo-arrow-prev{left:.7rem}
+.photo-arrow-next{right:.7rem}
+
 /* (cart/heart styles consolidated above with profile nav btn) */
 
 /* ── MOBILE NAV STRIP ── */
@@ -810,7 +816,10 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
 <div class="overlay" id="itemOverlay" onclick="closeItem(event)">
   <div class="modal">
     <button class="modal-close" onclick="closeItemModal()">✕</button>
-    <div class="modal-photos" id="modalPhotos"></div>
+    <div class="modal-photos" id="modalPhotos">
+      <button class="photo-arrow photo-arrow-prev" id="photoArrowPrev" onclick="event.stopPropagation();prevPhoto(currentItemId)" style="display:none">‹</button>
+      <button class="photo-arrow photo-arrow-next" id="photoArrowNext" onclick="event.stopPropagation();nextPhoto(currentItemId)" style="display:none">›</button>
+    </div>
     <div class="photo-nav" id="photoNav"></div>
     <div class="modal-body">
       <div class="modal-tags" id="modalTags"></div>
@@ -1182,6 +1191,9 @@ const CLOUDINARY_PRESET = 'reduse_upload';
 const CLOUDINARY_READY  = true; // cloud name e preset configurati correttamente
 
 /* ── Carica annunci da DB ──────────────────────────────────────── */
+/* Mappa UUID → dati profilo (nome, città, foto) per i venditori reali */
+let sellerCache={};
+
 async function loadListingsFromDB(){
   if(!SUPABASE_READY) return;
   try{
@@ -1192,12 +1204,18 @@ async function loadListingsFromDB(){
         id:r.id,title:r.title,brand:r.brand,price:r.price,cat:r.category,
         cond:r.condition_idx??0,size:r.size,city:r.city,desc:r.description,
         emoji:r.emoji||'👗',photos:r.photos||[],video:r.video_url||null,
-        // seller_id (uuid) → MR_IDX se è l'utente loggato, altrimenti 0
-        seller:(r.seller_id && r.seller_id===currentUser.dbId) ? MR_IDX : 0,
+        color:r.color||null,
+        seller:(r.seller_id && r.seller_id===currentUser.dbId) ? MR_IDX : -1,
+        sellerUuid:r.seller_id||null,
         boosted:r.boosted||false,sold:r.sold||false,
         views:r.views||0,createdAt:new Date(r.created_at).getTime(),
-        userId:r.seller_id||null,
       }));
+      // Raccogli tutti gli UUID venditori non-correnti e carica i loro profili
+      const uuids=[...new Set(listings.filter(l=>l.seller===-1&&l.sellerUuid).map(l=>l.sellerUuid))];
+      if(uuids.length){
+        const {data:profiles}=await sb().from('profiles').select('id,name,city,photo_url,verified').in('id',uuids);
+        if(profiles) profiles.forEach(p=>{sellerCache[p.id]={name:p.name||'Utente',city:p.city||'',photo:p.photo_url||null,verified:p.verified||false,rating:'⭐ 5.0',sales:0,init:(p.name||'?').split(' ').filter(Boolean).map(x=>x[0].toUpperCase()).join('').slice(0,2)||'?'};});
+      }
       renderListings();renderCats();
     }
   }catch(e){console.error('❌ Supabase loadListings:',e.message);}
@@ -1633,10 +1651,11 @@ const SELLERS=[
   /* index 5 = utente loggato, dati presi da currentUser */
   null,
 ];
-/* Ritorna l'oggetto seller, gestendo l'indice 5 (= currentUser) */
-function getSeller(idx){
+/* Ritorna l'oggetto seller: MR_IDX → currentUser, -1 → sellerCache via listing.sellerUuid, 0-4 → SELLERS demo */
+function getSeller(idx, sellerUuid){
   if(idx===MR_IDX) return {
     name:   currentUser.name,
+    verified: currentUser.verified||false,
     rating: '⭐ 4.9',
     sales:  8,
     city:   currentUser.city,
@@ -1645,7 +1664,10 @@ function getSeller(idx){
     bio:    currentUser.bio,
     photo:  currentUser.photo,
   };
-  return SELLERS[idx];
+  // Listing da DB con UUID venditore reale
+  if(idx===-1 && sellerUuid && sellerCache[sellerUuid]) return sellerCache[sellerUuid];
+  // Demo sellers
+  return SELLERS[idx] || {name:'Utente',city:'CH',rating:'⭐ 5.0',sales:0,init:'?',verified:false};
 }
 
 /* ══ DATA ══ */
@@ -1686,7 +1708,7 @@ function catLabel(v){const f=T('cats').find(c=>c.v===v);return f?f.l:v;}
 function condLabel(i){return T('cond')[i]??T('cond')[0];}
 function catKeyFromLabel(lbl){const f=T('cats').find(c=>c.l===lbl);return f?f.v:lbl;}
 function cartTotal(){return cart.reduce((s,i)=>s+i.price,0);}
-function myListings(){return listings.filter(l=>l.seller===MR_IDX);}
+function myListings(){return listings.filter(l=>l.seller===MR_IDX||(l.sellerUuid&&l.sellerUuid===currentUser.dbId));}
 function formatTimeAgo(ts){
   const d=Math.max(1,Math.floor((Date.now()-ts)/60000));
   if(d<60)return d+' min';
@@ -1907,7 +1929,7 @@ function renderListings(){
     const isFav=favorites.has(l.id);
     const newBadge=l.isNew?`<span class="new-arrival-badge">✦ Nuovo</span>`:'';
     const colorChip=l.color?`<span class="color-chip" title="${colorLabel(l.color)}" style="background:var(--color-${l.color},#ccc)"></span>`:'';
-    const seller=getSeller(l.seller);
+    const seller=getSeller(l.seller, l.sellerUuid);
     const sellerName=seller?seller.name:'';
     return `<div class="listing-card" onclick="openItem(${l.id})">
       <div class="listing-img" style="background:${BG[i%BG.length]}">${mainImg}${hoverImg}
@@ -1935,7 +1957,7 @@ function toggleFav(id,btn){
   if(favorites.has(id)){favorites.delete(id);btn.textContent='♡';btn.classList.remove('active');showToast(T('toastFavRemove'));}
   else{
     favorites.add(id);btn.textContent='♥';btn.classList.add('active');showToast(T('toastFavAdd'));
-    if(item && item.seller===MR_IDX) addNotification('fav',item.title);
+    if(item && (item.seller===MR_IDX||(item.sellerUuid&&item.sellerUuid===currentUser.dbId))) addNotification('fav',item.title);
   }
   updateFavBadge();renderFavPanel();
 }
@@ -2005,14 +2027,31 @@ function buildSellerAvatar(s,el){
 function openItem(id,skipHistory=false){
   const l=listings.find(x=>x.id===id);if(!l)return;
   currentItemId=id;currentSellerIdx=l.seller;l.views=(l.views||0)+1;
-  const s=getSeller(l.seller),idx=listings.indexOf(l);
+  const s=getSeller(l.seller, l.sellerUuid),idx=listings.indexOf(l);
   modalPhotoIdx=0;
   const mp=document.getElementById('modalPhotos'),pn=document.getElementById('photoNav');
   if(l.photos.length){
-    mp.innerHTML=l.photos.map((p,i)=>`<img src="${p}" class="${i===0?'active':''}" onclick="nextPhoto(${l.id})"/>`).join('');
+    // Keep arrows outside the innerHTML replacement
+    const prevBtn=document.getElementById('photoArrowPrev');
+    const nextBtn=document.getElementById('photoArrowNext');
+    // Remove existing img/no-photo children, keep arrows
+    [...document.getElementById('modalPhotos').children].forEach(c=>{if(!c.classList.contains('photo-arrow'))c.remove();});
+    const frag=document.createDocumentFragment();
+    l.photos.forEach((p,i)=>{const img=document.createElement('img');img.src=p;if(i===0)img.classList.add('active');img.onclick=()=>nextPhoto(l.id);frag.appendChild(img);});
+    document.getElementById('modalPhotos').appendChild(frag);
     pn.innerHTML=l.photos.length>1?l.photos.map((_,i)=>`<button class="photo-dot${i===0?' active':''}" onclick="event.stopPropagation();goPhoto(${i},${l.id})"></button>`).join(''):'';
     pn.style.display=l.photos.length>1?'flex':'none';
-  }else{mp.innerHTML=`<div class="no-photo" style="background:${BG[idx%BG.length]}">${l.emoji}</div>`;pn.style.display='none';}
+    const multi=l.photos.length>1;
+    if(prevBtn) prevBtn.style.display=multi?'flex':'none';
+    if(nextBtn) nextBtn.style.display=multi?'flex':'none';
+  }else{
+    [...document.getElementById('modalPhotos').children].forEach(c=>{if(!c.classList.contains('photo-arrow'))c.remove();});
+    const ph=document.createElement('div');ph.className='no-photo';ph.style.background=BG[idx%BG.length];ph.textContent=l.emoji;
+    document.getElementById('modalPhotos').appendChild(ph);
+    pn.style.display='none';
+    const prevBtn=document.getElementById('photoArrowPrev'),nextBtn=document.getElementById('photoArrowNext');
+    if(prevBtn) prevBtn.style.display='none'; if(nextBtn) nextBtn.style.display='none';
+  }
   document.getElementById('modalBrand').textContent=l.brand;
   document.getElementById('modalTitle').textContent=l.title;
   document.getElementById('modalPrice').textContent='CHF '+l.price;
@@ -2023,8 +2062,8 @@ function openItem(id,skipHistory=false){
   document.getElementById('sellerName').textContent=s.name;
   document.getElementById('sellerRating').textContent=`${s.rating} · ${s.city} · 👁 ${l.views}`;
   document.getElementById('sellerViewHint').textContent=T('sellerViewHint');
-  const ownListing=l.seller===MR_IDX;
-  const s2=getSeller(l.seller);
+  const ownListing=l.seller===MR_IDX||(l.sellerUuid&&l.sellerUuid===currentUser.dbId);
+  const s2=getSeller(l.seller, l.sellerUuid);
   // Seller name + verified badge
   document.getElementById('sellerName').innerHTML=s2.name+verifiedBadgeHtml(s2);
   document.getElementById('modalContactBtn').textContent=T('modalContact');
@@ -2051,6 +2090,7 @@ function openItem(id,skipHistory=false){
   if(!skipHistory){history.pushState({itemId:l.id},'',url);}
 }
 function nextPhoto(id){const l=listings.find(x=>x.id===id);if(!l||l.photos.length<2)return;modalPhotoIdx=(modalPhotoIdx+1)%l.photos.length;goPhoto(modalPhotoIdx,id);}
+function prevPhoto(id){const l=listings.find(x=>x.id===id);if(!l||l.photos.length<2)return;modalPhotoIdx=(modalPhotoIdx-1+l.photos.length)%l.photos.length;goPhoto(modalPhotoIdx,id);}
 function goPhoto(i,id){modalPhotoIdx=i;document.querySelectorAll('#modalPhotos img').forEach((img,j)=>img.classList.toggle('active',j===i));document.querySelectorAll('#photoNav .photo-dot').forEach((d,j)=>d.classList.toggle('active',j===i));}
 function closeItem(e){if(e.target.id==='itemOverlay')closeItemModal();}
 function closeItemModal(resetHistory=true){
@@ -2338,7 +2378,7 @@ function confirmBoostPayment(){
   const ids=[...boostSelection]; if(!ids.length) return;
   ids.forEach(id=>{ const item=listings.find(l=>l.id===id); if(item && item.seller===MR_IDX){ item.boosted=true; addNotification('boost',item.title,'item',item.id); } });
   closeBoostPaymentDirect();
-  if(currentItemId!==null){ const l=listings.find(x=>x.id===currentItemId); if(l){ const ownListing=l.seller===MR_IDX; document.getElementById('modalBoostBtn').textContent=l.boosted?T('modalBoostActive'):T('modalBoost'); document.getElementById('modalBoostBtn').disabled=!!l.boosted; document.getElementById('modalBoostBtn').style.display=ownListing?'inline-flex':'none'; } }
+  if(currentItemId!==null){ const l=listings.find(x=>x.id===currentItemId); if(l){ const ownListing=l.seller===MR_IDX||(l.sellerUuid&&l.sellerUuid===currentUser.dbId); document.getElementById('modalBoostBtn').textContent=l.boosted?T('modalBoostActive'):T('modalBoost'); document.getElementById('modalBoostBtn').disabled=!!l.boosted; document.getElementById('modalBoostBtn').style.display=ownListing?'inline-flex':'none'; } }
   renderListings(); renderProfilePanel(); showToast(T('boostToastPaid'));
 }
 function closeBoostPayment(e){ if(e.target.id==='boostOverlay') closeBoostPaymentDirect(); }
@@ -2570,7 +2610,7 @@ function publishItem(){
 function openOfferModal(){
   if(!currentUser.dbId){openAuthModal('login');return;}
   const l=listings.find(x=>x.id===currentItemId);if(!l)return;
-  const s=getSeller(l.seller);
+  const s=getSeller(l.seller, l.sellerUuid);
   const setText=(id,k)=>{const e=document.getElementById(id);if(e)e.textContent=T(k);};
   setText('offerTitle','offerTitle');
   document.getElementById('offerSub').textContent=T('offerSub')+' — '+s.name;
@@ -2590,7 +2630,7 @@ function submitOffer(){
   if(!amt||amt<1){showToast('⚠️ Inserisci un importo valido');return;}
   closeOfferModal();
   const l=listings.find(x=>x.id===currentItemId);
-  if(l && l.seller===MR_IDX) addNotification('offer','CHF '+amt+' per '+l.title,'item',l.id);
+  if(l && (l.seller===MR_IDX||(l.sellerUuid&&l.sellerUuid===currentUser.dbId))) addNotification('offer','CHF '+amt+' per '+l.title,'item',l.id);
   showToast(T('toastOfferSent'));
 }
 
@@ -2610,7 +2650,7 @@ function shareItem(mode){
 
 /* ══ SOLD ══ */
 function markCurrentSold(){
-  const l=listings.find(x=>x.id===currentItemId);if(!l||l.seller!==MR_IDX)return;
+  const l=listings.find(x=>x.id===currentItemId);if(!l||(l.seller!==MR_IDX&&!(l.sellerUuid&&l.sellerUuid===currentUser.dbId)))return;
   if(!confirm('Segnare "'+l.title+'" come venduto? Verrà rimosso dai risultati.'))return;
   l.sold=true;
   closeItemModal();
