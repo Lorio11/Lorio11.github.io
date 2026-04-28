@@ -73,6 +73,8 @@ nav{position:sticky;top:0;z-index:100;background:var(--pine-deep);border-bottom:
 /* ── HERO ── */
 .hero{background:var(--pine-deep);padding:6rem 2.5rem 5rem;text-align:center;position:relative;overflow:hidden;border-bottom:1px solid var(--border-c)}
 .hero::after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 80% 50% at 50% 110%,rgba(168,196,184,.08) 0%,transparent 65%)}
+.hero-logo{font-family:'Cormorant Garamond',serif;font-size:3.2rem;font-weight:600;color:var(--silver);letter-spacing:.06em;margin-bottom:.6rem;line-height:1}
+.hero-logo span{color:var(--accent)}
 .hero-eyebrow{display:inline-flex;align-items:center;gap:.6rem;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:2rem}
 .hero-eyebrow::before,.hero-eyebrow::after{content:'';display:block;width:28px;height:1px;background:var(--accent);opacity:.5}
 .hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(3.2rem,8vw,6.5rem);font-weight:300;color:var(--silver);line-height:1.05;letter-spacing:-.01em;position:relative;z-index:1}
@@ -729,6 +731,7 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
 
 <!-- HERO -->
 <section class="hero">
+  <div class="hero-logo">Reduse<span>·</span></div>
   <div class="hero-eyebrow" id="heroEyebrow"></div>
   <h1 id="heroTitle"></h1>
   <p class="hero-sub" id="heroSub"></p>
@@ -1531,7 +1534,7 @@ const TR={
     heroEyebrow:'Seconde Main · Suisse',
     heroTitle:"Redonnez vie à la mode<br>que vous <em>aimez</em>",
     heroSub:'La marketplace suisse pour acheter et vendre de la mode de seconde main.',
-    chBadge:'100% Suisse · CHF ',
+    chBadge:'100% Suisse · CHF',
     searchPlaceholder:'Chercher Gucci, trench coat, Zara taille S…',searchBtn:'Chercher',
     statItems:'Annonces',statCantoni:'Cantons',
     secTitle:'Dernières annonces',noResults:'Aucun résultat trouvé',resultSuffix:'annonces',
