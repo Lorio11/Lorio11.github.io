@@ -2016,6 +2016,7 @@ function setGender(g){
   activeGender=g;
   document.querySelectorAll('.gender-tab[data-gender]').forEach(b=>b.classList.toggle('active',b.dataset.gender===g));
   filterListings();
+  if(g!=='all') document.querySelector('.main')?.scrollIntoView({behavior:'smooth',block:'start'});
 }
 function setCat(c){activeCat=c;renderCats();renderListings();}
 
