@@ -33,7 +33,26 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 nav{position:sticky;top:0;z-index:100;background:var(--pine-deep);border-bottom:1px solid var(--border-c);height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem}
 .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.85rem;font-weight:600;letter-spacing:.06em;color:var(--silver);display:flex;align-items:baseline;gap:.1em;flex-shrink:0}
 .nav-logo .dot{color:var(--accent);font-size:2rem;line-height:1}
-.nav-center{display:flex;gap:2rem}
+/* ── NAV SEARCH ── */
+nav{align-items:center}
+.nav-search-wrap{flex:1;max-width:480px;margin:0 2rem;position:relative;display:flex;align-items:center;background:rgba(255,255,255,.06);border:1px solid var(--border-c);border-radius:3px;transition:border-color .2s}
+.nav-search-wrap:focus-within{border-color:var(--accent)}
+.nav-search-input{flex:1;background:none;border:none;outline:none;color:var(--silver);font-family:'Jost',sans-serif;font-size:.9rem;padding:.52rem .9rem;letter-spacing:.02em}
+.nav-search-input::placeholder{color:rgba(212,221,216,.3)}
+.nav-search-btn{background:none;border:none;color:var(--silver-dim);cursor:pointer;padding:.52rem .85rem;font-size:.95rem;transition:color .18s;border-left:1px solid var(--border-c)}
+.nav-search-btn:hover{color:var(--silver)}
+
+/* ── GENDER + CATEGORY BAR ── */
+.gender-cat-bar{background:var(--pine-mid);border-bottom:1px solid var(--border-c);position:sticky;top:56px;z-index:98;overflow-x:auto;scrollbar-width:none}
+.gender-cat-bar::-webkit-scrollbar{display:none}
+.gender-tabs{display:flex;align-items:center;gap:0;padding:0 2rem;white-space:nowrap}
+.gender-tab{font-size:.73rem;letter-spacing:.13em;text-transform:uppercase;color:var(--silver-dim);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;padding:.75rem 1rem;font-family:'Jost',sans-serif;font-weight:400;transition:color .18s,border-color .18s}
+.gender-tab:hover{color:var(--silver)}
+.gender-tab.active{color:var(--silver);border-bottom-color:var(--accent)}
+.gender-sep{color:var(--border-m);padding:0 .5rem;font-size:.8rem;user-select:none}
+@media(max-width:768px){.nav-search-wrap{max-width:100%;margin:0 .75rem}.gender-tabs{padding:0 1rem}}
+
+.nav-center{display:none!important}
 .nav-link{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--silver-dim);cursor:pointer;border:none;background:none;font-family:'Jost',sans-serif;font-weight:400;transition:color .2s;padding:0}
 .nav-link:hover{color:var(--silver)}
 .nav-link.active{color:var(--silver);border-bottom:2px solid var(--accent);padding-bottom:2px}
@@ -627,6 +646,11 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
 .photo-arrow-prev{left:.7rem}
 .photo-arrow-next{right:.7rem}
 
+/* ── SELL GENDER BUTTONS ── */
+.sell-gender-btn{flex:1;padding:.5rem .4rem;background:rgba(255,255,255,.04);border:1px solid var(--border-c);border-radius:2px;color:var(--silver-dim);font-family:'Jost',sans-serif;font-size:.78rem;cursor:pointer;transition:all .18s;letter-spacing:.04em}
+.sell-gender-btn:hover{border-color:var(--accent);color:var(--silver)}
+.sell-gender-btn.active{background:rgba(168,196,184,.12);border-color:var(--accent);color:var(--silver)}
+
 /* (cart/heart styles consolidated above with profile nav btn) */
 
 /* ── MOBILE NAV STRIP ── */
@@ -705,11 +729,9 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
 <!-- NAV -->
 <nav>
   <div class="nav-logo">Reduse<span class="dot">·</span></div>
-  <div class="nav-center">
-    <button class="nav-link" id="navAll"         onclick="setCat(T('all'))"></button>
-    <button class="nav-link" id="navKleider"     onclick="setCat(T('catKleider'))"></button>
-    <button class="nav-link" id="navSchuhe"      onclick="setCat(T('catSchuhe'))"></button>
-    <button class="nav-link" id="navAccessoires" onclick="setCat(T('catAccessoires'))"></button>
+  <div class="nav-search-wrap">
+    <input type="text" id="searchInput" oninput="filterListings()" class="nav-search-input"/>
+    <button onclick="filterListings()" id="searchBtn" class="nav-search-btn">🔍</button>
   </div>
   <div class="nav-actions">
     <div class="lang-switcher">
@@ -725,6 +747,23 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
     <button class="profile-nav-btn" id="profileNavBtn" aria-label="Profilo" onclick="openProfileOrAuth()"><span class="login-label" id="profileNavLabel">Accedi o registrati</span></button>
   </div>
 </nav>
+<!-- GENDER + CATEGORY BAR -->
+<div class="gender-cat-bar" id="genderCatBar">
+  <div class="gender-tabs" id="genderTabs">
+    <button class="gender-tab active" data-gender="all" onclick="setGender('all')" id="gTabAll"></button>
+    <button class="gender-tab" data-gender="donna" onclick="setGender('donna')" id="gTabDonna"></button>
+    <button class="gender-tab" data-gender="uomo" onclick="setGender('uomo')" id="gTabUomo"></button>
+    <button class="gender-tab" data-gender="bambino" onclick="setGender('bambino')" id="gTabBambino"></button>
+    <span class="gender-sep">|</span>
+    <button class="gender-tab" id="navAll"         onclick="setCat(T('all'))"></button>
+    <button class="gender-tab" id="navKleider"     onclick="setCat(T('catKleider'))"></button>
+    <button class="gender-tab" id="navSchuhe"      onclick="setCat(T('catSchuhe'))"></button>
+    <button class="gender-tab" id="navAccessoires" onclick="setCat(T('catAccessoires'))"></button>
+    <button class="gender-tab" id="navOcchiali"    onclick="setCat(T('catOcchiali'))"></button>
+    <button class="gender-tab" id="navGioielli"    onclick="setCat(T('catGioielli'))"></button>
+    <button class="gender-tab" id="navCravatte"    onclick="setCat(T('catCravatte'))"></button>
+  </div>
+</div>
 
 <!-- MOBILE NAV STRIP (categorie) -->
 <div class="mobile-nav-strip" id="mobileNavStrip"></div>
@@ -736,10 +775,6 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
   <h1 id="heroTitle"></h1>
   <p class="hero-sub" id="heroSub"></p>
   <div class="ch-badge" id="chBadge"></div>
-  <div class="search-wrap">
-    <input type="text" id="searchInput" oninput="filterListings()"/>
-    <button onclick="filterListings()" id="searchBtn"></button>
-  </div>
   <div class="hero-stats">
     <div class="hero-stat"><div class="num" id="statItems">14</div><div class="lbl" id="statLblItems"></div></div>
     <div class="hero-stat"><div class="num">4</div><div class="lbl" id="statLblCantoni"></div></div>
@@ -968,7 +1003,18 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
         <div class="form-group"><label id="lblSize"></label><select id="sellSize"></select></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label id="lblCat"></label><select id="sellCat"></select></div>
+        <!-- Gender -->
+        <div class="form-group">
+          <label style="font-size:.63rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:.5rem" id="lblGender">Per chi?</label>
+          <div style="display:flex;gap:.5rem">
+            <button class="sell-gender-btn active" data-g="donna" onclick="setSellGender('donna')" id="sgDonna">👩 Donna</button>
+            <button class="sell-gender-btn" data-g="uomo"  onclick="setSellGender('uomo')"  id="sgUomo">👨 Uomo</button>
+            <button class="sell-gender-btn" data-g="bambino" onclick="setSellGender('bambino')" id="sgBambino">👶 Bambini</button>
+          </div>
+        </div>
+        <!-- Categoria + Sottocategoria -->
+        <div class="form-group"><label id="lblCat"></label><select id="sellCat" onchange="updateSellSubcats()"></select></div>
+        <div class="form-group" id="sellSubcatWrap"><label id="lblSubcat">Tipo</label><select id="sellSubcat"></select></div>
         <div class="form-group"><label id="lblCond"></label><select id="sellCond"></select></div>
         <div class="form-group"><label id="lblColor"></label>
           <div class="color-select-wrap" id="sellColorWrap">
@@ -1388,7 +1434,8 @@ function uploadAvatarToCloudinary(file){ return uploadToCloudinary(file); }
 /* ══ TRANSLATIONS ══ */
 const TR={
   it:{
-    all:'Tutti',catKleider:'Abbigliamento',catSchuhe:'Scarpe',catAccessoires:'Accessori',
+    gAll:'Tutto',gDonna:'Donna',gUomo:'Uomo',gBambino:'Bambini',
+    catOcchiali:'Occhiali',catGioielli:'Gioielli',catCravatte:'Cravatte',
     btnSell:'+ Vendi',
     heroEyebrow:'Second Hand · Svizzera',
     heroTitle:'Dai nuova <em>vita</em><br>alla moda che ami',
@@ -1461,7 +1508,8 @@ const TR={
     onbCityMissing:'⚠️ Inserisci la tua città per continuare',
   },
   de:{
-    all:'Alle',catKleider:'Kleider',catSchuhe:'Schuhe',catAccessoires:'Accessoires',
+    gAll:'Alle',gDonna:'Damen',gUomo:'Herren',gBambino:'Kinder',
+    catOcchiali:'Brillen',catGioielli:'Schmuck',catCravatte:'Krawatten',
     btnSell:'+ Inserieren',
     heroEyebrow:'Second Hand · Schweiz',
     heroTitle:'Mode <em>wiederentdecken</em><br>neu zu schätzen wissen',
@@ -1529,7 +1577,8 @@ const TR={
     onbCityMissing:'⚠️ Bitte gib deinen Ort an',
   },
   fr:{
-    all:'Tout',catKleider:'Vêtements',catSchuhe:'Chaussures',catAccessoires:'Accessoires',
+    gAll:'Tout',gDonna:'Femme',gUomo:'Homme',gBambino:'Enfants',
+    catOcchiali:'Lunettes',catGioielli:'Bijoux',catCravatte:'Cravates',
     btnSell:'+ Vendre',
     heroEyebrow:'Seconde Main · Suisse',
     heroTitle:"Redonnez vie à la mode<br>que vous <em>aimez</em>",
@@ -1600,6 +1649,38 @@ const TR={
 
 /* ══ SWISS CITIES ══ */
 const SWISS_CITIES=['Aarau','Adliswil','Allschwil','Arbon','Arlesheim','Arosa','Ascona','Baar','Baden','Basel','Bassersdorf','Bellinzona','Bern','Bettlach','Biel/Bienne','Binningen','Birsfelden','Brig','Brugg','Buchs','Bulle','Burgdorf','Carouge','Chiasso','Chur','Crans-Montana','Davos','Dietikon','Dübendorf','Emmen','Flawil','Frauenfeld','Fribourg','Genève','Grenchen','Grindelwald','Herisau','Horgen','Horw','Kloten','Kreuzlingen','Kriens','Küsnacht ZH','Küssnacht am Rigi','Langenthal','Lancy','Lausanne','Lengnau','Liestal','Locarno','Luzern','Männedorf','Martigny','Meyrin','Monthey','Morges','Muttenz','Nyon','Oberwil','Olten','Onex','Opfikon','Ostermundigen','Pfäffikon','Pontresina','Pratteln','Rapperswil-Jona','Regensdorf','Reinach','Renens','Rheinfelden','Riehen','Romanshorn','Rorschach','Rüti','Sarnen','Schaffhausen','Schlieren','Sierre','Sion','Solothurn','Spiez','Spreitenbach','Steffisburg','St. Gallen','St. Moritz','Thalwil','Thun','Thônex','Urdorf','Uster','Vernier','Visp','Wädenswil','Wettingen','Wil','Winterthur','Wohlen','Wollerau','Worb','Yverdon-les-Bains','Zollikon','Zug','Zürich'].sort();
+
+/* ══ SUBCATEGORY HIERARCHY ══ */
+const SUBCATS={
+  Kleider:{donna:['Abito','Gonna','Top/Blusa','Jeans','Pantaloni','Giacca','Cappotto','Maglione','Tuta','Pigiama','Intimo','Sportivo','Altro'],uomo:['Camicia','T-Shirt','Jeans','Pantaloni','Giacca','Cappotto','Maglione','Felpa','Completo','Sportivo','Intimo','Pigiama','Altro'],bambino:['Top','Jeans','Pantaloni','Vestito','Giacca','Pigiama','Tuta','Sportivo','Altro']},
+  Schuhe:{donna:['Décolleté','Stivali','Sneakers','Sandali','Ballerine','Mocassini','Zoccoli','Altro'],uomo:['Sneakers','Stivali','Mocassini','Scarpe da calcio','Scarpe eleganti','Sandali','Altro'],bambino:['Sneakers','Stivali','Sandali','Scarpe da ginnastica','Altro']},
+  Accessoires:{donna:['Borsa','Cintura','Sciarpa','Cappello','Guanti','Zaino','Portafoglio','Valigia','Altro'],uomo:['Cintura','Portafoglio','Zaino','Sciarpa','Cappello','Valigia','Altro'],bambino:['Zaino','Cappello','Sciarpa','Altro']},
+  Occhiali:{donna:['Da sole','Da vista','Altro'],uomo:['Da sole','Da vista','Altro'],bambino:['Da sole','Altro']},
+  Gioielli:{donna:['Collana','Bracciale','Orecchini','Anello','Spilla','Set'],uomo:['Collana','Bracciale','Anello','Orologio'],bambino:['Bracciale','Collana','Altro']},
+  Cravatte:{uomo:['Cravatta','Papillon','Fazzoletto'],donna:['Cravatta','Papillon'],bambino:['Cravatta','Papillon']},
+};
+const GENDER_LABELS={donna:{it:'Donna',de:'Damen',fr:'Femme'},uomo:{it:'Uomo',de:'Herren',fr:'Homme'},bambino:{it:'Bambini',de:'Kinder',fr:'Enfants'}};
+let _sellGender='donna', _sellSubcat='';
+
+function updateSellSubcats(){
+  const cat=document.getElementById('sellCat')?.value;
+  const genderSubs=(SUBCATS[cat]||{})[_sellGender]||[];
+  const sc=document.getElementById('sellSubcat');
+  if(!sc) return;
+  if(genderSubs.length){
+    sc.innerHTML=`<option value="">— Tipo —</option>`+genderSubs.map(s=>`<option>${s}</option>`).join('');
+    sc.parentElement.style.display='';
+  } else {
+    sc.innerHTML='<option value="">— Tipo —</option>';
+    sc.parentElement.style.display='none';
+  }
+}
+
+function setSellGender(g){
+  _sellGender=g;
+  document.querySelectorAll('.sell-gender-btn').forEach(b=>b.classList.toggle('active',b.dataset.g===g));
+  updateSellSubcats();
+}
 
 /* ══ SIZES ══ */
 const SIZES_LETTER  = ['XS','S','M','L','XL','XXL','XXXL'];
@@ -1706,7 +1787,7 @@ let cart=[],favorites=new Set(),notifications=[
   {id:1,type:'price',text:'Massimo Dutti',targetType:'item',targetId:3,time:Date.now()-1000*60*45,unread:true},
   {id:2,type:'msg',text:'Lea M.',targetType:'seller',targetId:2,time:Date.now()-1000*60*120,unread:true},
   {id:3,type:'fav',text:'Sofia R.',targetType:'seller',targetId:1,time:Date.now()-1000*60*60*18,unread:false},
-],lang='it',activeCat='Tutti',currentPhotos=[],currentVideo=null,cityFocusIdx=-1,cityOptions=[],cityFilterOptions=[],cityFilterFocusIdx=-1;
+],lang='it',activeCat='Tutti',activeGender='all',currentPhotos=[],currentVideo=null,cityFocusIdx=-1,cityOptions=[],cityFilterOptions=[],cityFilterFocusIdx=-1;
 let editCityFocusIdx=-1,editCityOptions=[];
 let modalPhotoIdx=0,currentItemId=null,currentSellerIdx=null,msgTargetName='';
 let boostSelection=new Set(),boostPlan='3';
@@ -1774,6 +1855,8 @@ function applyTranslations(){
   al('notifBtn',T('ariaNotif'));al('inboxNavBtn',T('ariaInbox'));al('favBtn',T('ariaFav'));al('cartBtn',T('ariaCart'));al('profileNavBtn',T('ariaProfile'));
   syncNavAvatar();
   s('navAll',T('all'));s('navKleider',T('catKleider'));s('navSchuhe',T('catSchuhe'));s('navAccessoires',T('catAccessoires'));
+  s('navOcchiali',T('catOcchiali'));s('navGioielli',T('catGioielli'));s('navCravatte',T('catCravatte'));
+  s('gTabAll',T('gAll'));s('gTabDonna',T('gDonna'));s('gTabUomo',T('gUomo'));s('gTabBambino',T('gBambino'));
   s('btnSell',T('btnSell'));
   s('heroEyebrow',T('heroEyebrow'));h('heroTitle',T('heroTitle'));s('heroSub',T('heroSub'));s('chBadge',T('chBadge'));
   document.getElementById('searchInput').placeholder=T('searchPlaceholder');s('searchBtn',T('searchBtn'));
@@ -1795,6 +1878,7 @@ function applyTranslations(){
   document.getElementById('sellCity').placeholder=T('cityPlaceholder');
   s('btnPublish',T('btnPublish'));
   document.getElementById('sellCat').innerHTML=T('catsForm').map(c=>`<option value="${c.v}">${c.l}</option>`).join('');
+  updateSellSubcats();
   document.getElementById('sellCond').innerHTML=T('cond').map(c=>`<option>${c}</option>`).join('');
   s('howLabel',T('howLabel'));s('howTitle',T('howTitle'));
   document.getElementById('stepsContainer').innerHTML=T('steps').map(st=>
@@ -1853,6 +1937,11 @@ function renderCats(){
     ).join('');
   }
 }
+function setGender(g){
+  activeGender=g;
+  document.querySelectorAll('.gender-tab[data-gender]').forEach(b=>b.classList.toggle('active',b.dataset.gender===g));
+  filterListings();
+}
 function setCat(c){activeCat=c;renderCats();renderListings();}
 
 /* ══ LISTINGS ══ */
@@ -1868,7 +1957,9 @@ function getFiltered(){
   const NOW=Date.now();
   // Escludi i tuoi annunci dal feed principale
   const isOwnListing=l=>l.seller===MR_IDX||(currentUser.dbId&&l.sellerUuid&&l.sellerUuid===currentUser.dbId);
-  let filtered=listings.filter(l=>!l.sold && !isOwnListing(l) &&(isAll||l.cat===ak)&&
+  let filtered=listings.filter(l=>!l.sold && !isOwnListing(l) &&
+    (activeGender==='all'||!l.gender||l.gender===activeGender)&&
+    (isAll||l.cat===ak)&&
     (!q||(l.title.toLowerCase().includes(q)||l.brand.toLowerCase().includes(q)||catLabel(l.cat).toLowerCase().includes(q)||l.city.toLowerCase().includes(q)||(l.color&&colorLabel(l.color).toLowerCase().includes(q))))&&
     l.price>=minPrice&&l.price<=maxPrice&&
     (size==='all'||l.size===size)&&
@@ -2612,6 +2703,8 @@ function publishItem(){
   const price=parseFloat(document.getElementById('sellPrice').value);
   const size=document.getElementById('sellSize').value||'Uni';
   const color=_sellColorVal||'nero';
+  const gender=_sellGender||'donna';
+  const subcat=document.getElementById('sellSubcat')?.value||'';
   const cat=document.getElementById('sellCat').value;
   const cond=document.getElementById('sellCond').selectedIndex;
   const desc=document.getElementById('sellDesc').value.trim()||T('defaultDesc');
@@ -2620,7 +2713,7 @@ function publishItem(){
   if(!title||isNaN(price)||price<0||!city){showToast(T('toastRequired'));return;}
   const wantsBoost=document.getElementById('sellBoost').checked;
   const newId=Date.now();
-  const newListing={id:newId,photos:[...currentPhotos],video:currentVideo,emoji:'👗',title,brand,price,cat,cond,size,color,city,desc,seller:MR_IDX,boosted:false,sold:false,views:0,createdAt:Date.now()};
+  const newListing={id:newId,photos:[...currentPhotos],video:currentVideo,emoji:'👗',title,brand,price,cat,cond,size,color,gender,subcat,city,desc,seller:MR_IDX,boosted:false,sold:false,views:0,createdAt:Date.now()};
   listings.unshift(newListing);
   closeSellModal();activeCat=T('all');renderCats();applyTranslations();renderListings();renderProfilePanel();
   addNotification('publish',title,'item',newId);
