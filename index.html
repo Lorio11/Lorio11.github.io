@@ -2014,7 +2014,9 @@ function renderCats(){
 }
 function setGender(g){
   activeGender=g;
+  activeCat=T('all'); // resetta il filtro categoria
   document.querySelectorAll('.gender-tab[data-gender]').forEach(b=>b.classList.toggle('active',b.dataset.gender===g));
+  renderCats();
   filterListings();
   if(g!=='all') document.querySelector('.main')?.scrollIntoView({behavior:'smooth',block:'start'});
 }
