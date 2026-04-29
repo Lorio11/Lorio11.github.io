@@ -2391,7 +2391,13 @@ function _renderSellerProfilePanel(s, sellerListings){
 }
 
 function openSellerProfile(){
-  if(currentSellerIdx===null) return;
+  if(currentSellerIdx===null && !currentSellerUuid) return;
+  // Se è il proprio annuncio, apri il pannello profilo personale
+  if(currentSellerIdx===MR_IDX||(currentSellerUuid&&currentSellerUuid===currentUser.dbId)){
+    closeItemModal(false);
+    openProfilePanel();
+    return;
+  }
   const s=getSeller(currentSellerIdx, currentSellerUuid);
   const sl=_getSellerListings(currentSellerIdx, currentSellerUuid);
   _renderSellerProfilePanel(s, sl);
