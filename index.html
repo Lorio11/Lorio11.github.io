@@ -959,7 +959,10 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
           <div class="seller-profile-stat"><div class="sv" id="spSales"></div><div class="sl" id="spSalesLbl"></div></div>
           <div class="seller-profile-stat" id="spRatingBlock"><div class="sv" id="spRating"></div><div class="sl" id="spRatingLbl"></div></div>
           <div class="seller-profile-stat"><div class="sv" id="spItems"></div><div class="sl" id="spItemsLbl"></div></div>
+          <div class="seller-profile-stat"><div class="sv" id="spFollowers">0</div><div class="sl" id="spFollowersLbl"></div></div>
+          <div class="seller-profile-stat" style="background:rgba(168,196,184,.06);border-radius:2px"><div class="sv" id="spKg" style="color:var(--accent);font-size:.95rem">0 kg</div><div class="sl" id="spKgLbl"></div></div>
         </div>
+        <button class="btn btn-silver" id="spFollowBtn" onclick="toggleFollow()" style="margin-top:.7rem;font-size:.7rem;padding:.38rem 1.1rem;letter-spacing:.12em"></button>
       </div>
     </div>
     <div class="seller-profile-body">
@@ -1184,6 +1187,11 @@ footer{background:var(--pine-deep);border-top:1px solid var(--border-c);padding:
     <div class="profile-stat-box"><div class="pv" id="ppStatSalesVal">8</div><div class="pl" id="ppStatSalesLbl"></div></div>
     <div class="profile-stat-box"><div class="pv">4.9</div><div class="pl" id="ppStatRatingLbl"></div></div>
     <div class="profile-stat-box"><div class="pv" id="ppStatItemsVal">0</div><div class="pl" id="ppStatItemsLbl"></div></div>
+  </div>
+  <div class="profile-stats-row" style="border-bottom:1px solid var(--border-c)">
+    <div class="profile-stat-box" style="cursor:pointer" onclick="openFollowersList()"><div class="pv" id="ppFollowersVal">0</div><div class="pl" id="ppFollowersLbl"></div></div>
+    <div class="profile-stat-box" style="cursor:pointer" onclick="openFollowingList()"><div class="pv" id="ppFollowingVal">0</div><div class="pl" id="ppFollowingLbl"></div></div>
+    <div class="profile-stat-box" style="background:rgba(168,196,184,.06)"><div class="pv" id="ppKgVal" style="color:var(--accent);font-size:1.1rem">0 kg</div><div class="pl" id="ppKgLbl"></div></div>
   </div>
   <div class="profile-section">
     <div class="profile-section-label" id="ppSectionLabel"></div>
@@ -1515,12 +1523,12 @@ const TR={
     msgTitle:'Scrivi un messaggio',msgTo:'A: ',msgPlaceholder:'Scrivi qui il tuo messaggio…',
     msgSend:'Invia',msgCancel:'Annulla',toastMsgSent:'✓ Messaggio inviato!',
     toastMsgEmpty:'⚠️ Scrivi un messaggio prima di inviare',
-    spSalesLbl:'Vendite',spRatingLbl:'Valutazione',spItemsLbl:'Annunci',
+    spSalesLbl:'Vendite',spRatingLbl:'Valutazione',spItemsLbl:'Annunci',spFollowersLbl:'Follower',spKgLbl:'CO₂ risparmiata',spFollowBtn:'+ Segui',spUnfollowBtn:'✓ Seguito',
     spListingsTitle:'Annunci del venditore',spMsgBtn:'💬 Scrivi un messaggio',
     favTitle:'I miei preferiti',favEmpty:'Nessun articolo nei preferiti',
     toastFavAdd:'♥ Aggiunto ai preferiti',toastFavRemove:'♡ Rimosso dai preferiti',
     profileTitle:'Il mio profilo',ppStatSales:'Vendite',ppStatRating:'Valutazione',
-    ppStatItems:'Annunci attivi',ppSectionLabel:'I miei annunci',profileNoListings:'Nessun annuncio pubblicato',
+    ppStatItems:'Annunci attivi',ppFollowers:'Follower',ppFollowing:'Seguiti',ppKgSaved:'CO₂ risparmiata',ppSectionLabel:'I miei annunci',profileNoListings:'Nessun annuncio pubblicato',
     editProfileTitle:'Modifica profilo',editLblName:'Nome completo',editLblEmail:'Email',
     editLblCity:'Città',editLblBio:'Descrizione (bio)',editBioPlaceholder:'Racconta qualcosa di te…',
     editAvatarHint:'Clicca sulla foto per cambiarla.<br><span>Carica una nuova immagine</span> (JPG, PNG, max 5 MB)',
@@ -1589,12 +1597,12 @@ const TR={
     msgTitle:'Write a message',msgTo:'To: ',msgPlaceholder:'Write your message here…',
     msgSend:'Send',msgCancel:'Cancel',toastMsgSent:'✓ Message sent!',
     toastMsgEmpty:'⚠️ Write a message before sending',
-    spSalesLbl:'Sales',spRatingLbl:'Rating',spItemsLbl:'Listings',
+    spSalesLbl:'Sales',spRatingLbl:'Rating',spItemsLbl:'Listings',spFollowersLbl:'Followers',spKgLbl:'CO₂ saved',spFollowBtn:'+ Follow',spUnfollowBtn:'✓ Following',
     spListingsTitle:'Seller listings',spMsgBtn:'💬 Send a message',
     favTitle:'My favourites',favEmpty:'No items in favourites',
     toastFavAdd:'♥ Added to favourites',toastFavRemove:'♡ Removed from favourites',
     profileTitle:'My profile',ppStatSales:'Sales',ppStatRating:'Rating',
-    ppStatItems:'Active listings',ppSectionLabel:'My listings',profileNoListings:'No listings published',
+    ppStatItems:'Active listings',ppFollowers:'Followers',ppFollowing:'Following',ppKgSaved:'CO₂ saved',ppSectionLabel:'My listings',profileNoListings:'No listings published',
     editProfileTitle:'Edit profile',editLblName:'Full name',editLblEmail:'Email',
     editLblCity:'City',editLblBio:'Bio',editBioPlaceholder:'Tell us about yourself…',
     editAvatarHint:'Click the photo to change it.<br><span>Upload a new image</span> (JPG, PNG, max 5 MB)',
@@ -1659,12 +1667,12 @@ const TR={
     msgTitle:'Nachricht schreiben',msgTo:'An: ',msgPlaceholder:'Schreib deine Nachricht…',
     msgSend:'Senden',msgCancel:'Abbrechen',toastMsgSent:'✓ Nachricht gesendet!',
     toastMsgEmpty:'⚠️ Bitte eine Nachricht schreiben',
-    spSalesLbl:'Verkäufe',spRatingLbl:'Bewertung',spItemsLbl:'Inserate',
+    spSalesLbl:'Verkäufe',spRatingLbl:'Bewertung',spItemsLbl:'Inserate',spFollowersLbl:'Follower',spKgLbl:'CO₂ gespart',spFollowBtn:'+ Folgen',spUnfollowBtn:'✓ Gefolgt',
     spListingsTitle:'Inserate des Verkäufers',spMsgBtn:'💬 Nachricht schreiben',
     favTitle:'Meine Favoriten',favEmpty:'Keine Artikel in den Favoriten',
     toastFavAdd:'♥ Zu Favoriten hinzugefügt',toastFavRemove:'♡ Aus Favoriten entfernt',
     profileTitle:'Mein Profil',ppStatSales:'Verkäufe',ppStatRating:'Bewertung',
-    ppStatItems:'Aktive Inserate',ppSectionLabel:'Meine Inserate',profileNoListings:'Noch keine Inserate',
+    ppStatItems:'Aktive Inserate',ppFollowers:'Follower',ppFollowing:'Gefolgt',ppKgSaved:'CO₂ gespart',ppSectionLabel:'Meine Inserate',profileNoListings:'Noch keine Inserate',
     editProfileTitle:'Profil bearbeiten',editLblName:'Vollständiger Name',editLblEmail:'E-Mail',
     editLblCity:'Ort',editLblBio:'Beschreibung',editBioPlaceholder:'Erzähl etwas über dich…',
     editAvatarHint:'Klicke auf das Foto zum Ändern.<br><span>Neues Bild hochladen</span> (JPG, PNG)',
@@ -1729,12 +1737,12 @@ const TR={
     msgTitle:'Écrire un message',msgTo:'À : ',msgPlaceholder:'Écrivez votre message…',
     msgSend:'Envoyer',msgCancel:'Annuler',toastMsgSent:'✓ Message envoyé !',
     toastMsgEmpty:'⚠️ Veuillez écrire un message',
-    spSalesLbl:'Ventes',spRatingLbl:'Évaluation',spItemsLbl:'Annonces',
+    spSalesLbl:'Ventes',spRatingLbl:'Évaluation',spItemsLbl:'Annonces',spFollowersLbl:'Abonnés',spKgLbl:'CO₂ économisé',spFollowBtn:'+ Suivre',spUnfollowBtn:'✓ Suivi',
     spListingsTitle:'Annonces du vendeur',spMsgBtn:'💬 Écrire un message',
     favTitle:'Mes favoris',favEmpty:'Aucun article dans les favoris',
     toastFavAdd:'♥ Ajouté aux favoris',toastFavRemove:'♡ Retiré des favoris',
     profileTitle:'Mon profil',ppStatSales:'Ventes',ppStatRating:'Évaluation',
-    ppStatItems:'Annonces actives',ppSectionLabel:'Mes annonces',profileNoListings:'Aucune annonce publiée',
+    ppStatItems:'Annonces actives',ppFollowers:'Abonnés',ppFollowing:'Abonnements',ppKgSaved:'CO₂ économisé',ppSectionLabel:'Mes annonces',profileNoListings:'Aucune annonce publiée',
     editProfileTitle:'Modifier le profil',editLblName:'Nom complet',editLblEmail:'Email',
     editLblCity:'Ville',editLblBio:'Description (bio)',editBioPlaceholder:'Parlez de vous…',
     editAvatarHint:"Cliquez sur la photo pour la changer.<br><span>Télécharger une image</span> (JPG, PNG)",
@@ -2003,6 +2011,13 @@ function applyTranslations(){
   s('notifPanelTitle',T('notifTitle'));
   s('ppStatSalesLbl',T('ppStatSales'));s('ppStatRatingLbl',T('ppStatRating'));
   s('ppStatItemsLbl',T('ppStatItems'));s('ppSectionLabel',T('ppSectionLabel'));
+  if(document.getElementById('ppFollowersLbl')) s('ppFollowersLbl',T('ppFollowers'));
+  if(document.getElementById('ppFollowingLbl')) s('ppFollowingLbl',T('ppFollowing'));
+  if(document.getElementById('ppKgLbl')) s('ppKgLbl',T('ppKgSaved'));
+  // Aggiorna valori dinamici profilo
+  document.getElementById('ppFollowingVal').textContent = followingSet.size;
+  const userSales = parseInt(document.getElementById('ppStatSalesVal')?.textContent||'0');
+  if(document.getElementById('ppKgVal')) document.getElementById('ppKgVal').textContent = calcKgSaved(userSales)+' kg';
   s('filtersTitle',T('filtersTitle'));s('filtersReset',T('filtersReset'));s('priceFilterLabel',T('priceFilterLabel'));
   s('sizeFilterLabel',T('sizeFilterLabel'));s('condFilterLabel',T('condFilterLabel'));s('cityFilterLabel',T('cityFilterLabel'));
   s('sortTitle',T('sortTitle'));s('sortSub',T('sortSub'));
@@ -2347,7 +2362,25 @@ function _renderSellerProfilePanel(s, sellerListings){
   }
   document.getElementById('spItems').textContent=sellerListings.length;
   document.getElementById('spItemsLbl').textContent=T('spItemsLbl');
-  document.getElementById('spListingsTitle').textContent=T('spListingsTitle');
+  // Follower
+  const _spKey=uuid||idx;
+  if(followersData[_spKey]===undefined) followersData[_spKey]=s.followers||0;
+  if(document.getElementById('spFollowers')) document.getElementById('spFollowers').textContent=followersData[_spKey]||0;
+  if(document.getElementById('spFollowersLbl')) document.getElementById('spFollowersLbl').textContent=T('spFollowersLbl');
+  // Kg risparmiati
+  if(document.getElementById('spKg')) document.getElementById('spKg').textContent=calcKgSaved(s.sales||0)+' kg';
+  if(document.getElementById('spKgLbl')) document.getElementById('spKgLbl').textContent=T('spKgLbl');
+  // Follow button
+  const _spOwn=(idx===MR_IDX||(uuid&&uuid===currentUser.dbId));
+  const _spFBtn=document.getElementById('spFollowBtn');
+  if(_spFBtn){
+    _spFBtn.style.display=_spOwn?'none':'';
+    const _spFollowing=followingSet.has(_spKey);
+    _spFBtn.textContent=_spFollowing?T('spUnfollowBtn'):T('spFollowBtn');
+    _spFBtn.style.background=_spFollowing?'rgba(168,196,184,.15)':'';
+    _spFBtn.style.borderColor=_spFollowing?'var(--accent)':'';
+    _spFBtn.style.color=_spFollowing?'var(--accent)':'';
+  }
   document.getElementById('spMsgBtn').textContent=T('spMsgBtn');
   document.getElementById('spListingsGrid').innerHTML=sellerListings.map(l=>{
     const thumb=l.photos.length?`<img src="${l.photos[0]}" alt=""/>` : `<div class="thumb-emoji">${l.emoji}</div>`;
@@ -2452,6 +2485,11 @@ function renderProfilePanel(){
       <button class="btn btn-ghost profile-edit-btn" style="margin-left:.5rem;border-color:rgba(200,80,80,.35);color:#e07070;font-size:.65rem" onclick="doLogout()">⎋ Esci</button>
     </div>`;
   document.getElementById('ppStatItemsVal').textContent=myListings().length;
+  // Kg risparmiati e follower
+  const _mySales=parseInt(document.getElementById('ppStatSalesVal')?.textContent||'0');
+  if(document.getElementById('ppKgVal')) document.getElementById('ppKgVal').textContent=calcKgSaved(_mySales)+' kg';
+  if(document.getElementById('ppFollowingVal')) document.getElementById('ppFollowingVal').textContent=followingSet.size;
+  if(document.getElementById('ppFollowersVal')) document.getElementById('ppFollowersVal').textContent=followersData[currentUser.dbId||MR_IDX]||0;
   const el=document.getElementById('profileListings');
   const my=myListings();
   if(!my.length){el.innerHTML=`<div style="color:var(--silver-dim);font-size:.82rem;padding:1rem 0;letter-spacing:.06em">${T('profileNoListings')}</div>`;return;}
@@ -3161,6 +3199,53 @@ function initRealtime(){
     .subscribe();
 }
 
+
+/* ══ FOLLOW SYSTEM ══ */
+// followingSet: set di UUID/indici che l'utente corrente segue
+const followingSet = new Set();
+// followersData: mappa UUID/idx → conteggio follower (demo)
+const followersData = {0:12, 1:8, 2:5, 3:21, 4:34, 5:7};
+// kg risparmiati per ogni capo: stima media 2.5 kg CO₂ equivalente
+const KG_PER_ITEM = 2.5;
+
+function calcKgSaved(sales){ return (sales * KG_PER_ITEM).toFixed(1); }
+
+function toggleFollow(){
+  if(!currentUser.dbId){ openAuthModal('login'); return; }
+  const key = currentSellerUuid || currentSellerIdx;
+  if(followingSet.has(key)){
+    followingSet.delete(key);
+    if(followersData[key]) followersData[key]--;
+  } else {
+    followingSet.add(key);
+    if(!followersData[key]) followersData[key]=0;
+    followersData[key]++;
+  }
+  _updateFollowBtn();
+  _updateSpFollowers();
+  // Aggiorna contatore "seguiti" nel profilo personale
+  document.getElementById('ppFollowingVal').textContent = followingSet.size;
+}
+
+function _updateFollowBtn(){
+  const key = currentSellerUuid || currentSellerIdx;
+  const isFollowing = followingSet.has(key);
+  const btn = document.getElementById('spFollowBtn');
+  if(!btn) return;
+  btn.textContent = isFollowing ? T('spUnfollowBtn') : T('spFollowBtn');
+  btn.style.background = isFollowing ? 'rgba(168,196,184,.15)' : '';
+  btn.style.borderColor = isFollowing ? 'var(--accent)' : '';
+  btn.style.color = isFollowing ? 'var(--accent)' : '';
+}
+
+function _updateSpFollowers(){
+  const key = currentSellerUuid || currentSellerIdx;
+  const el = document.getElementById('spFollowers');
+  if(el) el.textContent = followersData[key] || 0;
+}
+
+function openFollowersList(){ showToast('Visualizzazione follower — funzionalità in arrivo'); }
+function openFollowingList(){ showToast('Visualizzazione seguiti — funzionalità in arrivo'); }
 
 /* ══ ONBOARDING ══ */
 let _onboardingPendingFn = null;
